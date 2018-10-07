@@ -4,22 +4,22 @@ const _ = require('lodash');
 const {ObjectID} = require('mongodb');
 var {mongoose} = require('../db/mongoose');
 
-const {User} = require('../models/user.model');
+const {User, BrideGroomUser, SupplierUser} = require('../models/user.model');
 
 const router = express.Router();
 router.use(bodyParser.json());
 
 router.post('/signup/bridegroom', (req, res) => {
   var body = _.pick(req.body, ['email', 'password', 'name', 'birthdayDate', 'weddingDate', 'weddingVenue']);
-  var user = new User(body);
-  user.role = 'BRIDE/GROOM'
+  var brideGroomUser = new BrideGroomUser(body);
+  brideGroomUser.role = 'BRIDE/GROOM'
     
-  user.save().then(() => {
-    return user.generateAuthToken();
+  brideGroomUser.save().then(() => {
+    return brideGroomUser.generateAuthToken();
   }).then((token) => {
     res.header('x-auth', token).send({
         success: true,
-        data: user
+        data: brideGroomUser
     });
   }).catch((e) => {
     res.status(400).send(e);
@@ -28,16 +28,16 @@ router.post('/signup/bridegroom', (req, res) => {
 
 router.post('/signup/supplier', (req, res) => {
   var body = _.pick(req.body, ['email', 'password', 'name', 'phone', 'websiteURL', 'description']);
-  var user = new User(body);
-  user.supplierType = new ObjectID(req.body.supplierType)
-  user.role = 'SUPPLIER'
+  var supplierUser = new SupplierUser(body);
+  supplierUser.supplierType = new ObjectID(req.body.supplierType)
+  supplierUser.role = 'SUPPLIER'
   
-  user.save().then(() => {
-    return user.generateAuthToken();
+  supplierUser.save().then(() => {
+    return supplierUser.generateAuthToken();
   }).then((token) => {
     res.header('x-auth', token).send({
         success: true,
-        data: user
+        data: supplierUser
     });
   }).catch((e) => {
     res.status(400).send(e);

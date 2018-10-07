@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
 
+var options = { discriminatorKey: 'kind' };
+
 var UserSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -34,7 +36,10 @@ var UserSchema = new mongoose.Schema({
   role: {
     type: String,
     required: true
-  },
+  }
+}, options);
+
+var BrideGroomSchema = new mongoose.Schema({
   name: {
     type: String
   },
@@ -45,6 +50,12 @@ var UserSchema = new mongoose.Schema({
     type: Number
   },
   weddingVenue: {
+    type: String
+  }
+}, options);
+
+var SupplierSchema = new mongoose.Schema({
+  name: {
     type: String
   },
   phone: {
@@ -59,7 +70,7 @@ var UserSchema = new mongoose.Schema({
   description: {
     type: String
   }
-});
+}, options);
 
 UserSchema.methods.generateAuthToken = function () {
   var user = this;
@@ -136,5 +147,7 @@ UserSchema.pre('save', function (next) {
 });
 
 var User = mongoose.model('User', UserSchema);
+var BrideGroomUser = User.discriminator('BrideGroomUser', BrideGroomSchema);
+var SupplierUser = User.discriminator('SupplierUser', SupplierSchema);
 
-module.exports = {User};
+module.exports = {User, BrideGroomUser, SupplierUser};
