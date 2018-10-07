@@ -2,6 +2,9 @@ const express = require('express');
 
 var app = express();
 
+const supplierTypesRouter = require('./routes/supplier-types.js');
+app.use(supplierTypesRouter);
+
 app.get('/', (req, res) => {
     res.send('Server works.');
 });
