@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-var {mongoose} = require('./../db/mongoose');
+var {mongoose} = require('../db/mongoose');
 
-const {SupplierType} = require('./../models/supplier-type');
+const {SupplierType} = require('../models/supplier-type.model');
 
 const router = express.Router();
 router.use(bodyParser.json());

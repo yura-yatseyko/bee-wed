@@ -2,8 +2,11 @@ const express = require('express');
 
 var app = express();
 
-const supplierTypesRouter = require('./routes/supplier-types.js');
+const supplierTypesRouter = require('./routes/supplier-types.route.js');
+const signUpRouter = require('./routes/sign-up.route.js');
+
 app.use(supplierTypesRouter);
+app.use(signUpRouter);
 
 app.get('/', (req, res) => {
     res.send('Server works.');
