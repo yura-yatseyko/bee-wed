@@ -3,7 +3,7 @@ const _ = require('lodash');
 const {ObjectID} = require('mongodb');
 var multer  = require('multer');
 
-const {BrideGroomUser, SupplierUser} = require('../models/user.model');
+const {User, BrideGroomUser, SupplierUser} = require('../models/user.model');
 
 const router = express.Router();
 

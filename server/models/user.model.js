@@ -155,4 +155,4 @@ var User = mongoose.model('User', UserSchema);
 var BrideGroomUser = User.discriminator('BrideGroomUser', BrideGroomSchema);
 var SupplierUser = User.discriminator('SupplierUser', SupplierSchema);
 
-module.exports = {BrideGroomUser, SupplierUser};
+module.exports = {User, BrideGroomUser, SupplierUser};
