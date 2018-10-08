@@ -32,11 +32,7 @@ var UserSchema = new mongoose.Schema({
       type: String,
       required: true
     }
-  }],
-  role: {
-    type: String,
-    required: true
-  }
+  }]
 }, options);
 
 var BrideGroomSchema = new mongoose.Schema({
@@ -50,6 +46,9 @@ var BrideGroomSchema = new mongoose.Schema({
     type: Number
   },
   weddingVenue: {
+    type: String
+  },
+  avatarUrl: {
     type: String
   }
 }, options);
