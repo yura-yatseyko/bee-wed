@@ -68,7 +68,13 @@ var SupplierSchema = new mongoose.Schema({
   },
   description: {
     type: String
-  }
+  },
+  avatarUrl: {
+    type: String
+  },
+  galleryUrls: [{
+    type: String
+  }]
 }, options);
 
 UserSchema.methods.generateAuthToken = function () {
@@ -149,4 +155,4 @@ var User = mongoose.model('User', UserSchema);
 var BrideGroomUser = User.discriminator('BrideGroomUser', BrideGroomSchema);
 var SupplierUser = User.discriminator('SupplierUser', SupplierSchema);
 
-module.exports = {User, BrideGroomUser, SupplierUser};
+module.exports = {BrideGroomUser, SupplierUser};

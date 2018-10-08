@@ -1,17 +1,13 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const _ = require('lodash');
 const {ObjectID} = require('mongodb');
-var {mongoose} = require('../db/mongoose');
 var multer  = require('multer');
 
-const {User, BrideGroomUser, SupplierUser} = require('../models/user.model');
+const {BrideGroomUser, SupplierUser} = require('../models/user.model');
 
 const router = express.Router();
 
 router.use('/uploads', express.static('uploads'));
-router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({ extended: false }));
 
 const storage = multer.diskStorage({
   destination: function(req, file, cb) {
@@ -21,11 +17,12 @@ const storage = multer.diskStorage({
     cb(null, new Date().toISOString() + file.originalname);
   }
 });
+
 const upload = multer({storage: storage});
 
-router.post('/signup/bridegroom', upload.single('avatarImage'), (req, res) => {
-  console.log(req.file);
-  
+var brideGroomUpload = upload.single('avatarImage');
+
+router.post('/signup/bridegroom', brideGroomUpload, (req, res) => {  
   var body = _.pick(req.body, ['email', 'password', 'name', 'birthdayDate', 'weddingDate', 'weddingVenue']);
   var brideGroomUser = new BrideGroomUser(body);
   brideGroomUser.avatarUrl = req.file.path;
@@ -42,11 +39,19 @@ router.post('/signup/bridegroom', upload.single('avatarImage'), (req, res) => {
   });
 });
 
-router.post('/signup/supplier', (req, res) => {
+var supplierUpload = upload.fields([{name: 'avatarImage'}, {name: 'galleryImage'}])
+
+router.post('/signup/supplier', supplierUpload, (req, res) => {
   var body = _.pick(req.body, ['email', 'password', 'name', 'phone', 'websiteURL', 'description']);
+  
   var supplierUser = new SupplierUser(body);
+  
   supplierUser.supplierType = new ObjectID(req.body.supplierType)
-  supplierUser.role = 'SUPPLIER'
+  supplierUser.avatarUrl = req.files['avatarImage'][0].path;
+
+  req.files['galleryImage'].forEach(function(element) {
+    supplierUser.galleryUrls.push(element.path);
+  });
   
   supplierUser.save().then(() => {
     return supplierUser.generateAuthToken();
