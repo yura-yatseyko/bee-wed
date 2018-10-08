@@ -3,7 +3,6 @@ const _ = require('lodash');
 var bodyParser = require('body-parser');
 
 const {User, BrideGroomUser, SupplierUser} = require('../models/user.model');
-var {authenticate} = require('../middleware/authenticate');
 
 const router = express.Router();
 
