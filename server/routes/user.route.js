@@ -1,8 +1,6 @@
 const express = require('express');
-const _ = require('lodash');
 var bodyParser = require('body-parser');
 
-const {User, BrideGroomUser, SupplierUser} = require('../models/user.model');
 var {authenticate} = require('../middleware/authenticate');
 
 const router = express.Router();
@@ -35,7 +33,5 @@ router.post('/user/updateLocation', authenticate, (req, res) => {
         res.status(400).send();
       });
 });
-
-
 
 module.exports = router;
