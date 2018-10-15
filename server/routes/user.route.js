@@ -22,6 +22,20 @@ router.post('/user/updateStatus', authenticate, (req, res) => {
       });
 });
 
+router.post('/user/updateLocation', authenticate, (req, res) => {
+    var lat = req.body.lat;
+    var lng = req.body.lng;
+    
+    req.user.updateUserLocation(lat, lng).then((user) => {
+        res.status(200).send({
+            success: true,
+            data: user
+        });
+      }, () => {
+        res.status(400).send();
+      });
+});
+
 
 
 module.exports = router;

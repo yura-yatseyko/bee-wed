@@ -130,6 +130,21 @@ UserSchema.methods.updateUserStatus = function (status) {
   });
 };
 
+UserSchema.methods.updateUserLocation= function (lat, lng) {
+  var user = this;
+
+  user.currentLocation.lat = lat;
+  user.currentLocation.lng = lng;
+
+  return new Promise((resolve, reject) => {
+      user.save().then((doc) => {
+          resolve(doc) ;
+      }, () => {
+          reject();
+      });
+  });
+};
+
 UserSchema.statics.findByToken = function (token) {
   var User = this;
   var decoded;
