@@ -1,8 +1,11 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
+require('mongoose-double')(mongoose);
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
+
+var SchemaTypes = mongoose.Schema.Types;
 
 var options = { discriminatorKey: 'kind' };
 
@@ -74,7 +77,21 @@ var SupplierSchema = new mongoose.Schema({
   },
   galleryUrls: [{
     type: String
-  }]
+  }],
+  status: {
+    type: Boolean,
+    default: false
+  },
+  currentLocation: {
+    lat: {
+      type: SchemaTypes.Double,
+      default: 0.0
+    },
+    lng: {
+      type: SchemaTypes.Double,
+      default: 0.0
+    }
+  }
 }, options);
 
 UserSchema.methods.generateAuthToken = function () {
@@ -96,6 +113,20 @@ UserSchema.methods.removeToken = function (token) {
     $pull: {
       tokens: {token}
     }
+  });
+};
+
+UserSchema.methods.updateUserStatus = function (status) {
+  var user = this;
+
+  user.status = status;
+
+  return new Promise((resolve, reject) => {
+      user.save().then((doc) => {
+          resolve(doc) ;
+      }, () => {
+          reject();
+      });
   });
 };
 
