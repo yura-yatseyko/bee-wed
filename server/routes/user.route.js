@@ -51,6 +51,17 @@ router.post('/user/supplier/updateLocation', authenticate, (req, res) => {
       });
 });
 
+router.post('/user/bridegroom/updateNotifications', authenticate, (req, res) => {    
+    req.user.updateBrideGroomNotifications(req.body).then((user) => {
+        res.status(200).send({
+            success: true,
+            data: user
+        });
+    }, () => {
+        res.status(400).send();
+    });
+});
+
 router.post('/user/updatePassword', authenticate, (req, res) => {
     var body = lodash.pick(req.body, ['password', 'newPassword']);
   
@@ -73,9 +84,9 @@ router.post('/user/bridegroom/update', authenticate, brideGroomUpload, (req, res
             success: true,
             data: user
         });
-      }, () => {
+    }, () => {
         res.status(400).send();
-      });
+    });
 });
 
 module.exports = router;

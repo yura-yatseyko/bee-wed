@@ -91,6 +91,20 @@ var SupplierSchema = new mongoose.Schema({
       type: SchemaTypes.Double,
       default: 0.0
     }
+  },
+  notifications: {
+    newMessage: {
+      type: Boolean,
+      default: false
+    },
+    newSupplier: {
+      type: Boolean,
+      default: false
+    },
+    countdown: {
+      type: Boolean,
+      default: false
+    }
   }
 }, options);
 
@@ -162,6 +176,30 @@ UserSchema.methods.updateBrideGroomData = function (data, file) {
 
   if (file) {
     user.avatarUrl = file.path;
+  }
+
+  return new Promise((resolve, reject) => {
+      user.save().then((doc) => {
+          resolve(doc) ;
+      }, () => {
+          reject();
+      });
+  });
+};
+
+UserSchema.methods.updateBrideGroomNotifications = function (data) {
+  var user = this;
+
+  if (data.newMessage) {
+    user.notifications.newMessage = data.newMessage;
+  }
+
+  if (data.newSupplier) {
+    user.notifications.newSupplier = data.newSupplier;
+  }
+
+  if (data.countdown) {
+    user.notifications.countdown = data.countdown;
   }
 
   return new Promise((resolve, reject) => {
