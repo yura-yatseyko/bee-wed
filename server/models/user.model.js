@@ -116,7 +116,7 @@ UserSchema.methods.removeToken = function (token) {
   });
 };
 
-UserSchema.methods.updateUserStatus = function (status) {
+UserSchema.methods.updatesSupplierStatus = function (status) {
   var user = this;
 
   user.status = status;
@@ -130,7 +130,7 @@ UserSchema.methods.updateUserStatus = function (status) {
   });
 };
 
-UserSchema.methods.updateUserLocation= function (lat, lng) {
+UserSchema.methods.updateSupplierLocation= function (lat, lng) {
   var user = this;
 
   user.currentLocation.lat = lat;
@@ -169,6 +169,31 @@ UserSchema.methods.updateBrideGroomData = function (data, file) {
           resolve(doc) ;
       }, () => {
           reject();
+      });
+  });
+};
+
+UserSchema.methods.updateUserPassword = function (password, newPassword) {
+  var user = this;
+
+  return new Promise((resolve, reject) => {
+      bcrypt.compare(password, user.password, (err, res) => {
+          if (res) {
+              bcrypt.genSalt(10, (err, salt) => {
+                  if (err) {
+                      reject();
+                  } else {
+                      user.password = newPassword;
+                      user.save().then((doc) => {
+                          resolve(doc) ;
+                      }, () => {
+                          reject();
+                      });
+                  }
+              });
+          } else {
+              reject();
+          }
       });
   });
 };

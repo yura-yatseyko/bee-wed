@@ -27,7 +27,7 @@ router.use(bodyParser.json());
 router.post('/user/supplier/updateStatus', authenticate, (req, res) => {
     var status = req.body.status;
     
-    req.user.updateUserStatus(status).then((user) => {
+    req.user.updatesSupplierStatus(status).then((user) => {
         res.status(200).send({
             success: true,
             data: user
@@ -41,7 +41,7 @@ router.post('/user/supplier/updateLocation', authenticate, (req, res) => {
     var lat = req.body.lat;
     var lng = req.body.lng;
     
-    req.user.updateUserLocation(lat, lng).then((user) => {
+    req.user.updateSupplierLocation(lat, lng).then((user) => {
         res.status(200).send({
             success: true,
             data: user
@@ -49,6 +49,19 @@ router.post('/user/supplier/updateLocation', authenticate, (req, res) => {
       }, () => {
         res.status(400).send();
       });
+});
+
+router.post('/user/updatePassword', authenticate, (req, res) => {
+    var body = lodash.pick(req.body, ['password', 'newPassword']);
+  
+    req.user.updateUserPassword(body.password, body.newPassword).then((user) => {
+      res.status(200).send({
+          success: true,
+          data: user
+      });
+    }, () => {
+      res.status(400).send();
+    });
 });
 
 // Update Bride/Groom profile data
