@@ -53,6 +53,20 @@ var BrideGroomSchema = new mongoose.Schema({
   },
   avatarUrl: {
     type: String
+  },
+  notifications: {
+    newMessage: {
+      type: Boolean,
+      default: false
+    },
+    newSupplier: {
+      type: Boolean,
+      default: false
+    },
+    countdown: {
+      type: Boolean,
+      default: false
+    }
   }
 }, options);
 
@@ -90,20 +104,6 @@ var SupplierSchema = new mongoose.Schema({
     lng: {
       type: SchemaTypes.Double,
       default: 0.0
-    }
-  },
-  notifications: {
-    newMessage: {
-      type: Boolean,
-      default: false
-    },
-    newSupplier: {
-      type: Boolean,
-      default: false
-    },
-    countdown: {
-      type: Boolean,
-      default: false
     }
   }
 }, options);
