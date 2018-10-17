@@ -145,6 +145,34 @@ UserSchema.methods.updateUserLocation= function (lat, lng) {
   });
 };
 
+UserSchema.methods.updateBrideGroomData = function (data, file) {
+  var user = this;
+
+  if (data.name) {
+    user.name = data.name;
+  }
+
+  if (data.weddingDate) {
+    user.weddingDate = data.weddingDate;
+  }
+
+  if (data.weddingVenue) {
+    user.weddingVenue = data.weddingVenue;
+  }
+
+  if (file) {
+    user.avatarUrl = file.path;
+  }
+
+  return new Promise((resolve, reject) => {
+      user.save().then((doc) => {
+          resolve(doc) ;
+      }, () => {
+          reject();
+      });
+  });
+};
+
 UserSchema.statics.findByToken = function (token) {
   var User = this;
   var decoded;
