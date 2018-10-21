@@ -24,11 +24,19 @@ router.get('/users/suppliers', authenticate, (req, res) => {
 
         var sortedSuppliers = [];
 
+        var lat = null;
+        var lon = null;
+
         if (req.query.userLat && req.query.userLng) {
-            var userLocation = {
-                lat: req.query.userLat,
-                lon: req.query.userLng
-            };
+            lat = req.query.userLat;
+            lon = req.query.userLng;
+        } else if (req.query.locationLat && req.query.locationLng) {
+            lat = req.query.locationLat;
+            lon = req.query.locationLng;
+        }
+
+        if (lat && lon) {
+            var location = { lat, lon };
 
             suppliers.forEach(function(supplier) {
                 var supplierLocation = {
@@ -36,7 +44,7 @@ router.get('/users/suppliers', authenticate, (req, res) => {
                     lon: supplier.currentLocation.lng
                 };
 
-                var dist = geodist(userLocation, supplierLocation, {exact: true, unit: 'km'}) 
+                var dist = geodist(location, supplierLocation, {exact: true, unit: 'km'}) 
                 supplier.dist = dist;
 
                 sortedSuppliers.push(supplier);
