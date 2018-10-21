@@ -85,6 +85,7 @@ router.get('/favorites', authenticate, (req, res) => {
                             var dist = geodist(location, supplierLocation, {exact: true, unit: 'km'}) 
                             result.dist = dist;
                         }
+                        result.isLiked = true;
                         favoritesUsers.push(result);
                     }
 
