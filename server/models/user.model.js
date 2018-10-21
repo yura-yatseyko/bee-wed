@@ -110,6 +110,10 @@ var SupplierSchema = new mongoose.Schema({
       type: SchemaTypes.Double,
       default: 0.0
     }
+  },
+  dist: {
+    type: SchemaTypes.Double,
+    default: null
   }
 }, options);
 
