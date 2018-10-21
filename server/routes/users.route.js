@@ -67,4 +67,50 @@ router.get('/users/suppliers', authenticate, (req, res) => {
     });
 });
 
+router.get('/users/:id', authenticate, (req, res) => {
+    var id = req.params.id;
+
+    if (!ObjectID.isValid(id)) {
+        return res.status(404).send();
+    }
+
+    User.findById(id).then((user) => {
+        if (!user) {
+          return res.status(404).send();
+        }
+
+        var lat = null;
+        var lon = null;
+
+        if (req.query.userLat && req.query.userLng) {
+            lat = req.query.userLat;
+            lon = req.query.userLng;
+        }
+
+        if (lat && lon && user.currentLocation && user.currentLocation) {
+            var location = { lat, lon };
+
+            var userLocation = {
+                lat: user.currentLocation.lat,
+                lon: user.currentLocation.lng
+            };
+
+            var dist = geodist(location, userLocation, {exact: true, unit: 'km'}) 
+            user.dist = dist;
+
+            res.send({
+                success: true,
+                data: user
+            });
+        } else {
+            res.send({
+                success: true,
+                data: user
+            });
+        }
+    }).catch((e) => {
+        res.status(400).send();
+    });
+});
+
 module.exports = router;
