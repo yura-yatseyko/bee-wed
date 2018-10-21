@@ -24,7 +24,7 @@ const upload = multer({storage: storage});
 var brideGroomUpload = upload.single('avatarImage');
 
 router.post('/signup/bridegroom', brideGroomUpload, (req, res) => {  
-  var body = _.pick(req.body, ['email', 'password', 'name', 'birthdayDate', 'weddingDate', 'weddingVenue']);
+  var body = _.pick(req.body, ['email', 'password', 'name', 'weddingDate', 'weddingVenue']);
   var brideGroomUser = new BrideGroomUser(body);
 
   if (req.file) {

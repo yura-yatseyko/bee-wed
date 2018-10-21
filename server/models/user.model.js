@@ -44,9 +44,6 @@ var BrideGroomSchema = new mongoose.Schema({
   name: {
     type: String
   },
-  birthdayDate: {
-    type: Number
-  },
   weddingDate: {
     type: Number
   },
