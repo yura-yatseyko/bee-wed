@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
 
+const {SupplierType, SupplierTypeSchema} = require('./supplier-type.model');
+
 var SchemaTypes = mongoose.Schema.Types;
 
 var options = { discriminatorKey: 'kind' };
@@ -52,7 +54,8 @@ var BrideGroomSchema = new mongoose.Schema({
     type: String
   },
   avatarUrl: {
-    type: String
+    type: String,
+    default: null
   },
   notifications: {
     newMessage: {
@@ -78,7 +81,8 @@ var SupplierSchema = new mongoose.Schema({
     type: String
   },
   supplierType: {
-    type: mongoose.Schema.Types.ObjectId
+    type: SupplierTypeSchema,
+    default: null
   },
   websiteURL: {
     type: String
@@ -87,7 +91,8 @@ var SupplierSchema = new mongoose.Schema({
     type: String
   },
   avatarUrl: {
-    type: String
+    type: String,
+    default: null
   },
   galleryUrls: [{
     type: String

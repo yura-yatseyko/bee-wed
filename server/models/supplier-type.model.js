@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var SupplierType = mongoose.model('SupplierType', {
+var SupplierTypeSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
@@ -9,4 +9,5 @@ var SupplierType = mongoose.model('SupplierType', {
   }
 });
 
-module.exports = {SupplierType};
+var SupplierType = mongoose.model('SupplierType', SupplierTypeSchema);
+module.exports = {SupplierType, SupplierTypeSchema};
