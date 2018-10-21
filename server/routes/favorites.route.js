@@ -56,46 +56,53 @@ router.get('/favorites', authenticate, (req, res) => {
     Favorite.find({
         senderID: req.user._id
     }).then((favorites) => {
-        
-        var favoritesUsers = [];
-        var i = 0;
 
-        favorites.forEach(function(favorite) {
-            User.findOne({
-                '_id': favorite.likedUserID
-            }, function (err, result) {
-                if (result) {
-                    if (userLat, userLon) {
-                        var supplierLocation = {
-                            lat: result.currentLocation.lat,
-                            lon: result.currentLocation.lng
-                        };
-
-                        var location = { 
-                            lat: userLat,
-                            lon: userLon
-                        };
-        
-                        var dist = geodist(location, supplierLocation, {exact: true, unit: 'km'}) 
-                        result.dist = dist;
-                    }
-                    favoritesUsers.push(result);
-                }
-
-                i++;
-
-                if (i == favorites.length) {
-                    favoritesUsers.sort(function (a, b) {
-                        return a.dist > b.dist;
-                    });
-
-                    res.send({
-                        success: true,
-                        data: favoritesUsers
-                    });
-                }
+        if (favorites.length == 0) {
+            res.send({
+                success: true,
+                data: []
             });
-        });
+        } else {
+            var favoritesUsers = [];
+            var i = 0;
+
+            favorites.forEach(function(favorite) {
+                User.findOne({
+                    '_id': favorite.likedUserID
+                }, function (err, result) {
+                    if (result) {
+                        if (userLat, userLon) {
+                            var supplierLocation = {
+                                lat: result.currentLocation.lat,
+                                lon: result.currentLocation.lng
+                            };
+
+                            var location = { 
+                                lat: userLat,
+                                lon: userLon
+                            };
+            
+                            var dist = geodist(location, supplierLocation, {exact: true, unit: 'km'}) 
+                            result.dist = dist;
+                        }
+                        favoritesUsers.push(result);
+                    }
+
+                    i++;
+
+                    if (i == favorites.length) {
+                        favoritesUsers.sort(function (a, b) {
+                            return a.dist > b.dist;
+                        });
+
+                        res.send({
+                            success: true,
+                            data: favoritesUsers
+                        });
+                    }
+                });
+            });
+        }
     }, (err) => {
         res.status(400).send(err);
     });
