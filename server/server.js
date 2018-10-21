@@ -9,6 +9,7 @@ const signInRouter = require('./routes/sign-in.route.js');
 const logoutRouter = require('./routes/logout.route.js');
 const userRouter = require('./routes/user.route.js');
 const usersRouter = require('./routes/users.route.js');
+const favoritesRouter = require('./routes/favorites.route.js');
 
 app.use(supplierTypesRouter);
 app.use(supplierLocationsRouter);
@@ -17,6 +18,7 @@ app.use(signInRouter);
 app.use(logoutRouter);
 app.use(userRouter);
 app.use(usersRouter);
+app.use(favoritesRouter);
 
 app.get('/', (req, res) => {
     res.send('Server works.');
