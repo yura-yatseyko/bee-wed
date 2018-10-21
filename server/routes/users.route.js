@@ -24,18 +24,66 @@ router.get('/users/suppliers', authenticate, (req, res) => {
 
         var sortedSuppliers = [];
 
+        var userLat = null;
+        var userLon = null;
+
         var lat = null;
         var lon = null;
 
         if (req.query.userLat && req.query.userLng) {
-            lat = req.query.userLat;
-            lon = req.query.userLng;
-        } else if (req.query.locationLat && req.query.locationLng) {
+            userLat = req.query.userLat;
+            userLon = req.query.userLng;
+        }
+        
+        if (req.query.locationLat && req.query.locationLng) {
             lat = req.query.locationLat;
             lon = req.query.locationLng;
-        }
+        } else if (req.query.userLat && req.query.userLng) {
+            lat = req.query.userLat;
+            lon = req.query.userLng;
+        } 
 
-        if (lat && lon) {
+        if (req.query.blLat && req.query.blLng && req.query.trLat && req.query.trLng) {
+            var blLat = req.query.blLat;
+            var blLng = req.query.blLng;
+            var trLat = req.query.trLat;
+            var trLng = req.query.trLng;
+            
+            suppliers.forEach(function(supplier) {
+                var supplierLocation = {
+                    lat: supplier.currentLocation.lat,
+                    lon: supplier.currentLocation.lng
+                };
+
+                var isInBounds = false;
+
+                var isLongInRange = false;
+                if (trLng < blLng) {
+                    isLongInRange = supplierLocation.lon >= blLng || supplierLocation.lon <= trLng;
+                } else {
+                    isLongInRange = supplierLocation.lon >= blLng && supplierLocation.lon <= trLng;
+                }
+                
+                isInBounds = supplierLocation.lat >= blLat  &&  supplierLocation.lat <= trLat  &&  isLongInRange;
+
+                if (isInBounds) {
+                    if (userLat && userLon) {
+                        var location = { 
+                            lat: userLat,
+                            lon: userLon
+                        };
+                        var dist = geodist(location, supplierLocation, {exact: true, unit: 'km'})
+                        supplier.dist = dist;
+                    }
+
+                    sortedSuppliers.push(supplier);
+                }
+            });
+
+            sortedSuppliers.sort(function (a, b) {
+                return a.dist > b.dist;
+            });
+        } else if (lat && lon) {
             var location = { lat, lon };
 
             suppliers.forEach(function(supplier) {
