@@ -5,6 +5,7 @@ var geodist = require('geodist')
 
 const {ObjectID} = require('mongodb');
 const {User} = require('../models/user.model');
+const {Favorite} = require('../models/favorite.model');
 var {authenticate} = require('../middleware/authenticate');
 
 const router = express.Router();
@@ -127,35 +128,45 @@ router.get('/users/:id', authenticate, (req, res) => {
           return res.status(404).send();
         }
 
-        var lat = null;
-        var lon = null;
+        Favorite.findOne({
+            senderID: req.user._id,
+            likedUserID: user._id
+        }, function (err, result) {
+            if (result) {
+                user.isLiked = true;
+            }
 
-        if (req.query.userLat && req.query.userLng) {
-            lat = req.query.userLat;
-            lon = req.query.userLng;
-        }
+            var lat = null;
+            var lon = null;
 
-        if (lat && lon && user.currentLocation && user.currentLocation) {
-            var location = { lat, lon };
+            if (req.query.userLat && req.query.userLng) {
+                lat = req.query.userLat;
+                lon = req.query.userLng;
+            }
 
-            var userLocation = {
-                lat: user.currentLocation.lat,
-                lon: user.currentLocation.lng
-            };
+            if (lat && lon && user.currentLocation && user.currentLocation) {
+                var location = { lat, lon };
 
-            var dist = geodist(location, userLocation, {exact: true, unit: 'km'}) 
-            user.dist = dist;
+                var userLocation = {
+                    lat: user.currentLocation.lat,
+                    lon: user.currentLocation.lng
+                };
 
-            res.send({
-                success: true,
-                data: user
+                var dist = geodist(location, userLocation, {exact: true, unit: 'km'}) 
+                user.dist = dist;
+
+                res.send({
+                    success: true,
+                    data: user
+                });
+            } else {
+                res.send({
+                    success: true,
+                    data: user
+                });
+            }
+                
             });
-        } else {
-            res.send({
-                success: true,
-                data: user
-            });
-        }
     }).catch((e) => {
         res.status(400).send();
     });

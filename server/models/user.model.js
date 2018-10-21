@@ -111,7 +111,11 @@ var SupplierSchema = new mongoose.Schema({
   dist: {
     type: SchemaTypes.Double,
     default: null
-  }
+  },
+  isLiked: {
+    type: Boolean,
+    default: false
+  },
 }, options);
 
 UserSchema.methods.generateAuthToken = function () {
