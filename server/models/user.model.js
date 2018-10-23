@@ -200,15 +200,18 @@ UserSchema.methods.updateBrideGroomData = function (data, file) {
 UserSchema.methods.updateBrideGroomNotifications = function (data) {
   var user = this;
 
-  if (data.newMessage) {
+  console.log(data);
+  
+
+  if (data.hasOwnProperty('newMessage')) {
     user.notifications.newMessage = data.newMessage;
   }
 
-  if (data.newSupplier) {
+  if (data.hasOwnProperty('newSupplier')) {
     user.notifications.newSupplier = data.newSupplier;
   }
 
-  if (data.countdown) {
+  if (data.hasOwnProperty('countdown')) {
     user.notifications.countdown = data.countdown;
   }
 
