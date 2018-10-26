@@ -271,7 +271,7 @@ UserSchema.statics.findByCredentials = function (email, password) {
 
   return User.findOne({email}).then((user) => {
     if (!user) {
-      return Promise.reject();
+      return Promise.reject({code: 11});
     }
 
     return new Promise((resolve, reject) => {
@@ -279,7 +279,7 @@ UserSchema.statics.findByCredentials = function (email, password) {
         if (res) {
           resolve(user);
         } else {
-          reject();
+          reject({code: 2});
         }
       });
     });
@@ -302,7 +302,8 @@ UserSchema.pre('save', function (next) {
 });
 
 var User = mongoose.model('User', UserSchema);
-var BrideGroomUser = User.discriminator('BrideGroomUser', BrideGroomSchema);
 var SupplierUser = User.discriminator('SupplierUser', SupplierSchema);
+var BrideGroomUser = User.discriminator('BrideGroomUser', BrideGroomSchema);
+
 
 module.exports = {User, BrideGroomUser, SupplierUser};

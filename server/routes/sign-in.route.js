@@ -2,6 +2,8 @@ const express = require('express');
 const _ = require('lodash');
 var bodyParser = require('body-parser');
 
+var errorHandling = require('../middleware/errorHandling');
+
 const {User, BrideGroomUser, SupplierUser} = require('../models/user.model');
 
 const router = express.Router();
@@ -19,7 +21,7 @@ router.post('/signin', (req, res) => {
         });
       });
     }).catch((e) => {
-      res.status(400).send();
+      res.status(400).send(errorHandling.signInErrorHandling(e));
     });
 });
 

@@ -3,6 +3,8 @@ const _ = require('lodash');
 const {ObjectID} = require('mongodb');
 var multer  = require('multer');
 
+var errorHandling = require('../middleware/errorHandling');
+
 const {User, BrideGroomUser, SupplierUser} = require('../models/user.model');
 const {SupplierType} = require('../models/supplier-type.model');
 
@@ -39,7 +41,7 @@ router.post('/signup/bridegroom', brideGroomUpload, (req, res) => {
         data: brideGroomUser
     });
   }).catch((e) => {
-    res.status(400).send(e);
+    res.status(400).send(errorHandling.bridegroomSignUpErrorHandling(e));
   });
 });
 
@@ -77,7 +79,7 @@ router.post('/signup/supplier', supplierUpload, (req, res) => {
           data: supplierUser
       });
     }).catch((e) => {
-      res.status(400).send(e);
+      res.status(400).send(errorHandling.supplierSignUpErrorHandling(e));
     });
     
   });
