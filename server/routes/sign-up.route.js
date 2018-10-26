@@ -45,9 +45,10 @@ router.post('/signup/bridegroom', brideGroomUpload, (req, res) => {
   });
 });
 
-var supplierUpload = upload.fields([{name: 'avatarImage'}, {name: 'galleryImage'}])
+var supplierAvatartUpload = upload.single('avatarImage');
+var supplierUpload = upload.fields([{name: 'galleryImage'}])
 
-router.post('/signup/supplier', supplierUpload, (req, res) => {
+router.post('/signup/supplier', supplierAvatartUpload, supplierUpload, (req, res) => {
   var body = _.pick(req.body, ['email', 'password', 'name', 'phone', 'websiteURL', 'description']);
   
   var supplierUser = new SupplierUser(body);
