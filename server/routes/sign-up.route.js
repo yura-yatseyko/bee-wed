@@ -61,7 +61,7 @@ router.post('/signup/supplier', supplierUpload, (req, res) => {
       supplierUser.supplierType = result;
     }
 
-    if (req.files['avatarImage']) {
+    if (req.files['avatarImage'][0]) {
       supplierUser.avatarUrl = req.files['avatarImage'][0].path;
     }
   
