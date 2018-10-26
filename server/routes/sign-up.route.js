@@ -45,10 +45,9 @@ router.post('/signup/bridegroom', brideGroomUpload, (req, res) => {
   });
 });
 
-var supplierAvatartUpload = upload.single('avatarImage');
-var supplierUpload = upload.fields([{name: 'galleryImage'}])
+var supplierUpload = upload.fields([{name: 'avatarImage'}, {name: 'galleryImage'}])
 
-router.post('/signup/supplier', supplierAvatartUpload, supplierUpload, (req, res) => {
+router.post('/signup/supplier', supplierUpload, (req, res) => {
   var body = _.pick(req.body, ['email', 'password', 'name', 'phone', 'websiteURL', 'description']);
   
   var supplierUser = new SupplierUser(body);
@@ -62,11 +61,11 @@ router.post('/signup/supplier', supplierAvatartUpload, supplierUpload, (req, res
       supplierUser.supplierType = result;
     }
 
-    if (req.files['avatarImage']) {
-      if (req.files['avatarImage'].length > 0) {
-        supplierUser.avatarUrl = req.files['avatarImage'][0].path;
-      }
-    }
+    // if (req.files['avatarImage']) {
+    //   if (req.files['avatarImage'].length > 0) {
+    //     supplierUser.avatarUrl = req.files['avatarImage'][0].path;
+    //   }
+    // }
   
     if (req.files['galleryImage']) {
       req.files['galleryImage'].forEach(function(element) {
