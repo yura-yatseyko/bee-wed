@@ -13,6 +13,9 @@ var HubAdSchema = new mongoose.Schema({
     createdAt: {
       type: Number
     },
+    expireAt: {
+      type: Number
+    },
     _creator: {
       type: mongoose.Schema.Types.ObjectId,
       required: true
