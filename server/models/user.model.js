@@ -224,6 +224,19 @@ UserSchema.methods.updateBrideGroomNotifications = function (data) {
   });
 };
 
+UserSchema.methods.resetPassword = function (newPassword) {
+  var user = this;
+
+  return new Promise((resolve, reject) => {
+    user.password = newPassword;
+    user.save().then((doc) => {
+      resolve(doc) ;
+    }, () => {
+      reject();
+    });
+  });
+}
+
 UserSchema.methods.updateUserPassword = function (password, newPassword) {
   var user = this;
 
