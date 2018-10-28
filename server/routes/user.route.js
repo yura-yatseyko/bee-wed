@@ -114,7 +114,7 @@ router.post('/user/resetpassword', authenticate, (req, res) => {
 
         transporter.sendMail(mailOptions, function(error, info){
             if (error) {
-                res.status(400).send();
+                res.status(400).send(error);
             } else {
                 res.status(200).send({
                     success: true,
