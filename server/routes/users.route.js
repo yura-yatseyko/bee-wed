@@ -6,6 +6,7 @@ var geodist = require('geodist')
 const {ObjectID} = require('mongodb');
 const {User} = require('../models/user.model');
 const {Favorite} = require('../models/favorite.model');
+const {SupplierType} = require('../models/supplier-type.model');
 var {authenticate} = require('../middleware/authenticate');
 
 const router = express.Router();
@@ -17,103 +18,110 @@ router.get('/users/suppliers', authenticate, (req, res) => {
         kind: "SupplierUser"
     };
 
-    // if (req.query.typeID){
-    //     params.supplierType._id = new ObjectID(req.query.typeID);
-    // }
+    var supplierTypeParams = {};
+
+    if (req.query.typeID){
+        supplierTypeParams._id = new ObjectID(req.query.typeID);
+    }
+
+    SupplierType.findOne(supplierTypeParams, function (err, result) {
+          if (result) {
+            params.supplierType = result;
+          }
+
+          User.find(params).then((suppliers) => {
+            var sortedSuppliers = [];
     
-    User.find(params).then((suppliers) => {
-
-        var sortedSuppliers = [];
-
-        var userLat = null;
-        var userLon = null;
-
-        var lat = null;
-        var lon = null;
-
-        if (req.query.userLat && req.query.userLng) {
-            userLat = req.query.userLat;
-            userLon = req.query.userLng;
-        }
-        
-        if (req.query.locationLat && req.query.locationLng) {
-            lat = req.query.locationLat;
-            lon = req.query.locationLng;
-        } else if (req.query.userLat && req.query.userLng) {
-            lat = req.query.userLat;
-            lon = req.query.userLng;
-        } 
-
-        if (req.query.blLat && req.query.blLng && req.query.trLat && req.query.trLng) {
-            var blLat = req.query.blLat;
-            var blLng = req.query.blLng;
-            var trLat = req.query.trLat;
-            var trLng = req.query.trLng;
+            var userLat = null;
+            var userLon = null;
+    
+            var lat = null;
+            var lon = null;
+    
+            if (req.query.userLat && req.query.userLng) {
+                userLat = req.query.userLat;
+                userLon = req.query.userLng;
+            }
             
-            suppliers.forEach(function(supplier) {
-                var supplierLocation = {
-                    lat: supplier.currentLocation.lat,
-                    lon: supplier.currentLocation.lng
-                };
-
-                var isInBounds = false;
-
-                var isLongInRange = false;
-                if (trLng < blLng) {
-                    isLongInRange = supplierLocation.lon >= blLng || supplierLocation.lon <= trLng;
-                } else {
-                    isLongInRange = supplierLocation.lon >= blLng && supplierLocation.lon <= trLng;
-                }
+            if (req.query.locationLat && req.query.locationLng) {
+                lat = req.query.locationLat;
+                lon = req.query.locationLng;
+            } else if (req.query.userLat && req.query.userLng) {
+                lat = req.query.userLat;
+                lon = req.query.userLng;
+            } 
+    
+            if (req.query.blLat && req.query.blLng && req.query.trLat && req.query.trLng) {
+                var blLat = req.query.blLat;
+                var blLng = req.query.blLng;
+                var trLat = req.query.trLat;
+                var trLng = req.query.trLng;
                 
-                isInBounds = supplierLocation.lat >= blLat  &&  supplierLocation.lat <= trLat  &&  isLongInRange;
-
-                if (isInBounds) {
-                    if (userLat && userLon) {
-                        var location = { 
-                            lat: userLat,
-                            lon: userLon
-                        };
-                        var dist = geodist(location, supplierLocation, {exact: true, unit: 'km'})
-                        supplier.dist = dist;
+                suppliers.forEach(function(supplier) {
+                    var supplierLocation = {
+                        lat: supplier.currentLocation.lat,
+                        lon: supplier.currentLocation.lng
+                    };
+    
+                    var isInBounds = false;
+    
+                    var isLongInRange = false;
+                    if (trLng < blLng) {
+                        isLongInRange = supplierLocation.lon >= blLng || supplierLocation.lon <= trLng;
+                    } else {
+                        isLongInRange = supplierLocation.lon >= blLng && supplierLocation.lon <= trLng;
                     }
-
+                    
+                    isInBounds = supplierLocation.lat >= blLat  &&  supplierLocation.lat <= trLat  &&  isLongInRange;
+    
+                    if (isInBounds) {
+                        if (userLat && userLon) {
+                            var location = { 
+                                lat: userLat,
+                                lon: userLon
+                            };
+                            var dist = geodist(location, supplierLocation, {exact: true, unit: 'km'})
+                            supplier.dist = dist;
+                        }
+    
+                        sortedSuppliers.push(supplier);
+                    }
+                });
+    
+                sortedSuppliers.sort(function (a, b) {
+                    return a.dist > b.dist;
+                });
+            } else if (lat && lon) {
+                var location = { lat, lon };
+    
+                suppliers.forEach(function(supplier) {
+                    var supplierLocation = {
+                        lat: supplier.currentLocation.lat,
+                        lon: supplier.currentLocation.lng
+                    };
+    
+                    var dist = geodist(location, supplierLocation, {exact: true, unit: 'km'}) 
+                    supplier.dist = dist;
+    
                     sortedSuppliers.push(supplier);
-                }
+                });
+    
+                sortedSuppliers.sort(function (a, b) {
+                    return a.dist > b.dist;
+                });
+                
+            } else {
+                sortedSuppliers.push.apply(sortedSuppliers, suppliers);
+            }
+    
+            res.send({
+                success: true,
+                data: sortedSuppliers
             });
-
-            sortedSuppliers.sort(function (a, b) {
-                return a.dist > b.dist;
-            });
-        } else if (lat && lon) {
-            var location = { lat, lon };
-
-            suppliers.forEach(function(supplier) {
-                var supplierLocation = {
-                    lat: supplier.currentLocation.lat,
-                    lon: supplier.currentLocation.lng
-                };
-
-                var dist = geodist(location, supplierLocation, {exact: true, unit: 'km'}) 
-                supplier.dist = dist;
-
-                sortedSuppliers.push(supplier);
-            });
-
-            sortedSuppliers.sort(function (a, b) {
-                return a.dist > b.dist;
-            });
-            
-        } else {
-            sortedSuppliers.push.apply(sortedSuppliers, suppliers);
-        }
-
-        res.send({
-            success: true,
-            data: sortedSuppliers
+        }, (err) => {
+            res.status(400).send(err);
         });
-    }, (err) => {
-        res.status(400).send(err);
-    });
+      });
 });
 
 router.get('/users/:id', authenticate, (req, res) => {
