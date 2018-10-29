@@ -11,6 +11,7 @@ const userRouter = require('./routes/user.route.js');
 const usersRouter = require('./routes/users.route.js');
 const favoritesRouter = require('./routes/favorites.route.js');
 const hubRouter = require('./routes/hub.route.js');
+const chatRouter = require('./routes/chat.route.js');
 
 app.use(supplierTypesRouter);
 app.use(supplierLocationsRouter);
@@ -21,6 +22,7 @@ app.use(userRouter);
 app.use(usersRouter);
 app.use(favoritesRouter);
 app.use(hubRouter);
+app.use(chatRouter);
 
 app.get('/', (req, res) => {
     res.send('Server works.');

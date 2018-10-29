@@ -18,7 +18,7 @@ router.get('/users/suppliers', authenticate, (req, res) => {
     };
 
     if (req.query.typeID){
-        params.supplierType = new ObjectID(req.query.typeID);
+        params.supplierType._id = new ObjectID(req.query.typeID);
     }
     
     User.find(params).then((suppliers) => {
