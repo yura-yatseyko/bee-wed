@@ -70,6 +70,10 @@ router.get('/chat', authenticate, (req, res) => {
                 i++;
 
                 if (receiverIds.length == i) {
+                    chats.sort(function (a, b) {
+                        return a.createdAt < b.createdAt;
+                    });
+
                     res.send({
                         success: true,
                         data: chats
