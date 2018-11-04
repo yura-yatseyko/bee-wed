@@ -51,8 +51,14 @@ var BrideGroomSchema = new mongoose.Schema({
     type: String
   },
   avatarUrl: {
-    type: String,
-    default: null
+    location: {
+      type: String,
+      default: null
+    },
+    key: {
+      type: String,
+      default: null
+    }
   },
   notifications: {
     newMessage: {
@@ -88,8 +94,14 @@ var SupplierSchema = new mongoose.Schema({
     type: String
   },
   avatarUrl: {
-    type: String,
-    default: null
+    location: {
+      type: String,
+      default: null
+    },
+    key: {
+      type: String,
+      default: null
+    }
   },
   galleryUrls: [{
     type: String
@@ -185,7 +197,8 @@ UserSchema.methods.updateBrideGroomData = function (data, file) {
   }
 
   if (file) {
-    user.avatarUrl = file.path;
+    user.avatarUrl.location = file.location;
+    user.avatarUrl.key = file.key;
   }
 
   return new Promise((resolve, reject) => {

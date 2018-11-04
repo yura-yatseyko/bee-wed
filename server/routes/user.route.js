@@ -3,23 +3,46 @@ const lodash = require('lodash');
 var bodyParser = require('body-parser');
 var multer  = require('multer');
 var nodemailer = require('nodemailer');
+var multerS3 = require('multer-s3')
+
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3({
+  accessKeyId: 'AKIAJQ7W5RS63KKCXIZQ',
+  secretAccessKey: '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'
+});
 
 var {authenticate} = require('../middleware/authenticate');
 
 const router = express.Router();
 
-router.use('/uploads', express.static('uploads'));
+// router.use('/uploads', express.static('uploads'));
 
-const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, './uploads/');
-  },
-  filename: function(req, file, cb) {
-    cb(null, new Date().toISOString() + file.originalname);
-  }
+// const storage = multer.diskStorage({
+//   destination: function(req, file, cb) {
+//     cb(null, './uploads/');
+//   },
+//   filename: function(req, file, cb) {
+//     cb(null, new Date().toISOString() + file.originalname);
+//   }
+// });
+
+// const upload = multer({storage: storage});
+
+var upload = multer({
+    storage: multerS3({
+      s3: s3,
+      bucket: 'beewed',
+      acl: 'public-read',
+      contentType: multerS3.AUTO_CONTENT_TYPE,
+      contentDisposition: 'inline',
+      metadata: function (req, file, cb) {
+        cb(null, {fieldName: file.fieldname});
+      },
+      key: function (req, file, cb) {
+        cb(null, Date.now().toString() + file.originalname)
+      }
+    })
 });
-
-const upload = multer({storage: storage});
 
 var brideGroomUpload = upload.single('avatarImage');
 
@@ -78,6 +101,27 @@ router.post('/user/updatePassword', authenticate, (req, res) => {
 
 router.post('/user/bridegroom/update', authenticate, brideGroomUpload, (req, res) => {  
     var body = lodash.pick(req.body, ['name', 'weddingDate', 'weddingVenue']);
+
+    if (req.file) {
+        var params = {
+            Bucket: 'beewed', 
+            Delete: {
+              Objects: [
+                {
+                  Key: req.user.avatarUrl.key
+                }
+              ],
+            },
+          };
+          
+          s3.deleteObjects(params, function(err, data) {
+            if (err) {
+                console.log(err, err.stack);
+            } else {
+                console.log(data);
+            }
+          });
+    }
 
     req.user.updateBrideGroomData(body, req.file).then((user) => {
         res.status(200).send({

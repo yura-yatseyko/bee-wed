@@ -1,27 +1,50 @@
 const express = require('express');
 const _ = require('lodash');
-const {ObjectID} = require('mongodb');
 var multer  = require('multer');
+var multerS3 = require('multer-s3')
+
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3({
+  accessKeyId: 'AKIAJQ7W5RS63KKCXIZQ',
+  secretAccessKey: '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'
+});
 
 var errorHandling = require('../middleware/errorHandling');
 
+const {ObjectID} = require('mongodb');
 const {User, BrideGroomUser, SupplierUser} = require('../models/user.model');
 const {SupplierType} = require('../models/supplier-type.model');
 
 const router = express.Router();
 
-router.use('/uploads', express.static('uploads'));
+// router.use('/uploads', express.static('uploads'));
 
-const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, './uploads/');
-  },
-  filename: function(req, file, cb) {
-    cb(null, new Date().toISOString() + file.originalname);
-  }
+// const storage = multer.diskStorage({
+//   destination: function(req, file, cb) {
+//     cb(null, './uploads/');
+//   },
+//   filename: function(req, file, cb) {
+//     cb(null, new Date().toISOString() + file.originalname);
+//   }
+// });
+
+// const upload = multer({storage: storage});
+
+var upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'beewed',
+    acl: 'public-read',
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    contentDisposition: 'inline',
+    metadata: function (req, file, cb) {
+      cb(null, {fieldName: file.fieldname});
+    },
+    key: function (req, file, cb) {
+      cb(null, Date.now().toString() + file.originalname)
+    }
+  })
 });
-
-const upload = multer({storage: storage});
 
 var brideGroomUpload = upload.single('avatarImage');
 
@@ -30,7 +53,9 @@ router.post('/signup/bridegroom', brideGroomUpload, (req, res) => {
   var brideGroomUser = new BrideGroomUser(body);
 
   if (req.file) {
-    brideGroomUser.avatarUrl = req.file.path;
+    brideGroomUser.avatarUrl.location = req.file.location;
+    brideGroomUser.avatarUrl.key = req.file.key;
+    console.log(req.file);
   }
   
   brideGroomUser.save().then(() => {
