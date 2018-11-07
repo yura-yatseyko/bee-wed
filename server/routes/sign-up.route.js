@@ -5,8 +5,8 @@ var multerS3 = require('multer-s3')
 
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3({
-  accessKeyId: 'AKIAJA4TE5GSTIZKOCDQ',
-  secretAccessKey: '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'
+  accessKeyId: 'AKIAJHGEXJMRN3TM2ZIA',
+  secretAccessKey: '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'
 });
 
 var errorHandling = require('../middleware/errorHandling');
