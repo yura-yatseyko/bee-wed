@@ -17,19 +17,6 @@ const {SupplierType} = require('../models/supplier-type.model');
 
 const router = express.Router();
 
-// router.use('/uploads', express.static('uploads'));
-
-// const storage = multer.diskStorage({
-//   destination: function(req, file, cb) {
-//     cb(null, './uploads/');
-//   },
-//   filename: function(req, file, cb) {
-//     cb(null, new Date().toISOString() + file.originalname);
-//   }
-// });
-
-// const upload = multer({storage: storage});
-
 var upload = multer({
   storage: multerS3({
     s3: s3,
@@ -88,14 +75,9 @@ router.post('/signup/supplier', supplierUpload, (req, res) => {
 
     if (req.files['avatarImage']) {
       if (req.files['avatarImage'].length > 0) {
-        supplierUser.avatarUrl = req.files['avatarImage'][0].path;
+        supplierUser.avatarUrl.location = req.files['avatarImage'][0].location;
+        supplierUser.avatarUrl.key = req.files['avatarImage'][0].key;
       }
-    }
-  
-    if (req.files['galleryImage']) {
-      req.files['galleryImage'].forEach(function(element) {
-        supplierUser.galleryUrls.push(element.path);
-      });
     }
     
     supplierUser.save().then(() => {

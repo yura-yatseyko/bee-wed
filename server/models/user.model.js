@@ -104,7 +104,14 @@ var SupplierSchema = new mongoose.Schema({
     }
   },
   galleryUrls: [{
-    type: String
+    location: {
+      type: String,
+      default: null
+    },
+    key: {
+      type: String,
+      default: null
+    }
   }],
   status: {
     type: Boolean,

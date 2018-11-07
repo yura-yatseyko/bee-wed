@@ -18,19 +18,6 @@ const {User, BrideGroomUser, SupplierUser} = require('../models/user.model');
 
 const router = express.Router();
 
-// router.use('/uploads', express.static('uploads'));
-
-// const storage = multer.diskStorage({
-//   destination: function(req, file, cb) {
-//     cb(null, './uploads/');
-//   },
-//   filename: function(req, file, cb) {
-//     cb(null, new Date().toISOString() + file.originalname);
-//   }
-// });
-
-// const upload = multer({storage: storage});
-
 var upload = multer({
     storage: multerS3({
       s3: s3,
@@ -48,8 +35,81 @@ var upload = multer({
 });
 
 var brideGroomUpload = upload.single('avatarImage');
+var supplierGalleryUpload = upload.fields([{name: 'galleryImage'}])
 
 router.use(bodyParser.json());
+
+router.post('/user/supplier/updateGallery', authenticate, supplierGalleryUpload, (req, res) => {
+    
+    if (req.files) {
+        if (req.files['galleryImage']) {
+            req.files['galleryImage'].forEach(function(element) {
+                let img = {
+                    "location": element.location,
+                    "key": element.key
+                };
+              req.user.galleryUrls.push(img);
+            });
+        }
+    }
+    
+    req.user.save().then((doc) => {
+        res.status(200).send({
+            success: true,
+            data: doc
+        });
+    }, () => {
+        res.status(400).send();
+    });
+});
+
+router.delete('/user/supplier/updateGallery', authenticate, (req, res) => {
+    let imagesKeys = req.body.imagesKeys;
+
+    if (imagesKeys.length > 0) {
+
+        var objects = [];
+
+        var galleryUrls = req.user.galleryUrls;
+
+        imagesKeys.forEach(function(imageKey) {
+            objects.push({Key: imageKey});
+            galleryUrls = galleryUrls.filter(function(el) { return el.key != imageKey; }); 
+        });
+
+        var params = {
+            Bucket: 'beewed', 
+            Delete: {
+              Objects: objects,
+            },
+        };
+          
+        s3.deleteObjects(params, function(err, data) {
+            if (err) {
+                console.log(err, err.stack);
+                res.status(400).send();
+            } else {
+                console.log(data);
+
+                req.user.galleryUrls = galleryUrls;
+
+                req.user.save().then((doc) => {
+                    res.status(200).send({
+                        success: true,
+                        data: doc
+                    });
+                }, () => {
+                    res.status(400).send();
+                });
+            }
+        });
+    } else {
+        res.status(200).send({
+            success: true,
+            data: req.user
+        });
+    }
+});
 
 router.post('/user/supplier/updateStatus', authenticate, (req, res) => {
     var status = req.body.status;
