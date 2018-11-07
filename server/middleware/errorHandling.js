@@ -49,5 +49,27 @@ module.exports =  {
                 message
             }
         }
+    },
+    resetPasswordErrorHandling: function (errorBody) {
+        var title = "Wrong credentials";
+        var message = "";
+
+        if (errorBody == 11) {
+            message = "User with this email does not exist";
+        } else if (errorBody == 12) {
+            title = "Error!";
+            message = "Password was not updated";
+        } else if (errorBody == 13) {
+            title = "Warning!";
+            message = "Something wrong when sending password to your email";
+        }
+
+        return {
+            success: false,
+            error: {
+                title,
+                message
+            }
+        }
     }
 } 

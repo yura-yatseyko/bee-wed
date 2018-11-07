@@ -7,11 +7,14 @@ var multerS3 = require('multer-s3')
 
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3({
-  accessKeyId: 'AKIAJQ7W5RS63KKCXIZQ',
-  secretAccessKey: '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'
+    accessKeyId: 'AKIAICUONEZ7GXCEE6CQ',
+    secretAccessKey: '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'
 });
 
+var errorHandling = require('../middleware/errorHandling');
 var {authenticate} = require('../middleware/authenticate');
+
+const {User, BrideGroomUser, SupplierUser} = require('../models/user.model');
 
 const router = express.Router();
 
@@ -133,44 +136,56 @@ router.post('/user/bridegroom/update', authenticate, brideGroomUpload, (req, res
     });
 });
 
-router.post('/user/resetpassword', authenticate, (req, res) => {  
+router.post('/user/resetpassword', (req, res) => {  
     var newPassword = "";
     var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     for (var i = 0; i < 8; i++)
         newPassword += possible.charAt(Math.floor(Math.random() * possible.length));
 
-    req.user.resetPassword(newPassword).then((user) => {
-        var transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-              user: 'beewedbox@gmail.com',
-              pass: 'beewedbox1111'
-            }
-        });
 
-        var mailOptions = {
-            from: 'beewedbox@gmail.com',
-            to: req.user.email,
-            subject: 'Resetting password!',
-            text: 'New password: ' + newPassword
-        };
+    User.findOne({
+        email: req.body.email
+    }).then((user) => {
+        if (!user) {
+            res.status(400).send(errorHandling.resetPasswordErrorHandling(11));
+            return;
+        }
 
-        transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-                res.status(400).send(error);
-            } else {
-                res.status(200).send({
-                    success: true,
-                    data: {
-                        message: "New password was sent to your email."
-                    }
-                });
-            }
-        });
-      }, () => {
-        res.status(400).send();
-      });   
+        user.resetPassword(newPassword).then((user) => {
+            var transporter = nodemailer.createTransport({
+                service: 'gmail',
+                auth: {
+                  user: 'beewedbox@gmail.com',
+                  pass: 'beewedbox1111'
+                }
+            });
+    
+            var mailOptions = {
+                from: 'beewedbox@gmail.com',
+                to: user.email,
+                subject: 'Resetting password!',
+                text: 'New password: ' + newPassword
+            };
+    
+            transporter.sendMail(mailOptions, function(error, info){
+                if (error) {
+                    res.status(400).send(errorHandling.resetPasswordErrorHandling(13));
+                } else {
+                    res.status(200).send({
+                        success: true,
+                        data: {
+                            message: "New password was sent to your email."
+                        }
+                    });
+                }
+            });
+        }, () => {
+            res.status(400).send(errorHandling.resetPasswordErrorHandling(12));
+        }); 
+    }).catch((e) => {
+        res.status(400).send(errorHandling.resetPasswordErrorHandling(11));
+    });
 });
 
 module.exports = router;
