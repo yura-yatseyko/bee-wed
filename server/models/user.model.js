@@ -257,7 +257,7 @@ UserSchema.methods.updateSupplierNotifications = function (data) {
 
 UserSchema.methods.updateBrideGroomNotifications = function (data) {
   var user = this;
-  
+
   if (data.hasOwnProperty('newMessage')) {
     user.notifications.newMessage = data.newMessage;
   }
@@ -306,12 +306,12 @@ UserSchema.methods.updateUserPassword = function (password, newPassword) {
                       user.save().then((doc) => {
                           resolve(doc) ;
                       }, () => {
-                          reject();
+                          reject({code: 2});
                       });
                   }
               });
           } else {
-              reject();
+              reject({code: 1});
           }
       });
   });

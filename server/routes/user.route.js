@@ -168,8 +168,8 @@ router.post('/user/updatePassword', authenticate, (req, res) => {
           success: true,
           data: user
       });
-    }, () => {
-      res.status(400).send();
+    }, (e) => {
+      res.status(400).send(errorHandling.updateUserPasswordErrorHandling(e));
     });
 });
 

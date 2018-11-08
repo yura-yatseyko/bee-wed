@@ -71,5 +71,25 @@ module.exports =  {
                 message
             }
         }
+    },
+    updateUserPasswordErrorHandling: function (errorBody) {
+        var title = "Wrong data";
+        var message = "";
+
+        if (errorBody.code == 1) {
+            message = "User with this password does not exist";
+        } else {
+            title = "Error!";
+            message = "Password was not updated";
+        }
+
+        return {
+            success: false,
+            error: {
+                title,
+                message
+            }
+        }
     }
+
 } 
