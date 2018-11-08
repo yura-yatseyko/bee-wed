@@ -135,6 +135,20 @@ var SupplierSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  notifications: {
+    newMessage: {
+      type: Boolean,
+      default: false
+    },
+    newSupplier: {
+      type: Boolean,
+      default: false
+    },
+    advertExpiryAlert: {
+      type: Boolean,
+      default: false
+    }
+  }
 }, options);
 
 UserSchema.methods.generateAuthToken = function () {
@@ -217,12 +231,33 @@ UserSchema.methods.updateBrideGroomData = function (data, file) {
   });
 };
 
-UserSchema.methods.updateBrideGroomNotifications = function (data) {
+UserSchema.methods.updateSupplierNotifications = function (data) {
   var user = this;
 
-  console.log(data);
-  
+  if (data.hasOwnProperty('newMessage')) {
+    user.notifications.newMessage = data.newMessage;
+  }
 
+  if (data.hasOwnProperty('newSupplier')) {
+    user.notifications.newSupplier = data.newSupplier;
+  }
+
+  if (data.hasOwnProperty('advertExpiryAlert')) {
+    user.notifications.advertExpiryAlert = data.advertExpiryAlert;
+  }
+
+  return new Promise((resolve, reject) => {
+      user.save().then((doc) => {
+          resolve(doc) ;
+      }, () => {
+          reject();
+      });
+  });
+};
+
+UserSchema.methods.updateBrideGroomNotifications = function (data) {
+  var user = this;
+  
   if (data.hasOwnProperty('newMessage')) {
     user.notifications.newMessage = data.newMessage;
   }
