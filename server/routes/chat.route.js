@@ -1,5 +1,21 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+var multer  = require('multer');
+var multerS3 = require('multer-s3')
+var admin = require('firebase-admin');
+
+var serviceAccount = require("../../beewed-17604-firebase-adminsdk-s0zgk-23a60f5f8f.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: "https://beewed-17604.firebaseio.com"
+});
+
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3({
+  accessKeyId: 'AKIAINRYVAYSGUCQIDQQ',
+  secretAccessKey: '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'
+});
 
 var {authenticate} = require('../middleware/authenticate');
 
@@ -8,9 +24,27 @@ const {ObjectID} = require('mongodb');
 const {Message} = require('../models/message.model');
 
 const router = express.Router();
-router.use(bodyParser.json());
 
-router.post('/chat/messages', authenticate, (req, res) => {    
+var upload = multer({
+    storage: multerS3({
+      s3: s3,
+      bucket: 'beewedbucket',
+      acl: 'public-read',
+      contentType: multerS3.AUTO_CONTENT_TYPE,
+      contentDisposition: 'inline',
+      metadata: function (req, file, cb) {
+        cb(null, {fieldName: file.fieldname});
+      },
+      key: function (req, file, cb) {
+        cb(null, Date.now().toString() + file.originalname)
+      }
+    })
+});
+  
+  var messageFileUpload = upload.single('messageFile');
+
+router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {    
+    
     var message = new Message();
     message.message = req.body.message;
     message.createdAt = new Date();
@@ -45,23 +79,40 @@ router.get('/chat/messages/:receiverId', authenticate, (req, res) => {
 });
 
 router.get('/chat', authenticate, (req, res) => {   
-    Message.find({
-        'sender': req.user._id,
-    })
-    .distinct('receiver', function(error, receiverIds) {
+    let type = "";
+
+    if (req.user.kind === 'BrideGroomUser') {
+        type = "receiver";
+    } else {
+        type = "sender";
+    }
+
+    Message.find({ $or: [
+        { 'sender': req.user._id },
+        { 'receiver': req.user._id }
+    ]})
+    .distinct(type, function(error, receiverIds) {
         var chats = [];
         var i = 0;
 
         receiverIds.forEach(function(receiverId) {
             Message
             .findOne({
-                sender: req.user._id,
-                receiver: new ObjectID(receiverId)
+                $or: [
+                    {
+                        sender: req.user._id,
+                        receiver: new ObjectID(receiverId)
+                    },
+                    {
+                        sender: new ObjectID(receiverId),
+                        receiver: req.user._id
+                    }
+                ]
             })
             .sort({
                 createdAt: -1
             })
-            .populate('receiver', 'name avatarUrl status')
+            .populate(type, 'name avatarUrl status')
             .exec(function (err, result) {
                 if (result) {
                     chats.push(result);

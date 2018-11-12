@@ -9,11 +9,22 @@ var MessageSchema = new mongoose.Schema({
         type: Number
     },
     sender: {
-        type: mongoose.Schema.Types.ObjectId
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
     },
     receiver: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
+    },
+    messageFileURL: {
+        location: {
+          type: String,
+          default: null
+        },
+        key: {
+          type: String,
+          default: null
+        }
     }
 });
 

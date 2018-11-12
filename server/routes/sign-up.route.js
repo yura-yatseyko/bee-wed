@@ -5,8 +5,8 @@ var multerS3 = require('multer-s3')
 
 const AWS = require('aws-sdk');
 const s3 = new AWS.S3({
-  accessKeyId: 'AKIAJHGEXJMRN3TM2ZIA',
-  secretAccessKey: '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'
+  accessKeyId: 'AKIAINRYVAYSGUCQIDQQ',
+  secretAccessKey: '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'
 });
 
 var errorHandling = require('../middleware/errorHandling');
@@ -20,7 +20,7 @@ const router = express.Router();
 var upload = multer({
   storage: multerS3({
     s3: s3,
-    bucket: 'beewed',
+    bucket: 'beewedbucket',
     acl: 'public-read',
     contentType: multerS3.AUTO_CONTENT_TYPE,
     contentDisposition: 'inline',
