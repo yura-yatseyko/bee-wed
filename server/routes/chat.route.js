@@ -37,7 +37,7 @@ var upload = multer({
     })
 });
   
-  var messageFileUpload = upload.single('messageFile');
+var messageFileUpload = upload.single('messageFile');
 
 router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {    
     
@@ -46,6 +46,12 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
     message.createdAt = new Date();
     message.sender = req.user._id;
     message.receiver = new ObjectID(req.body.receiver);
+
+    if (req.file) {
+        message.messageFileURL.location = req.file.location;
+        message.messageFileURL.key = req.file.key;
+        console.log(req.file);
+      }
 
     message.save().then((doc) => {
         res.send({
