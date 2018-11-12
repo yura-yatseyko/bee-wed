@@ -5,11 +5,7 @@ var multer  = require('multer');
 var nodemailer = require('nodemailer');
 var multerS3 = require('multer-s3')
 
-const AWS = require('aws-sdk');
-const s3 = new AWS.S3({
-    accessKeyId: 'AKIAINRYVAYSGUCQIDQQ',
-    secretAccessKey: '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'
-});
+var {s3} = require('../services/aws');
 
 var errorHandling = require('../middleware/errorHandling');
 var {authenticate} = require('../middleware/authenticate');
@@ -149,6 +145,19 @@ router.post('/user/supplier/updateNotifications', authenticate, (req, res) => {
     });
 });
 
+router.post('/user/bridegroom/updateStatus', authenticate, (req, res) => {
+    var status = req.body.status;
+    
+    req.user.updateBrideGroomStatus(status).then((user) => {
+        res.status(200).send({
+            success: true,
+            data: user
+        });
+      }, () => {
+        res.status(400).send();
+      });
+});
+
 router.post('/user/bridegroom/updateNotifications', authenticate, (req, res) => {    
     req.user.updateBrideGroomNotifications(req.body).then((user) => {
         res.status(200).send({
@@ -227,13 +236,13 @@ router.post('/user/resetpassword', (req, res) => {
             var transporter = nodemailer.createTransport({
                 service: 'gmail',
                 auth: {
-                  user: 'beewedbox@gmail.com',
-                  pass: 'beewedbox1111'
+                  user: process.env.EMAIL,
+                  pass: process.env.EMAIL_PASSWORD
                 }
             });
     
             var mailOptions = {
-                from: 'beewedbox@gmail.com',
+                from: process.env.EMAIL,
                 to: user.email,
                 subject: 'Resetting password!',
                 text: 'New password: ' + newPassword

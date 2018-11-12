@@ -23,6 +23,10 @@ var UserSchema = new mongoose.Schema({
       message: '{VALUE} is not a valid email'
     }
   },
+  registrationToken: {
+    type: String,
+    default: null
+  },
   password: {
     type: String,
     required: true,
@@ -59,6 +63,10 @@ var BrideGroomSchema = new mongoose.Schema({
       type: String,
       default: null
     }
+  },
+  status: {
+    type: Boolean,
+    default: false
   },
   notifications: {
     newMessage: {
@@ -154,7 +162,7 @@ var SupplierSchema = new mongoose.Schema({
 UserSchema.methods.generateAuthToken = function () {
   var user = this;
   var access = 'auth';
-  var token = jwt.sign({_id: user._id.toHexString(), access}, '1111').toString();
+  var token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET).toString();
 
   user.tokens = user.tokens.concat([{access, token}]);
 
@@ -174,6 +182,20 @@ UserSchema.methods.removeToken = function (token) {
 };
 
 UserSchema.methods.updatesSupplierStatus = function (status) {
+  var user = this;
+
+  user.status = status;
+
+  return new Promise((resolve, reject) => {
+      user.save().then((doc) => {
+          resolve(doc) ;
+      }, () => {
+          reject();
+      });
+  });
+};
+
+UserSchema.methods.updateBrideGroomStatus = function (status) {
   var user = this;
 
   user.status = status;
@@ -322,7 +344,7 @@ UserSchema.statics.findByToken = function (token) {
   var decoded;
 
   try {
-    decoded = jwt.verify(token, '1111')
+    decoded = jwt.verify(token, process.env.JWT_SECRET)
   } catch (e) {
     return Promise.reject();
   }

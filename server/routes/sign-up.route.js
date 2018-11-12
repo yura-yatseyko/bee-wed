@@ -3,11 +3,7 @@ const _ = require('lodash');
 var multer  = require('multer');
 var multerS3 = require('multer-s3')
 
-const AWS = require('aws-sdk');
-const s3 = new AWS.S3({
-  accessKeyId: 'AKIAINRYVAYSGUCQIDQQ',
-  secretAccessKey: '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'
-});
+var {s3} = require('../services/aws');
 
 var errorHandling = require('../middleware/errorHandling');
 

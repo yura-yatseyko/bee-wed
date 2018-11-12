@@ -11,11 +11,7 @@ admin.initializeApp({
   databaseURL: "https://beewed-17604.firebaseio.com"
 });
 
-const AWS = require('aws-sdk');
-const s3 = new AWS.S3({
-  accessKeyId: 'AKIAINRYVAYSGUCQIDQQ',
-  secretAccessKey: '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'
-});
+var {s3} = require('../services/aws');
 
 var {authenticate} = require('../middleware/authenticate');
 
