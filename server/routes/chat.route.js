@@ -54,6 +54,37 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
       }
 
     message.save().then((doc) => {
+        User.findOne({
+            "_id" : new ObjectID(req.body.receiver)
+        }, function (err, result) {
+            if (result) {
+                var registrationToken = result.registrationToken;
+                if (registrationToken) {
+                    var payload = {
+                        notification: {
+                          title: "Beewed",
+                          body: "New message from" + req.user.name
+                        },
+                        data: {
+                            sender: req.user._id,
+                        }
+                    };
+
+                    var options = {
+                        priority: "high",
+                    };
+
+                    admin.messaging().sendToDevice(registrationToken, payload, options)
+                    .then(function(response) {
+                        console.log("Successfully sent message:", response);
+                    })
+                    .catch(function(error) {
+                        console.log("Error sending message:", error);
+                    });
+                }
+            }
+        });
+
         res.send({
             success: true,
             data: doc
