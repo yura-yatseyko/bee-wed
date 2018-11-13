@@ -145,7 +145,7 @@ router.get('/chat', authenticate, (req, res) => {
             .sort({
                 createdAt: -1
             })
-            .populate(type, 'name avatarUrl status')
+            .populate('receiver', 'name avatarUrl status')
             .exec(function (err, result) {
                 if (result) {
                     chats.push(result);
