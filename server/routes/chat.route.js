@@ -136,8 +136,8 @@ router.get('/chat', authenticate, (req, res) => {
         messages.forEach(function(msg) {
             var found = chats.find(function(element) {
                 
-                let val1 = msg.sender.equals(element.sender) && msg.receiver._id.equals(element.receiver._id);
-                let val2 = msg.sender.equals(element.receiver._id) && msg.receiver._id.equals(element.sender);
+                let val1 = msg.sender.equals(element.sender._id) && msg.receiver._id.equals(element.receiver._id);
+                let val2 = msg.sender.equals(element.receiver._id) && msg.receiver._id.equals(element.sender._id);
                 
                 return val1 || val2;
             });             
