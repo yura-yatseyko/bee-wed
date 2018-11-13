@@ -133,20 +133,24 @@ router.get('/chat', authenticate, (req, res) => {
     .then((messages) => {
         var chats = [];
 
-        messages.forEach(function(msg) {
-            var found = chats.find(function(element) {
-                
-                let val1 = msg.sender.equals(element.sender._id) && msg.receiver._id.equals(element.receiver._id);
-                let val2 = msg.sender.equals(element.receiver._id) && msg.receiver._id.equals(element.sender._id);
-                
-                return val1 || val2;
-            });             
+        var found = false;
 
+        messages.forEach(function(msg) {
+            if (chats.length > 0) {
+                found = chats.find(function(element) {
+
+                    if (req.user._id.equals(msg.sender._id)) {
+                        return element.chatWithUser._id.equals(msg.receiver._id);
+                    } else {
+                        return element.chatWithUser._id.equals(msg.sender._id);
+                    }
+                });  
+            }
             if (!found) {
-                var newMessage = new Object();
+                var newMessage = Object.create({});
                 newMessage.messageFileURL = msg.messageFileURL;
-                newMessage._id = msg._id;
                 newMessage.message = msg.message;
+                newMessage._id = msg._id;
                 newMessage.createdAt = msg.createdAt;
                 if (req.user._id.equals(msg.sender._id)) {
                     newMessage.chatWithUser = msg.receiver;
