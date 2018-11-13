@@ -131,61 +131,27 @@ router.get('/chat', authenticate, (req, res) => {
     .populate('receiver', 'name avatarUrl status')
     .then((messages) => {
         var chats = [];
-        var i = 0;
 
+        messages.forEach(function(msg) {
+            var found = chats.find(function(element) {
+                
+                let val1 = msg.sender.equals(element.sender) && msg.receiver._id.equals(element.receiver._id);
+                let val2 = msg.sender.equals(element.receiver._id) && msg.receiver._id.equals(element.sender);
+                
+                return val1 || val2;
+            });             
+
+            if (!found) {
+                chats.push(msg);
+            }
+        });
         res.send({
             success: true,
             data: chats
         });
-
-
     }, (err) => {
         res.status(400).send(err);
     });
-
-
-    // .distinct('receiver', function(error, receiverIds) {
-    //     var chats = [];
-    //     var i = 0;
-
-    //     receiverIds.forEach(function(receiverId) {
-    //         Message
-    //         .findOne({
-    //             $or: [
-    //                 {
-    //                     sender: req.user._id,
-    //                     receiver: new ObjectID(receiverId)
-    //                 },
-    //                 {
-    //                     sender: new ObjectID(receiverId),
-    //                     receiver: req.user._id
-    //                 }
-    //             ]
-    //         })
-    //         .sort({
-    //             createdAt: -1
-    //         })
-    //         .populate('receiver', 'name avatarUrl status')
-    //         .exec(function (err, result) {
-    //             if (result) {
-    //                 chats.push(result);
-    //             }
-
-    //             i++;
-
-    //             if (receiverIds.length == i) {
-    //                 chats.sort(function (a, b) {
-    //                     return a.createdAt < b.createdAt;
-    //                 });
-
-    //                 res.send({
-    //                     success: true,
-    //                     data: chats
-    //                 });
-    //             }
-    //         });
-    //     });
-    // });
 });
 
 module.exports = router;
