@@ -112,19 +112,12 @@ router.get('/chat/messages/:receiverId', authenticate, (req, res) => {
 });
 
 router.get('/chat', authenticate, (req, res) => {   
-    let type = "";
-
-    if (req.user.kind === 'BrideGroomUser') {
-        type = "receiver";
-    } else {
-        type = "sender";
-    }
 
     Message.find({ $or: [
         { 'sender': req.user._id },
         { 'receiver': req.user._id }
     ]})
-    .distinct(type, function(error, receiverIds) {
+    .distinct('receiver', function(error, receiverIds) {
         var chats = [];
         var i = 0;
 
