@@ -143,7 +143,17 @@ router.get('/chat', authenticate, (req, res) => {
             });             
 
             if (!found) {
-                chats.push(msg);
+                var newMessage = new Object();
+                newMessage.messageFileURL = msg.messageFileURL;
+                newMessage._id = msg._id;
+                newMessage.message = msg.message;
+                newMessage.createdAt = msg.createdAt;
+                if (req.user._id.equals(msg.sender._id)) {
+                    newMessage.chatWithUser = msg.receiver;
+                } else {
+                    newMessage.chatWithUser = msg.sender;
+                }
+                chats.push(newMessage);
             }
         });
         res.send({
