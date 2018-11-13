@@ -4,7 +4,9 @@ const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
 const bcrypt = require('bcryptjs');
+var async = require("async");
 
+const {ObjectID} = require('mongodb');
 const {SupplierType, SupplierTypeSchema} = require('./supplier-type.model');
 
 var SchemaTypes = mongoose.Schema.Types;
@@ -250,6 +252,58 @@ UserSchema.methods.updateBrideGroomData = function (data, file) {
       }, () => {
           reject();
       });
+  });
+};
+
+UserSchema.methods.updateSupplierData = async function (data, file) {
+  
+  var user = this;
+
+  if (data.supplierType) {
+    
+    try {
+      var supplierType = await SupplierType.findOne({
+        _id : new ObjectID(data.supplierType)
+      });
+      
+      if (supplierType) {
+        user.supplierType = supplierType;
+      }
+    } catch(err) {
+    }
+  }
+
+  if (data.name) {
+    user.name = data.name;
+  }
+
+  if (data.phone) {
+    user.phone = data.phone;
+  }
+
+  if (data.websiteURL) {
+    user.websiteURL = data.websiteURL;
+  }
+
+  if (data.description) {
+    user.description = data.description;
+  }
+
+  if (data.registrationToken) {
+    user.registrationToken = data.registrationToken;
+  }
+
+  if (file) {
+    user.avatarUrl.location = file.location;
+    user.avatarUrl.key = file.key;
+  }
+
+  return new Promise((resolve, reject) => {
+    user.save().then((doc) => {
+        resolve(doc) ;
+    }, () => {
+        reject();
+    });
   });
 };
 

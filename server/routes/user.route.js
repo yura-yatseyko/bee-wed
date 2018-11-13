@@ -31,6 +31,7 @@ var upload = multer({
 });
 
 var brideGroomUpload = upload.single('avatarImage');
+var supplierUpload = upload.single('avatarImage');
 var supplierGalleryUpload = upload.fields([{name: 'galleryImage'}])
 
 router.use(bodyParser.json());
@@ -207,6 +208,40 @@ router.post('/user/bridegroom/update', authenticate, brideGroomUpload, (req, res
     }
 
     req.user.updateBrideGroomData(body, req.file).then((user) => {
+        res.status(200).send({
+            success: true,
+            data: user
+        });
+    }, () => {
+        res.status(400).send();
+    });
+});
+
+router.post('/user/supplier/update', authenticate, supplierUpload, (req, res) => {  
+    var body = lodash.pick(req.body, ['name', 'phone', 'websiteURL', 'description', 'registrationToken', 'supplierType']);
+
+    if (req.file) {
+        var params = {
+            Bucket: 'beewed', 
+            Delete: {
+              Objects: [
+                {
+                  Key: req.user.avatarUrl.key
+                }
+              ],
+            },
+          };
+          
+          s3.deleteObjects(params, function(err, data) {
+            if (err) {
+                console.log(err, err.stack);
+            } else {
+                console.log(data);
+            }
+          });
+    }
+
+    req.user.updateSupplierData(body, req.file).then((user) => {
         res.status(200).send({
             success: true,
             data: user

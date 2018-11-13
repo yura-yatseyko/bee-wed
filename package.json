@@ -18,7 +18,9 @@
   },
   "homepage": "https://github.com/yura-yatseyko/bee-wed#readme",
   "dependencies": {
+    "async": "^2.6.1",
     "async-waterfall": "^0.1.5",
+    "asyncawait": "^1.0.7",
     "aws-sdk": "^2.344.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
