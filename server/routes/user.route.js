@@ -75,7 +75,7 @@ router.delete('/user/supplier/updateGallery', authenticate, (req, res) => {
         });
 
         var params = {
-            Bucket: 'beewed', 
+            Bucket: 'beewedbucket', 
             Delete: {
               Objects: objects,
             },

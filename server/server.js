@@ -36,4 +36,14 @@ const port = process.env.PORT;
 
 app.listen(port, () => {
     console.log('Started on port ', port);
+    var a = '100';
+
+    if (a <= Math.round(0.01 * 100) / 100) {
+        a = Math.round(0.01 * 100) / 100;
+    }
+
+
+    const sum = a && parseFloat(a) * 100;
+    console.log(sum);
+    
 });
