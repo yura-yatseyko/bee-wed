@@ -183,6 +183,27 @@ router.post('/user/updatePassword', authenticate, (req, res) => {
     });
 });
 
+router.post('/user/updateRegistrationToken', authenticate, (req, res) => {
+    let token = req.token;
+
+    req.user.registrationTokens = req.user.registrationTokens.filter(function( obj ) {
+        return obj.token !== token;
+    });
+    
+
+    let registrationToken = req.body.registrationToken;
+    req.user.registrationTokens = req.user.registrationTokens.concat([{registrationToken, token}]);
+
+    req.user.save().then((doc) => {
+        res.send({
+          success: true,
+          data: doc
+        });
+    }).catch((e) => {
+        res.status(400).send(errorHandling.bridegroomSignUpErrorHandling(e));
+    });
+});
+
 router.post('/user/bridegroom/update', authenticate, brideGroomUpload, (req, res) => {  
     var body = lodash.pick(req.body, ['name', 'weddingDate', 'weddingVenue']);
 

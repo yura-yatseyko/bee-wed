@@ -15,9 +15,16 @@ router.post('/signin', (req, res) => {
   
     User.findByCredentials(body.email, body.password).then((user) => {
       return user.generateAuthToken().then((token) => {
-        res.header('x-auth', token).send({
+        let registrationToken = req.body.registrationToken;
+        user.registrationTokens = user.registrationTokens.concat([{registrationToken, token}]);
+
+        user.save().then((doc) => {
+          res.header('x-auth', token).send({
             success: true,
-            data: user
+            data: doc
+        });
+        }).catch((e) => {
+          res.status(400).send(errorHandling.bridegroomSignUpErrorHandling(e));
         });
       });
     }).catch((e) => {

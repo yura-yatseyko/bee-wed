@@ -44,9 +44,16 @@ router.post('/signup/bridegroom', brideGroomUpload, (req, res) => {
   brideGroomUser.save().then(() => {
     return brideGroomUser.generateAuthToken();
   }).then((token) => {
-    res.header('x-auth', token).send({
+    let registrationToken = req.body.registrationToken;
+    brideGroomUser.registrationTokens = brideGroomUser.registrationTokens.concat([{registrationToken, token}]);
+
+    brideGroomUser.save().then((user) => {
+      res.header('x-auth', token).send({
         success: true,
-        data: brideGroomUser
+        data: user
+    });
+    }).catch((e) => {
+      res.status(400).send(errorHandling.bridegroomSignUpErrorHandling(e));
     });
   }).catch((e) => {
     res.status(400).send(errorHandling.bridegroomSignUpErrorHandling(e));
@@ -79,9 +86,17 @@ router.post('/signup/supplier', supplierUpload, (req, res) => {
     supplierUser.save().then(() => {
       return supplierUser.generateAuthToken();
     }).then((token) => {
-      res.header('x-auth', token).send({
+
+      let registrationToken = req.body.registrationToken;
+      supplierUser.registrationTokens = supplierUser.registrationTokens.concat([{registrationToken, token}]);
+
+      supplierUser.save().then((user) => {
+        res.header('x-auth', token).send({
           success: true,
-          data: supplierUser
+          data: user
+      });
+      }).catch((e) => {
+        res.status(400).send(errorHandling.bridegroomSignUpErrorHandling(e));
       });
     }).catch((e) => {
       res.status(400).send(errorHandling.supplierSignUpErrorHandling(e));

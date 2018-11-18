@@ -25,10 +25,18 @@ var UserSchema = new mongoose.Schema({
       message: '{VALUE} is not a valid email'
     }
   },
-  registrationToken: {
-    type: String,
-    default: null
-  },
+  registrationTokens: [
+    {
+      registrationToken: {
+        type: String,
+        required: true
+      },
+      token: {
+        type: String,
+        required: true
+      }
+    }
+  ],
   password: {
     type: String,
     required: true,
@@ -178,7 +186,8 @@ UserSchema.methods.removeToken = function (token) {
 
   return user.update({
     $pull: {
-      tokens: {token}
+      tokens: {token},
+      registrationTokens: {token}
     }
   });
 };
