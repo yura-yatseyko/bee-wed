@@ -109,7 +109,10 @@ router.get('/chat/messages/:receiverId', authenticate, (req, res) => {
                 receiver: req.user._id
             }
         ]
-    }).then((messages) => {
+    })
+    .populate('sender', 'name phone')
+    .populate('receiver', 'name phone')
+    .then((messages) => {
         res.send({
             success: true,
             data: messages
