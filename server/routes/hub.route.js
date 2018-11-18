@@ -1,8 +1,10 @@
 const express = require('express');
 const lodash = require('lodash');
 var multer  = require('multer');
+var multerS3 = require('multer-s3')
 
 var {authenticate} = require('../middleware/authenticate');
+var {s3} = require('../services/aws');
 
 const {ObjectID} = require('mongodb');
 
@@ -12,18 +14,22 @@ const {AdPurchase} = require('../models/ad-purchase.model');
 
 const router = express.Router();
 
-router.use('/uploads', express.static('uploads'));
-
-const storage = multer.diskStorage({
-  destination: function(req, file, cb) {
-    cb(null, './uploads/');
-  },
-  filename: function(req, file, cb) {
-    cb(null, new Date().toISOString() + file.originalname);
-  }
+var upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'beewedbucket',
+    acl: 'public-read',
+    contentType: multerS3.AUTO_CONTENT_TYPE,
+    contentDisposition: 'inline',
+    metadata: function (req, file, cb) {
+      cb(null, {fieldName: file.fieldname});
+    },
+    key: function (req, file, cb) {
+      cb(null, Date.now().toString() + file.originalname)
+    }
+  })
 });
 
-const upload = multer({storage: storage});
 var mediaFile = upload.single('mediaFile');
 
 router.post('/hub', authenticate, mediaFile, (req, res) => {
@@ -43,7 +49,9 @@ router.post('/hub', authenticate, mediaFile, (req, res) => {
       hubAd._creator = req.user._id
 
       if (req.file) {
-        hubAd.mediaFile = req.file.path;
+        hubAd.mediaFile.location = req.file.location;
+        hubAd.mediaFile.key = req.file.key;
+        console.log(req.file);
       }
 
       hubAd.save().then((doc) => {
@@ -54,8 +62,8 @@ router.post('/hub', authenticate, mediaFile, (req, res) => {
       }, (err) => {
           res.status(400).send(err);
       });
-        }
-      }); 
+    }
+  }); 
 });
 
 router.post('/hub/prolongate', authenticate, (req, res) => {

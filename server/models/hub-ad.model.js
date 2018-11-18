@@ -5,7 +5,14 @@ var SchemaTypes = mongoose.Schema.Types;
 
 var HubAdSchema = new mongoose.Schema({
     mediaFile: {
-      type: String
+      location: {
+        type: String,
+        default: null
+      },
+      key: {
+        type: String,
+        default: null
+      }
     },
     description: {
       type: String
@@ -18,7 +25,7 @@ var HubAdSchema = new mongoose.Schema({
     },
     _creator: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true
+      ref: 'User'
   }
 });
 
