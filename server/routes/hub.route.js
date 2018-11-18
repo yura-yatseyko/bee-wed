@@ -98,48 +98,36 @@ router.post('/hub/prolongate', authenticate, (req, res) => {
 
 router.get('/hub', authenticate, (req, res) => {
   HubAd.find({
-  }).then((hubAds) => {
+  })
+  .populate('_creator', 'name type avatarUrl phone')
+  .then((hubAds) => {
     var userHubAds = [];
     var otherHubAds = [];
     var i = 0;
 
     hubAds.forEach(function(hubAd) {
-      User.findOne({
-        '_id': hubAd._creator
-      }, function (err, result) {
-        if (result) {
-          var newHubItem = JSON.parse(JSON.stringify(hubAd));
-          newHubItem.createdBy = {
-            name: result.name,
-            type: result.supplierType,
-            avatarUrl: result.avatarUrl,
-            phone: result.phone
-          }
-        }
+      if (req.user._id == hubAd._creator) {
+        userHubAds.push(hubAd);
+      } else {
+        otherHubAds.push(hubAd);
+      }
 
-        if (req.user._id == newHubItem._creator) {
-          userHubAds.push(newHubItem);
-        } else {
-          otherHubAds.push(newHubItem);
-        }
+      i++;
 
-        i++;
-
-        userHubAds.sort(function (a, b) {
-          return a.createdAt < b.createdAt;
-        });
-
-        otherHubAds.sort(function (a, b) {
-          return a.createdAt < b.createdAt;
-        });
-
-        if (hubAds.length == i) {
-          res.send({
-            success: true,
-            data: userHubAds.concat(otherHubAds)
-          });
-        }
+      userHubAds.sort(function (a, b) {
+        return a.createdAt < b.createdAt;
       });
+
+      otherHubAds.sort(function (a, b) {
+        return a.createdAt < b.createdAt;
+      });
+
+      if (hubAds.length == i) {
+        res.send({
+          success: true,
+          data: userHubAds.concat(otherHubAds)
+        });
+      }
     });
   }, (err) => {
     res.status(400).send(err);
