@@ -55,10 +55,18 @@ router.post('/hub', authenticate, mediaFile, (req, res) => {
       }
 
       hubAd.save().then((doc) => {
-        res.send({
+        HubAd.findOne({
+          '_id': doc._id
+        })
+        .populate('_creator', 'name supplierType avatarUrl phone')
+        .then((hubAd) => {
+          res.send({
             success: true,
-            data: doc
+            data: hubAd
           });
+        }, (err) => {
+          res.status(400).send(err);
+        });
       }, (err) => {
           res.status(400).send(err);
       });
@@ -106,7 +114,7 @@ router.get('/hub', authenticate, (req, res) => {
     var i = 0;
 
     hubAds.forEach(function(hubAd) {
-      if (req.user._id == hubAd._creator) {
+      if (req.user._id == hubAd._creator._id) {
         userHubAds.push(hubAd);
       } else {
         otherHubAds.push(hubAd);
