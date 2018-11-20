@@ -50,8 +50,7 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
     if (req.file) {
         message.messageFileURL.location = req.file.location;
         message.messageFileURL.key = req.file.key;
-        console.log(req.file);
-      }
+    }
 
     message.save().then((doc) => {
         // User.findOne({
@@ -85,9 +84,18 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
         //     }
         // });
 
-        res.send({
-            success: true,
-            data: doc
+        Message.findOne({
+            '_id': doc._id
+        })
+        .populate('sender', 'name phone')
+        .populate('receiver', 'name phone')
+        .then((message) => {
+            res.send({
+                success: true,
+                data: message
+            });
+        }, (err) => {
+            res.status(400).send(err);
         });
     }, (err) => {
         res.status(400).send(err);
@@ -131,8 +139,8 @@ router.get('/chat', authenticate, (req, res) => {
     .sort({
         createdAt: -1
     })
-    .populate('sender', 'name avatarUrl status')
-    .populate('receiver', 'name avatarUrl status')
+    .populate('sender', 'name avatarUrl status phone')
+    .populate('receiver', 'name avatarUrl status phone')
     .then((messages) => {
         var chats = [];
 
