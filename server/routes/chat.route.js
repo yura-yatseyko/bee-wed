@@ -4,7 +4,7 @@ var multer  = require('multer');
 var multerS3 = require('multer-s3')
 var admin = require('firebase-admin');
 
-var serviceAccount = require("../../beewed-17604-firebase-adminsdk-s0zgk-23a60f5f8f.json");
+var serviceAccount = require("../../beewed-17604-firebase-adminsdk-s0zgk-c0ee9ff835.json");
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -18,6 +18,7 @@ var {authenticate} = require('../middleware/authenticate');
 const {ObjectID} = require('mongodb');
 
 const {Message} = require('../models/message.model');
+const {User} = require('../models/user.model');
 
 const router = express.Router();
 
@@ -53,36 +54,36 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
     }
 
     message.save().then((doc) => {
-        // User.findOne({
-        //     "_id" : new ObjectID(req.body.receiver)
-        // }, function (err, result) {
-        //     if (result) {
-        //         var registrationToken = result.registrationToken;
-        //         if (registrationToken) {
-        //             var payload = {
-        //                 notification: {
-        //                   title: "Beewed",
-        //                   body: "New message from" + req.user.name
-        //                 },
-        //                 data: {
-        //                     sender: req.user._id,
-        //                 }
-        //             };
+        User.findOne({
+            "_id" : new ObjectID(req.body.receiver)
+        }, function (err, result) {
+            if (result) {
+                var registrationToken = 'e-_TvaSEcjs:APA91bGU5NUQIvkyGODcCf-mz3I8yzkCXukDNNBU05IEej-V7rYVRwC8QU-0AY1DBYSQ6mW0caDjYWKnjr8Jv-YscenNxqDiOikyzjWEZY-lScSTi14WEV0xmRFejV-slW8KlcHTlipK';
+                if (registrationToken) {
+                    var payload = {
+                        notification: {
+                          title: "Beewed",
+                          body: "New message from" + req.user.name
+                        },
+                        data: {
+                            sender: 'Volpis test',
+                        }
+                    };
 
-        //             var options = {
-        //                 priority: "high",
-        //             };
+                    var options = {
+                        priority: "high",
+                    };
 
-        //             admin.messaging().sendToDevice(registrationToken, payload, options)
-        //             .then(function(response) {
-        //                 console.log("Successfully sent message:", response);
-        //             })
-        //             .catch(function(error) {
-        //                 console.log("Error sending message:", error);
-        //             });
-        //         }
-        //     }
-        // });
+                    admin.messaging().sendToDevice(registrationToken, payload, options)
+                    .then(function(response) {
+                        console.log("Successfully sent message:", response);
+                    })
+                    .catch(function(error) {
+                        console.log("Error sending message:", error);
+                    });
+                }
+            }
+        });
 
         Message.findOne({
             '_id': doc._id
