@@ -59,29 +59,40 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
         }, function (err, result) {
             if (result) {
                 var registrationToken = 'e-_TvaSEcjs:APA91bGU5NUQIvkyGODcCf-mz3I8yzkCXukDNNBU05IEej-V7rYVRwC8QU-0AY1DBYSQ6mW0caDjYWKnjr8Jv-YscenNxqDiOikyzjWEZY-lScSTi14WEV0xmRFejV-slW8KlcHTlipK';
-                if (registrationToken) {
-                    var payload = {
-                        notification: {
-                          title: "Beewed",
-                          body: "New message from" + req.user.name
-                        },
-                        data: {
-                            sender: 'Volpis test',
-                        }
-                    };
+        
+                var payload = {
+                    // notification: {
+                    //   title: "Beewed",
+                    //   body: "New message from" + req.user.name
+                    // },
+                    data: {
+                        action: 'MESSAGE',
+                        message: req.body.message,
+                        _id: result._id.toString(),
+                        kind: result.kind,
+                        name: result.name,
+                        phone: result.phone ? result.phone : "",
+                        avatarUrl: result.avatarUrl.location ? result.avatarUrl.location : ""
+                    }
+                };
 
-                    var options = {
-                        priority: "high",
-                    };
+                console.log(payload);
 
-                    admin.messaging().sendToDevice(registrationToken, payload, options)
-                    .then(function(response) {
-                        console.log("Successfully sent message:", response);
-                    })
-                    .catch(function(error) {
-                        console.log("Error sending message:", error);
-                    });
-                }
+                var options = {
+                    priority: "high",
+                };
+
+                result.registrationTokens.forEach(function(rt) {
+                    console.log(rt.registrationToken);
+                    
+                    admin.messaging().sendToDevice(rt.registrationToken, payload, options)
+                        .then(function(response) {
+                         console.log("Successfully sent message:", response);
+                        })
+                        .catch(function(error) {
+                            console.log("Error sending message:", error);
+                        });
+                });
             }
         });
 
