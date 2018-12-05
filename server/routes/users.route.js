@@ -158,7 +158,7 @@ router.get('/users/suppliers', authenticate, (req, res) => {
 
                 res.send({
                     success: true,
-                    data: favoritesIds
+                    data: newRes
                 });
 
             }, (err) => {
