@@ -151,9 +151,10 @@ router.get('/users/suppliers', authenticate, (req, res) => {
                 result.forEach(function(el) {
                     if (favoritesIds.indexOf(el._id) > -1) {
                         el.isLiked = true;
+                        newRes.push(el);
                     }
 
-                    newRes.push(el);
+                    
                 });
 
                 res.send({
