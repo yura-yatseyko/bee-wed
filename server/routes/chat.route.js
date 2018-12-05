@@ -68,15 +68,14 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
                     data: {
                         action: 'MESSAGE',
                         message: req.body.message,
-                        _id: result._id.toString(),
-                        kind: result.kind,
-                        name: result.name,
-                        phone: result.phone ? result.phone : "",
-                        avatarUrl: result.avatarUrl.location ? result.avatarUrl.location : ""
+                        messageFileURL: doc.messageFileURL.location,
+                        _id: req.user._id.toString(),
+                        kind: req.user.kind,
+                        name: req.user.name,
+                        phone: req.user.phone ? req.user.phone : "",
+                        avatarUrl: req.user.avatarUrl.location ? req.user.avatarUrl.location : ""
                     }
                 };
-
-                console.log(payload);
 
                 var options = {
                     priority: "high",
