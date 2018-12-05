@@ -141,20 +141,18 @@ router.get('/users/suppliers', authenticate, (req, res) => {
             Favorite.find({
                 senderID: req.user._id
             }).then((favorites) => {
-                var favoritesIds = [];
-                favorites.forEach(function(favorite) {
-                    favoritesIds.push(favorite.likedUserID);
-                });
 
                 var newRes = [];
 
                 result.forEach(function(el) {
-                    if (favoritesIds.indexOf(el._id) > -1) {
-                        el.isLiked = true;
-                        newRes.push(el);
-                    }
+                    favorites.forEach(function(favorite) {
+                        if (favorite.likedUserID.equals(el._id)) {
+                            el.isLiked = true;
+                            break;
+                        }
+                    });
 
-                    
+                    newRes.push(el);
                 });
 
                 res.send({
