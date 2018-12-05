@@ -122,8 +122,8 @@ router.post('/user/supplier/updateStatus', authenticate, (req, res) => {
 });
 
 router.post('/user/supplier/updateLocation', authenticate, (req, res) => {
-    var lat = req.body.lat;
-    var lng = req.body.lng;
+    var lat = parseFloat(req.body.lat);
+    var lng = parseFloat(req.body.lng);
     
     req.user.updateSupplierLocation(lat, lng).then((user) => {
         res.status(200).send({

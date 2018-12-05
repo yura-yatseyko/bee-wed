@@ -130,6 +130,9 @@ router.get('/chat/messages/:receiverId', authenticate, (req, res) => {
             }
         ]
     })
+    .sort({
+        createdAt: -1
+    })
     .populate('sender', 'name phone')
     .populate('receiver', 'name phone')
     .then((messages) => {
