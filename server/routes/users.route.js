@@ -114,8 +114,10 @@ router.get('/users/suppliers', authenticate, (req, res) => {
         
                         var dist = geodist(location, supplierLocation, {exact: true, unit: 'km'}) 
                         supplier.dist = dist;
-        
-                        sortedSuppliers.push(supplier);
+
+                        if (dist < 15) {
+                            sortedSuppliers.push(supplier);
+                        }                        
                     });
         
                     sortedSuppliers.sort(function (a, b) {
