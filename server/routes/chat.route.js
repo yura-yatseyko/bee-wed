@@ -164,7 +164,7 @@ router.get('/chat', authenticate, (req, res) => {
             if (chats.length > 0) {
                 found = chats.find(function(element) {
 
-                    if (!msg.sender._id || !req.user._id) {
+                    if (!msg.sender || !req.user._id || !msg.receiver) {
                         return true
                     }
 
