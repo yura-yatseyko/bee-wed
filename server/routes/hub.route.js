@@ -114,10 +114,12 @@ router.get('/hub', authenticate, (req, res) => {
     var i = 0;
 
     hubAds.forEach(function(hubAd) {
-      if (req.user._id == hubAd._creator._id) {
-        userHubAds.push(hubAd);
-      } else {
-        otherHubAds.push(hubAd);
+      if (Number(new Date()) < hubAd.expireAt) {
+        if (req.user._id == hubAd._creator._id) {
+          userHubAds.push(hubAd);
+        } else {
+          otherHubAds.push(hubAd);
+        }
       }
 
       i++;
