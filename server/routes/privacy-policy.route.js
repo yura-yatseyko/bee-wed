@@ -5,7 +5,7 @@ const router = express.Router();
 router.get('/privacypolicy', (req, res) => {
 
     let html = "Privacy Policy</br>Effective date: October 18, 2018</br>Bee Wed (\"us\", \"we\", or \"our\") operates the www.beewed.ie website and the Bee Wed mobile application (hereinafter referred to as the \"Service\").</br>This page informs you of our policies regarding the collection, use and disclosure of personal data when you use our Service and the choices you have associated with that data.</br>We use your data to provide and improve the Service. By using the Service, you agree to the collection and use of information in accordance with this policy. Unless otherwise defined in this Privacy Policy, the terms used in this Privacy Policy have the same meanings as in our Terms and Conditions.</br>Definitions</br>" +
-    "<strong>Service<strong></br>" +
+    "<strong>Service</strong></br>" +
     "Service means the www.beewed.ie website and the Bee Wed mobile application operated by Bee Wed</br>" +
     "<strong>Personal Data</strong></br>" +
     "Personal Data means data about a living individual who can be identified from those data (or from those and other information either in our possession or likely to come into our possession).</br>" +
