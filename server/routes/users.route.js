@@ -146,15 +146,19 @@ router.get('/users/suppliers', authenticate, (req, res) => {
                     favoritesIds.push(favorite._id);
                 });
 
+                var newRes = [];
+
                 result.forEach(function(el) {
                     if (favoritesIds.indexOf(el._id) > -1) {
                         el.isLiked = true;
                     }
+
+                    newRes.push(el);
                 });
 
                 res.send({
                     success: true,
-                    data: result
+                    data: newRes
                 });
 
             }, (err) => {
