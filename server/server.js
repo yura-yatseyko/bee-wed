@@ -17,6 +17,7 @@ const favoritesRouter = require('./routes/favorites.route.js');
 const hubRouter = require('./routes/hub.route.js');
 const chatRouter = require('./routes/chat.route.js');
 const privacypolicyRouter = require('./routes/privacy-policy.route.js');
+const termsAndConditionsRouter = require('./routes/terms-and-conditions.route.js');
 
 app.use(supplierTypesRouter);
 app.use(supplierLocationsRouter);
@@ -29,6 +30,7 @@ app.use(favoritesRouter);
 app.use(hubRouter);
 app.use(chatRouter);
 app.use(privacypolicyRouter);
+app.use(termsAndConditionsRouter);
 
 app.get('/', (req, res) => {
     res.send('Server works.');
