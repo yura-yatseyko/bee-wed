@@ -148,7 +148,6 @@ router.get('/users/suppliers', authenticate, (req, res) => {
                     favorites.forEach(function(favorite) {
                         if (favorite.likedUserID.equals(el._id)) {
                             el.isLiked = true;
-                            break;
                         }
                     });
 
