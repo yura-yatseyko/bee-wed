@@ -58,7 +58,7 @@ router.post('/hub', authenticate, mediaFile, (req, res) => {
         HubAd.findOne({
           '_id': doc._id
         })
-        .populate('_creator', 'name supplierType avatarUrl phone')
+        .populate('_creator', 'name supplierType avatarUrl phone status')
         .then((hubAd) => {
           res.send({
             success: true,
@@ -107,7 +107,7 @@ router.post('/hub/prolongate', authenticate, (req, res) => {
 router.get('/hub', authenticate, (req, res) => {
   HubAd.find({
   })
-  .populate('_creator', 'name supplierType avatarUrl phone')
+  .populate('_creator', 'name supplierType avatarUrl phone status')
   .then((hubAds) => {
     var userHubAds = [];
     var otherHubAds = [];

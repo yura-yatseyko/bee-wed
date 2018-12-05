@@ -11,8 +11,8 @@ router.post('/supplier/locations', (req, res) => {
     var supplierLocation = new SupplierLocation({
         title: req.body.title,
         location: {
-            lat: req.body.lat,
-            lng: req.body.lng
+            lat: parseFloat(req.body.lat),
+            lng: parseFloat(req.body.lng)
         }
     });
     
