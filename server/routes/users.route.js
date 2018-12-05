@@ -143,7 +143,7 @@ router.get('/users/suppliers', authenticate, (req, res) => {
             }).then((favorites) => {
                 var favoritesIds = [];
                 favorites.forEach(function(favorite) {
-                    favoritesIds.push(favorite._id);
+                    favoritesIds.push(favorite.likedUserID);
                 });
 
                 var newRes = [];
@@ -158,7 +158,7 @@ router.get('/users/suppliers', authenticate, (req, res) => {
 
                 res.send({
                     success: true,
-                    data: favorites
+                    data: favoritesIds
                 });
 
             }, (err) => {
