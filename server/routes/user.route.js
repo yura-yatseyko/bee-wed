@@ -31,7 +31,7 @@ var upload = multer({
 });
 
 var brideGroomUpload = upload.single('avatarImage');
-var supplierUpload = upload.single('avatarImage');
+var supplierUpload = upload.fields([{name: 'avatarImage'}, {name: 'coverImage'}])
 var supplierGalleryUpload = upload.fields([{name: 'galleryImage'}])
 
 router.use(bodyParser.json());
@@ -241,28 +241,42 @@ router.post('/user/bridegroom/update', authenticate, brideGroomUpload, (req, res
 router.post('/user/supplier/update', authenticate, supplierUpload, (req, res) => {  
     var body = lodash.pick(req.body, ['name', 'phone', 'websiteURL', 'description', 'registrationToken', 'supplierType']);
 
-    if (req.file) {
+    var objects = [];
+
+    if (req.files['avatarImage']) {
+        if (req.files['avatarImage'].length > 0) {
+            objects.push({
+                Key: req.user.avatarUrl.key
+            });
+        }
+    }
+
+    if (req.files['coverImage']) {
+        if (req.files['coverImage'].length > 0) {
+            objects.push({
+                Key: req.user.coverUrl.key
+            });
+        }
+    }
+    
+    if (objects.length > 0) {
         var params = {
             Bucket: 'beewed', 
             Delete: {
-              Objects: [
-                {
-                  Key: req.user.avatarUrl.key
-                }
-              ],
+              Objects: objects,
             },
-          };
+        };  
           
-          s3.deleteObjects(params, function(err, data) {
+        s3.deleteObjects(params, function(err, data) {
             if (err) {
                 console.log(err, err.stack);
             } else {
                 console.log(data);
             }
-          });
+        });
     }
 
-    req.user.updateSupplierData(body, req.file).then((user) => {
+    req.user.updateSupplierData(body, req.files).then((user) => {
         res.status(200).send({
             success: true,
             data: user

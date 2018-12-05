@@ -107,6 +107,16 @@ var SupplierSchema = new mongoose.Schema({
   description: {
     type: String
   },
+  coverUrl: {
+    location: {
+      type: String,
+      default: null
+    },
+    key: {
+      type: String,
+      default: null
+    }
+  },
   avatarUrl: {
     location: {
       type: String,
@@ -298,9 +308,18 @@ UserSchema.methods.updateSupplierData = async function (data, file) {
     user.registrationToken = data.registrationToken;
   }
 
-  if (file) {
-    user.avatarUrl.location = file.location;
-    user.avatarUrl.key = file.key;
+  if (file['avatarImage']) {
+    if (file['avatarImage'].length > 0) {
+      user.avatarUrl.location = file['avatarImage'][0].location;
+      user.avatarUrl.key = file['avatarImage'][0].key;
+    }
+  }
+
+  if (file['coverImage']) {
+    if (file['coverImage'].length > 0) {
+      user.coverUrl.location = file['coverImage'][0].location;
+      user.coverUrl.key = file['coverImage'][0].key;
+    }
   }
 
   return new Promise((resolve, reject) => {
