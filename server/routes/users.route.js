@@ -138,9 +138,30 @@ router.get('/users/suppliers', authenticate, (req, res) => {
           if (err) {
             res.status(400).send(err);
           } else {
-            res.send({
-                success: true,
-                data: result
+            Favorite.find({
+                senderID: req.user._id
+            }).then((favorites) => {
+                var favoritesIds = [];
+                favorites.forEach(function(favorite) {
+                    favoritesIds.push(favorite._id);
+                });
+
+                result.forEach(function(el) {
+                    if (favoritesIds.indexOf(el._id) > -1) {
+                        el.isLiked = true;
+                    }
+                });
+
+                res.send({
+                    success: true,
+                    data: result
+                });
+
+            }, (err) => {
+                res.send({
+                    success: true,
+                    data: result
+                });
             });
           }
       });
