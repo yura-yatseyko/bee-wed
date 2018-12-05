@@ -19,11 +19,7 @@ var UserSchema = new mongoose.Schema({
     required: true,
     trim: true,
     minlenght: 1,
-    unique: true,
-    validate: {
-      validator: validator.isEmail,
-      message: '{VALUE} is not a valid email'
-    }
+    unique: true
   },
   registrationTokens: [
     {
