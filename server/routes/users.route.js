@@ -95,6 +95,14 @@ router.get('/users/suppliers', authenticate, (req, res) => {
                                 var dist = geodist(location, supplierLocation, {exact: true, unit: 'km'})
                                 supplier.dist = dist;
                             }
+
+                            let diffInSeconds = (Number(new Date()) - Number(supplier.lastVisit)) / 1000;
+
+                            if (diffInSeconds < 300) {
+                                supplier.status = true;
+                            } else {
+                                supplier.status = false;
+                            }
         
                             sortedSuppliers.push(supplier);
                         }
@@ -114,6 +122,14 @@ router.get('/users/suppliers', authenticate, (req, res) => {
         
                         var dist = geodist(location, supplierLocation, {exact: true, unit: 'km'}) 
                         supplier.dist = dist;
+
+                        let diffInSeconds = (Number(new Date()) - Number(supplier.lastVisit)) / 1000;
+
+                        if (diffInSeconds < 300) {
+                            supplier.status = true;
+                        } else {
+                            supplier.status = false;
+                        }
 
                         if (dist < 15) {
                             sortedSuppliers.push(supplier);
@@ -150,15 +166,6 @@ router.get('/users/suppliers', authenticate, (req, res) => {
                             el.isLiked = true;
                         }
                     });
-
-                    let diffInSeconds = (Number(new Date()) - Number(el.lastVisit)) / 1000;
-
-                    if (diffInSeconds < 300) {
-                        el.status = true;
-                    } else {
-                        el.status = false;
-                    }
-
                     newRes.push(el);
                 });
 
