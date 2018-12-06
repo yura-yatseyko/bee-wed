@@ -71,6 +71,15 @@ router.get('/favorites', authenticate, (req, res) => {
                     '_id': favorite.likedUserID
                 }, function (err, result) {
                     if (result) {
+
+                        let diffInSeconds = (Number(new Date()) - Number(result.lastVisit)) / 1000;
+
+                        if (diffInSeconds < 300) {
+                            result.status = true;
+                        } else {
+                            result.status = false;
+                        }
+
                         if (userLat, userLon) {
                             var supplierLocation = {
                                 lat: result.currentLocation.lat,

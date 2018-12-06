@@ -47,7 +47,11 @@ var UserSchema = new mongoose.Schema({
       type: String,
       required: true
     }
-  }]
+  }],
+  lastVisit: {
+    type: Number,
+    default: 0
+  },
 }, options);
 
 var BrideGroomSchema = new mongoose.Schema({

@@ -151,6 +151,14 @@ router.get('/users/suppliers', authenticate, (req, res) => {
                         }
                     });
 
+                    let diffInSeconds = (Number(new Date()) - Number(el.lastVisit)) / 1000;
+
+                    if (diffInSeconds < 300) {
+                        el.status = true;
+                    } else {
+                        el.status = false;
+                    }
+
                     newRes.push(el);
                 });
 
@@ -179,6 +187,14 @@ router.get('/users/:id', authenticate, (req, res) => {
     User.findById(id).then((user) => {
         if (!user) {
           return res.status(404).send();
+        }
+
+        let diffInSeconds = (Number(new Date()) - Number(user.lastVisit)) / 1000;
+
+        if (diffInSeconds < 300) {
+            user.status = true;
+        } else {
+            user.status = false;
         }
 
         Favorite.findOne({
@@ -218,8 +234,7 @@ router.get('/users/:id', authenticate, (req, res) => {
                     data: user
                 });
             }
-                
-            });
+        });
     }).catch((e) => {
         res.status(400).send();
     });

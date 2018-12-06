@@ -186,6 +186,14 @@ router.get('/chat', authenticate, (req, res) => {
                 } else {
                     newMessage.chatWithUser = msg.sender;
                 }
+                let diffInSeconds = (Number(new Date()) - Number(newMessage.chatWithUser.lastVisit)) / 1000;
+
+                if (diffInSeconds < 300) {
+                    newMessage.chatWithUser.status = true;
+                } else {
+                    newMessage.chatWithUser.status = false;
+                }
+
                 chats.push(newMessage);
             }
         });

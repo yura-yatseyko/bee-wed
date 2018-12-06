@@ -8,6 +8,12 @@ var authenticate = (req, res, next) => {
       return Promise.reject();
     }
 
+    user.lastVisit = new Date();
+
+    user.save().then((doc) => {
+    }, () => {
+    });
+
     req.user = user;
     req.token = token;
     next();
