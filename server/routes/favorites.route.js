@@ -37,7 +37,9 @@ router.delete('/favorites', authenticate, (req, res) => {
         } else {
             res.send({
                 success: true,
-                data: {}
+                data: {
+                    supplierId: req.body.userID
+                }
             });
         }
     });
