@@ -58,17 +58,17 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
             "_id" : new ObjectID(req.body.receiver)
         }, function (err, result) {
             if (result) {
-                var registrationToken = 'e-_TvaSEcjs:APA91bGU5NUQIvkyGODcCf-mz3I8yzkCXukDNNBU05IEej-V7rYVRwC8QU-0AY1DBYSQ6mW0caDjYWKnjr8Jv-YscenNxqDiOikyzjWEZY-lScSTi14WEV0xmRFejV-slW8KlcHTlipK';
+                // var registrationToken = 'fK7GQxp64ps:APA91bGaU0C1XpJbwSHpS9CALMOSX7zNzofOEtnhtuCiC905HujHOw4KnRZzIPeXrN0_zT7kSmPz010fq06kVi10WVYU3JVGKiN1hXHTMCoHCm50DS_b4v4rZAmg9a8CCDF46VddPMrt';
         
                 var payload = {
-                    // notification: {
-                    //   title: "Beewed",
-                    //   body: "New message from" + req.user.name
-                    // },
+                    notification: {
+                      title: "Beewed",
+                      body: "New message from" + req.user.name
+                    },
                     data: {
                         action: 'MESSAGE',
                         message: req.body.message,
-                        messageFileURL: doc.messageFileURL.location,
+                        messageFileURL: doc.messageFileURL.location ? doc.messageFileURL.location : "",
                         _id: req.user._id.toString(),
                         kind: req.user.kind,
                         name: req.user.name,
@@ -84,7 +84,7 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
                 result.registrationTokens.forEach(function(rt) {
                     console.log(rt.registrationToken);
                     
-                    admin.messaging().sendToDevice(rt.registrationToken, payload, options)
+                    admin.messaging().sendToDevice(registrationToken, payload, options)
                         .then(function(response) {
                          console.log("Successfully sent message:", response);
                         })
