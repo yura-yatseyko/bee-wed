@@ -84,7 +84,7 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
                 result.registrationTokens.forEach(function(rt) {
                     console.log(rt.registrationToken);
                     
-                    admin.messaging().sendToDevice(registrationToken, payload, options)
+                    admin.messaging().sendToDevice(rt.registrationToken, payload, options)
                         .then(function(response) {
                          console.log("Successfully sent message:", response);
                         })
