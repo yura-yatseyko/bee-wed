@@ -18,6 +18,7 @@ const hubRouter = require('./routes/hub.route.js');
 const chatRouter = require('./routes/chat.route.js');
 const privacypolicyRouter = require('./routes/privacy-policy.route.js');
 const termsAndConditionsRouter = require('./routes/terms-and-conditions.route.js');
+const paymentsRouter = require('./routes/payments.route.js');
 
 app.use(supplierTypesRouter);
 app.use(supplierLocationsRouter);
@@ -31,6 +32,7 @@ app.use(hubRouter);
 app.use(chatRouter);
 app.use(privacypolicyRouter);
 app.use(termsAndConditionsRouter);
+app.use(paymentsRouter);
 
 app.get('/', (req, res) => {
     res.send('Server works.');

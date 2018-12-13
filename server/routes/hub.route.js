@@ -11,6 +11,7 @@ const {ObjectID} = require('mongodb');
 const {User} = require('../models/user.model');
 const {HubAd} = require('../models/hub-ad.model');
 const {AdPurchase} = require('../models/ad-purchase.model');
+const {Payment} = require('../models/payment.model');
 
 const router = express.Router();
 
@@ -60,6 +61,15 @@ router.post('/hub', authenticate, mediaFile, (req, res) => {
         })
         .populate('_creator', 'name supplierType avatarUrl phone status')
         .then((hubAd) => {
+          
+          var payment = new Payment();
+          payment.createdAt = new Date();
+          payment.price = result.price;
+          payment.description = result.title + " advert";
+          payment._creator = req.user._id;
+
+          payment.save();
+
           res.send({
             success: true,
             data: hubAd
@@ -88,6 +98,15 @@ router.post('/hub/prolongate', authenticate, (req, res) => {
             hubAd.expireAt = expireAt;
 
             hubAd.save().then((doc) => {
+
+              var payment = new Payment();
+              payment.createdAt = new Date();
+              payment.price = result.price;
+              payment.description = result.title + " advert prolongation";
+              payment._creator = req.user._id;
+
+              payment.save();
+
               res.send({
                   success: true,
                   data: doc

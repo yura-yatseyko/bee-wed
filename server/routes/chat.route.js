@@ -63,7 +63,7 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
                 var payload = {
                     notification: {
                       title: "Beewed",
-                      body: "New message from" + req.user.name
+                      body: "New message from " + req.user.name
                     },
                     data: {
                         action: 'MESSAGE',
