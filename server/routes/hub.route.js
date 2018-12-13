@@ -171,6 +171,24 @@ router.get('/hub', authenticate, (req, res) => {
   });
 });
 
+router.get('/hub/my', authenticate, (req, res) => {
+  HubAd.find({
+    _creator: req.user._id
+  })
+  .sort({
+    createdAt: -1
+  })
+  .populate('_creator', 'name supplierType avatarUrl phone status')
+  .then((hubAds) => {
+    res.send({
+      success: true,
+      data: hubAds
+    });
+  }, (err) => {
+    res.status(400).send(err);
+  });
+});
+
 router.post('/hub/adpurchases', (req, res) => {
   var body = lodash.pick(req.body, ['title', 'days', 'price']);
 
