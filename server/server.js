@@ -24,6 +24,7 @@ const subscriptionsRouter = require('./routes/subscriptions.route.js');
 //CMS
 const cmsSignInRouter = require('./routes/cms/cms-sign-in.route.js');
 const cmsLogoutRouter = require('./routes/cms/cms-logout.route.js');
+const cmsUsersRouter = require('./routes/cms/cms-users.route.js');
 
 app.use(supplierTypesRouter);
 app.use(supplierLocationsRouter);
@@ -43,6 +44,7 @@ app.use(cmsLogoutRouter);
 //CMS
 app.use(cmsSignInRouter);
 app.use(cmsSignInRouter);
+app.use(cmsUsersRouter);
 
 
 app.get('/', (req, res) => {
