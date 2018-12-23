@@ -19,6 +19,11 @@ const chatRouter = require('./routes/chat.route.js');
 const privacypolicyRouter = require('./routes/privacy-policy.route.js');
 const termsAndConditionsRouter = require('./routes/terms-and-conditions.route.js');
 const paymentsRouter = require('./routes/payments.route.js');
+const subscriptionsRouter = require('./routes/subscriptions.route.js');
+
+//CMS
+const cmsSignInRouter = require('./routes/cms/cms-sign-in.route.js');
+const cmsLogoutRouter = require('./routes/cms/cms-logout.route.js');
 
 app.use(supplierTypesRouter);
 app.use(supplierLocationsRouter);
@@ -33,6 +38,12 @@ app.use(chatRouter);
 app.use(privacypolicyRouter);
 app.use(termsAndConditionsRouter);
 app.use(paymentsRouter);
+app.use(cmsLogoutRouter);
+
+//CMS
+app.use(cmsSignInRouter);
+app.use(cmsSignInRouter);
+
 
 app.get('/', (req, res) => {
     res.send('Server works.');
