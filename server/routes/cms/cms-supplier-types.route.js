@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const lodash = require('lodash');
 
 const {SupplierType} = require('../../models/supplier-type.model');
 
