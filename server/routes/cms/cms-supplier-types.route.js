@@ -24,7 +24,16 @@ router.post('/cms/supplier/types', authenticate, (req, res) => {
 });
 
 router.get('/cms/supplier/types', authenticate, (req, res) => {
-    SupplierType.find().then((supplierTypes) => {
+    var body = lodash.pick(req.body, ['searchText']);
+
+    var query = {
+    }
+
+    if (body.searchText != undefined) {
+        query.title = { $regex: body.searchText }
+    }
+
+    SupplierType.find(query).then((supplierTypes) => {
         res.send({
             success: true,
             data: supplierTypes
