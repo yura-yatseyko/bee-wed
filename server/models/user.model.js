@@ -81,15 +81,15 @@ var BrideGroomSchema = new mongoose.Schema({
   notifications: {
     newMessage: {
       type: Boolean,
-      default: false
+      default: true
     },
     newSupplier: {
       type: Boolean,
-      default: false
+      default: true
     },
     countdown: {
       type: Boolean,
-      default: false
+      default: true
     }
   }
 }, options);
@@ -166,15 +166,15 @@ var SupplierSchema = new mongoose.Schema({
   notifications: {
     newMessage: {
       type: Boolean,
-      default: false
+      default: true
     },
     newSupplier: {
       type: Boolean,
-      default: false
+      default: true
     },
     advertExpiryAlert: {
       type: Boolean,
-      default: false
+      default: true
     }
   }
 }, options);
