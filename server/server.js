@@ -4,6 +4,8 @@ const express = require('express');
 
 const moment = require('moment-timezone');
 
+var cors = require('cors');
+
 var app = express();
 
 const supplierTypesRouter = require('./routes/supplier-types.route.js');
@@ -49,6 +51,8 @@ app.use(cmsSignInRouter);
 app.use(cmsUsersRouter);
 app.use(cmsSupplierTypesRouter);
 app.use(cmsSupplierLocationsRouter);
+
+app.use(cors());
 
 
 app.get('/', (req, res) => {

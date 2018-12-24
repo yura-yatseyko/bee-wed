@@ -362,6 +362,9 @@ UserSchema.methods.updateSupplierNotifications = function (data) {
 UserSchema.methods.updateBrideGroomNotifications = function (data) {
   var user = this;
 
+  console.log(data);
+  
+
   if (data.hasOwnProperty('newMessage')) {
     user.notifications.newMessage = data.newMessage;
   }

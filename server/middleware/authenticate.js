@@ -11,12 +11,12 @@ var authenticate = (req, res, next) => {
     user.lastVisit = new Date();
 
     user.save().then((doc) => {
+      req.user = user;
+      req.token = token;
+      next();
     }, () => {
+      res.status(401).send();
     });
-
-    req.user = user;
-    req.token = token;
-    next();
   }).catch((e) => {
     res.status(401).send();
   });
