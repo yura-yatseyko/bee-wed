@@ -16,13 +16,22 @@ const router = express.Router();
 
 router.use(bodyParser.json());
 
-router.get('/cms/users/bridegroom', authenticate, (req, res) => {
+router.get('/cms/users/bridegroom', async authenticate, (req, res) => {
     var body = lodash.pick(req.body, ['searchText', 'page']);
 
     let page = Number(body.page) - Number(1);
 
+    var count = 0;
+
     var query = {
         kind: "BrideGroomUser"
+    }
+
+    try {
+        let users = await User.find(query).exec();
+        count = users.length;
+    } catch (err) {
+        console.log(err);
     }
 
     if (body.searchText != undefined) {
@@ -46,7 +55,7 @@ router.get('/cms/users/bridegroom', authenticate, (req, res) => {
         res.status(200).send({
             success: true,
             data: {
-                amount: users.length,
+                amount: count,
                 users: modifiedUsers
             }
         });
@@ -60,8 +69,17 @@ router.get('/cms/users/supplier', authenticate, async (req, res) => {
 
     let page = Number(body.page) - Number(1);
 
+    var count = 0;
+
     var query = {
         kind: "SupplierUser"
+    }
+
+    try {
+        let users = await User.find(query).exec();
+        count = users.length;
+    } catch (err) {
+        console.log(err);
     }
 
     try {
@@ -95,7 +113,7 @@ router.get('/cms/users/supplier', authenticate, async (req, res) => {
             res.status(200).send({
                 success: true,
                 data: {
-                    amount: users.length,
+                    amount: count,
                     users: modifiedUsers
                 }
             });
