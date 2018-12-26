@@ -8,6 +8,10 @@ const LIMIT = Number(10);
 const {ObjectID} = require('mongodb');
 
 const {User} = require('../../models/user.model');
+const {HubAd} = require('../../models/hub-ad.model');
+const {Message} = require('../../models/message.model');
+const {Favorite} = require('../../models/favorite.model');
+const {Payment} = require('../../models/payment.model');
 const {SupplierType} = require('../../models/supplier-type.model');
 
 var {authenticate} = require('../../middleware/admin-authenticate');
@@ -123,6 +127,52 @@ router.get('/cms/users/supplier', authenticate, async (req, res) => {
 
     } catch (er) {
         res.status(400).send();
+    }
+});
+
+router.delete('/cms/users', authenticate, async (req, res) => {
+    try {
+        await User.deleteOne({
+            _id: new ObjectID(req.body._id)
+        }).exec();
+
+        await HubAd.deleteMany({
+            _creator: new ObjectID(req.body._id)
+        }).exec();
+
+        await Message.deleteMany({
+            $or: [
+                {
+                    sender: new ObjectID(req.body._id),
+                },
+                {
+                    receiver: new ObjectID(req.body._id)
+                }
+            ]
+        }).exec();
+
+        await Favorite.deleteMany({
+            $or: [
+                {
+                    senderID: new ObjectID(req.body._id),
+                },
+                {
+                    likedUserID: new ObjectID(req.body._id)
+                }
+            ]
+        }).exec();
+
+        await Payment.deleteMany({
+            _creator: new ObjectID(req.body._id)
+        }).exec();
+
+        res.status(200).send({
+            success: true,
+            data: {
+            }
+        });
+    } catch (err) {
+        res.status(400).send(err);
     }
 });
 
