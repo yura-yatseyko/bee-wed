@@ -30,6 +30,7 @@ const cmsUsersRouter = require('./routes/cms/cms-users.route.js');
 const cmsSupplierTypesRouter = require('./routes/cms/cms-supplier-types.route.js');
 const cmsSupplierLocationsRouter = require('./routes/cms/cms-supplier-locations.route.js');
 const cmsAuthenticationRouter = require('./routes/cms/cms-authentication.route.js');
+const cmsNotificationsRouter = require('./routes/cms/cms-notifications.route.js');
 
 app.use(supplierTypesRouter);
 app.use(supplierLocationsRouter);
@@ -53,6 +54,7 @@ app.use(cmsUsersRouter);
 app.use(cmsSupplierTypesRouter);
 app.use(cmsSupplierLocationsRouter);
 app.use(cmsAuthenticationRouter);
+app.use(cmsNotificationsRouter);
 
 app.use(cors());
 
