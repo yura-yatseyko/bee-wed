@@ -3,6 +3,8 @@ var bodyParser = require('body-parser');
 const lodash = require('lodash');
 var async = require("async");
 
+const LIMIT = Number(10);
+
 const {ObjectID} = require('mongodb');
 
 const {User} = require('../../models/user.model');
@@ -15,7 +17,9 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 router.get('/cms/users/bridegroom', authenticate, (req, res) => {
-    var body = lodash.pick(req.body, ['searchText']);
+    var body = lodash.pick(req.body, ['searchText', 'page']);
+
+    let page = Number(body.page) - Number(1);
 
     var query = {
         kind: "BrideGroomUser"
@@ -25,7 +29,7 @@ router.get('/cms/users/bridegroom', authenticate, (req, res) => {
         query.name = { $regex: body.searchText }
     }
 
-    User.find(query).then((users) => {
+    User.find(query).skip(page * LIMIT).limit(LIMIT).then((users) => {
         var modifiedUsers = [];
         users.forEach(function(user) {
             let newUser = {
@@ -52,7 +56,9 @@ router.get('/cms/users/bridegroom', authenticate, (req, res) => {
 });
 
 router.get('/cms/users/supplier', authenticate, async (req, res) => {
-    var body = lodash.pick(req.body, ['searchText', 'supplierType']);
+    var body = lodash.pick(req.body, ['searchText', 'supplierType', 'page']);
+
+    let page = Number(body.page) - Number(1);
 
     var query = {
         kind: "SupplierUser"
@@ -71,7 +77,7 @@ router.get('/cms/users/supplier', authenticate, async (req, res) => {
             query.supplierType = supplierType
         }
 
-        User.find(query).then((users) => {
+        User.find(query).skip(page * LIMIT).limit(LIMIT).then((users) => {
             var modifiedUsers = [];
             users.forEach(function(user) {
                 let newUser = {
