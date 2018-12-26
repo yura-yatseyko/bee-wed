@@ -16,7 +16,7 @@ const router = express.Router();
 
 router.use(bodyParser.json());
 
-router.get('/cms/users/bridegroom', async authenticate, (req, res) => {
+router.get('/cms/users/bridegroom', authenticate, async (req, res) => {
     var body = lodash.pick(req.body, ['searchText', 'page']);
 
     let page = Number(body.page) - Number(1);
