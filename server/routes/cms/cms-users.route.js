@@ -21,7 +21,7 @@ const router = express.Router();
 router.use(bodyParser.json());
 
 router.get('/cms/users/bridegroom', authenticate, async (req, res) => {
-    var body = lodash.pick(req.body, ['searchText', 'page']);
+    var body = lodash.pick(req.query, ['searchText', 'page']);
 
     let page = Number(body.page) - Number(1);
 
@@ -69,7 +69,7 @@ router.get('/cms/users/bridegroom', authenticate, async (req, res) => {
 });
 
 router.get('/cms/users/supplier', authenticate, async (req, res) => {
-    var body = lodash.pick(req.body, ['searchText', 'supplierType', 'page']);
+    var body = lodash.pick(req.query, ['searchText', 'supplierType', 'page']);
 
     let page = Number(body.page) - Number(1);
 
