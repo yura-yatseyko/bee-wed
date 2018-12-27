@@ -26,6 +26,7 @@ router.get('/cms/users/bridegroom', authenticate, async (req, res) => {
     let page = Number(body.page) - Number(1);
 
     var count = 0;
+    var queryResultCount = 0;
 
     var query = {
         kind: "BrideGroomUser"
@@ -42,6 +43,13 @@ router.get('/cms/users/bridegroom', authenticate, async (req, res) => {
         if (body.searchText.length > 0) {
             query.name = { $regex: body.searchText }
         }
+    }
+
+    try {
+        let users = await User.find(query).exec();
+        queryResultCount = users.length;
+    } catch (err) {
+        console.log(err);
     }
 
     User.find(query).skip(page * LIMIT).limit(LIMIT).then((users) => {
@@ -62,6 +70,7 @@ router.get('/cms/users/bridegroom', authenticate, async (req, res) => {
             success: true,
             data: {
                 amount: count,
+                queryResultCount: queryResultCount,
                 users: modifiedUsers
             }
         });
@@ -76,6 +85,7 @@ router.get('/cms/users/supplier', authenticate, async (req, res) => {
     let page = Number(body.page) - Number(1);
 
     var count = 0;
+    var queryResultCount = 0;
 
     var query = {
         kind: "SupplierUser"
@@ -103,6 +113,13 @@ router.get('/cms/users/supplier', authenticate, async (req, res) => {
             query.supplierType = supplierType
         }
 
+        try {
+            let users = await User.find(query).exec();
+            queryResultCount = users.length;
+        } catch (err) {
+            console.log(err);
+        }
+
         User.find(query).skip(page * LIMIT).limit(LIMIT).then((users) => {
             var modifiedUsers = [];
             users.forEach(function(user) {
@@ -122,6 +139,7 @@ router.get('/cms/users/supplier', authenticate, async (req, res) => {
                 success: true,
                 data: {
                     amount: count,
+                    queryResultCount: queryResultCount,
                     users: modifiedUsers
                 }
             });
