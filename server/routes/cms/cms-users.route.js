@@ -39,7 +39,9 @@ router.get('/cms/users/bridegroom', authenticate, async (req, res) => {
     }
 
     if (body.searchText != undefined) {
-        query.name = { $regex: body.searchText }
+        if (body.searchText.length > 0) {
+            query.name = { $regex: body.searchText }
+        }
     }
 
     User.find(query).skip(page * LIMIT).limit(LIMIT).then((users) => {
@@ -88,7 +90,9 @@ router.get('/cms/users/supplier', authenticate, async (req, res) => {
 
     try {
         if (body.searchText != undefined) {
-            query.name = { $regex: body.searchText }
+            if (body.searchText.length > 0) {
+                query.name = { $regex: body.searchText }
+            }
         }
 
         if (body.supplierType != undefined) {
