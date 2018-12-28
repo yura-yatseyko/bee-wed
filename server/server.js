@@ -3,6 +3,7 @@ require('./config/config');
 const express = require('express');
 
 const moment = require('moment-timezone');
+const path = require('path')
 
 var cors = require('cors');
 
@@ -32,6 +33,9 @@ const cmsSupplierLocationsRouter = require('./routes/cms/cms-supplier-locations.
 const cmsAuthenticationRouter = require('./routes/cms/cms-authentication.route.js');
 const cmsNotificationsRouter = require('./routes/cms/cms-notifications.route.js');
 
+app.use(express.static(path.join( __dirname + '/../src/static' )));
+app.use(express.static(path.join( __dirname + '/../src/build' )));
+
 app.use(supplierTypesRouter);
 app.use(supplierLocationsRouter);
 app.use(signUpRouter);
@@ -59,8 +63,8 @@ app.use(cmsNotificationsRouter);
 app.use(cors());
 
 
-app.get('/', (req, res) => {
-    res.send('Server works.');
+app.get('/',function (req,res) {
+    res.sendFile('index.html', { root: path.join(__dirname, '/../src/build') })
 });
 
 const port = process.env.PORT;

@@ -1,0 +1,30 @@
+#root{
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Helvetica Neue",
+  "Lucida Grande", "Segoe UI";
+  @import "./components/navigation_bar";
+  @import './variables';
+  @import './mixins';
+  @import './common';
+  @import './components/header';
+  @import './components/components__container';
+  @import './helpers/bread_crumbs';
+  @import './custom_table';
+  @import './components/auth';
+  @import './modals/custom';
+  @import './modals/add_new_location';
+  @import './modals/suppliers_types';
+  @import './modals/confirm_window';
+  @import './components/push_notifications';
+  @import './helpers/paginator';
+
+  .root__container{
+    min-height: 100vh;
+
+  }
+  .loading{
+    margin-top: 30%;
+    display: flex;
+  }
+
+}
+
