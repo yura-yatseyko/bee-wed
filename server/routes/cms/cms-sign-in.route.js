@@ -14,7 +14,7 @@ router.post('/cms/signin', (req, res) => {
     var body = _.pick(req.body, ['email', 'password']);
 
     if (body.email === process.env.ADMIN_EMAIL && body.password === process.env.ADMIN_PASSWORD) {
-        Admin.remove({}).exec();
+        // Admin.remove({}).exec();
 
         let admin = Admin();
 
