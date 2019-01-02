@@ -153,8 +153,8 @@ router.get('/chat', authenticate, (req, res) => {
     .sort({
         createdAt: -1
     })
-    .populate('sender', 'name avatarUrl status phone')
-    .populate('receiver', 'name avatarUrl status phone')
+    .populate('sender', 'name avatarUrl status phone lastVisit')
+    .populate('receiver', 'name avatarUrl status phone lastVisit')
     .then((messages) => {
         var chats = [];
 
