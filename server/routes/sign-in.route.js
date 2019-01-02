@@ -16,7 +16,6 @@ router.post('/signin', (req, res) => {
     User.findByCredentials(body.email, body.password).then((user) => {
       return user.generateAuthToken().then((token) => {
         let registrationToken = req.body.registrationToken;
-        let platform = req.body.platform;
         user.registrationTokens = user.registrationTokens.concat([{registrationToken, token}]);
 
         user.save().then((doc) => {
