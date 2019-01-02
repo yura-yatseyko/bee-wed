@@ -25,7 +25,6 @@ var UserSchema = new mongoose.Schema({
     {
       platform: {
         type: String,
-        required: true,
         default: ""
       },
       registrationToken: {
