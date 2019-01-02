@@ -1,7 +1,21 @@
 {
-  "main.js": "static/js/main.7ef5984c.js",
-  "main.js.map": "static/js/main.7ef5984c.js.map",
-  "static/media/ill_photo@3x.png": "static/media/ill_photo@3x.e11bba03.png",
-  "static/media/index.scss": "static/media/index.560f6d8d.scss",
-  "static/media/logo@3x.png": "static/media/logo@3x.84738ad9.png"
+  "main.css": "/static/css/main.74439dd9.chunk.css",
+  "main.js": "/static/js/main.12c2df39.chunk.js",
+  "main.js.map": "/static/js/main.12c2df39.chunk.js.map",
+  "static/css/1.d0a2e939.chunk.css": "/static/css/1.d0a2e939.chunk.css",
+  "static/js/1.06d0c6ff.chunk.js": "/static/js/1.06d0c6ff.chunk.js",
+  "static/js/1.06d0c6ff.chunk.js.map": "/static/js/1.06d0c6ff.chunk.js.map",
+  "runtime~main.js": "/static/js/runtime~main.229c360f.js",
+  "runtime~main.js.map": "/static/js/runtime~main.229c360f.js.map",
+  "static/media/theme.css": "/static/media/open-sans-v15-latin-700.2e00b263.svg",
+  "static/media/ill_photo@3x.png": "/static/media/ill_photo@3x.e11bba03.png",
+  "static/media/font-awesome.min.css": "/static/media/fontawesome-webfont.912ec66d.svg",
+  "static/media/logo@3x.png": "/static/media/logo@3x.84738ad9.png",
+  "static/media/primereact.min.css": "/static/media/line.567f5738.gif",
+  "static/media/primeicons.css": "/static/media/primeicons.38d77552.svg",
+  "static/css/main.74439dd9.chunk.css.map": "/static/css/main.74439dd9.chunk.css.map",
+  "static/css/1.d0a2e939.chunk.css.map": "/static/css/1.d0a2e939.chunk.css.map",
+  "index.html": "/index.html",
+  "precache-manifest.a94388fa48689dfe80202c3fced2a4b1.js": "/precache-manifest.a94388fa48689dfe80202c3fced2a4b1.js",
+  "service-worker.js": "/service-worker.js"
 }
