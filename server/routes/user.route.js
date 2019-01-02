@@ -305,7 +305,9 @@ router.post('/user/resetpassword', (req, res) => {
 
         user.resetPassword(newPassword).then((user) => {
             var transporter = nodemailer.createTransport(smtpTransport({
-                service: 'gmail',
+                host: 'smtp.gmail.com',
+                port: 465,
+                secure: true,
                 auth: {
                   user: process.env.EMAIL,
                   pass: process.env.EMAIL_PASSWORD
