@@ -23,6 +23,10 @@ var UserSchema = new mongoose.Schema({
   },
   registrationTokens: [
     {
+      platform: {
+        type: String,
+        required: true
+      },
       registrationToken: {
         type: String,
         required: true

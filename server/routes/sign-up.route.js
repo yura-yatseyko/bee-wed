@@ -45,7 +45,8 @@ router.post('/signup/bridegroom', brideGroomUpload, (req, res) => {
     return brideGroomUser.generateAuthToken();
   }).then((token) => {
     let registrationToken = req.body.registrationToken;
-    brideGroomUser.registrationTokens = brideGroomUser.registrationTokens.concat([{registrationToken, token}]);
+    let platform = req.body.platform;
+    brideGroomUser.registrationTokens = brideGroomUser.registrationTokens.concat([{platform, registrationToken, token}]);
 
     brideGroomUser.save().then((user) => {
       res.header('x-auth', token).send({
@@ -95,7 +96,8 @@ router.post('/signup/supplier', supplierUpload, (req, res) => {
     }).then((token) => {
 
       let registrationToken = req.body.registrationToken;
-      supplierUser.registrationTokens = supplierUser.registrationTokens.concat([{registrationToken, token}]);
+      let platform = req.body.platform;
+      supplierUser.registrationTokens = supplierUser.registrationTokens.concat([{platform, registrationToken, token}]);
 
       supplierUser.save().then((user) => {
         res.header('x-auth', token).send({

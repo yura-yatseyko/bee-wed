@@ -193,7 +193,8 @@ router.post('/user/updateRegistrationToken', authenticate, (req, res) => {
     
 
     let registrationToken = req.body.registrationToken;
-    req.user.registrationTokens = req.user.registrationTokens.concat([{registrationToken, token}]);
+    let platform = req.body.platform;
+    req.user.registrationTokens = req.user.registrationTokens.concat([{platform, registrationToken, token}]);
 
     req.user.save().then((doc) => {
         res.send({

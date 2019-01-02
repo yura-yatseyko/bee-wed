@@ -60,7 +60,20 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
             if (result) {
                 // var registrationToken = 'fK7GQxp64ps:APA91bGaU0C1XpJbwSHpS9CALMOSX7zNzofOEtnhtuCiC905HujHOw4KnRZzIPeXrN0_zT7kSmPz010fq06kVi10WVYU3JVGKiN1hXHTMCoHCm50DS_b4v4rZAmg9a8CCDF46VddPMrt';
         
-                var payload = {
+                var payloadAndroid = {
+                    data: {
+                        action: 'MESSAGE',
+                        message: req.body.message,
+                        messageFileURL: req.file.location ? req.file.location : "",
+                        _id: req.user._id.toString(),
+                        kind: req.user.kind,
+                        name: req.user.name,
+                        phone: req.user.phone ? req.user.phone : "",
+                        avatarUrl: req.user.avatarUrl.location ? req.user.avatarUrl.location : ""
+                    }
+                };
+
+                var payloadIOS = {
                     notification: {
                       title: "Beewed",
                       body: "New message from " + req.user.name
@@ -83,14 +96,24 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
 
                 result.registrationTokens.forEach(function(rt) {
                     console.log(rt.registrationToken);
-                    
-                    admin.messaging().sendToDevice(rt.registrationToken, payload, options)
+
+                    if (rt.platform === 'ios') {
+                        admin.messaging().sendToDevice(rt.registrationToken, payloadIOS, options)
                         .then(function(response) {
                          console.log("Successfully sent message:", response);
                         })
                         .catch(function(error) {
                             console.log("Error sending message:", error);
                         });
+                    } else {
+                        admin.messaging().sendToDevice(rt.registrationToken, payloadAndroid, options)
+                        .then(function(response) {
+                         console.log("Successfully sent message:", response);
+                        })
+                        .catch(function(error) {
+                            console.log("Error sending message:", error);
+                        });
+                    }
                 });
             }
         });
