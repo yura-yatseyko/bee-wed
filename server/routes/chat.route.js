@@ -64,7 +64,7 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
                     data: {
                         action: 'MESSAGE',
                         message: req.body.message,
-                        messageFileURL: req.file.location ? req.file.location : "",
+                        messageFileURL: doc.messageFileURL.location ? doc.messageFileURL.location : "",
                         _id: req.user._id.toString(),
                         kind: req.user.kind,
                         name: req.user.name,
