@@ -3,6 +3,7 @@ const lodash = require('lodash');
 var bodyParser = require('body-parser');
 var multer  = require('multer');
 var nodemailer = require('nodemailer');
+var smtpTransport = require('nodemailer-smtp-transport');
 var multerS3 = require('multer-s3')
 
 var {s3} = require('../services/aws');
@@ -303,13 +304,13 @@ router.post('/user/resetpassword', (req, res) => {
         }
 
         user.resetPassword(newPassword).then((user) => {
-            var transporter = nodemailer.createTransport({
+            var transporter = nodemailer.createTransport(smtpTransport({
                 service: 'gmail',
                 auth: {
                   user: process.env.EMAIL,
                   pass: process.env.EMAIL_PASSWORD
                 }
-            });
+            }));
     
             var mailOptions = {
                 from: process.env.EMAIL,
