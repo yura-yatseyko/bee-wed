@@ -17,7 +17,7 @@ router.post('/signin', (req, res) => {
       return user.generateAuthToken().then((token) => {
         let registrationToken = req.body.registrationToken;
         let platform = req.body.platform;
-        user.registrationTokens = user.registrationTokens.push({platform, registrationToken, token});
+        user.registrationTokens = user.registrationTokens.concat([{registrationToken, token}]);
 
         user.save().then((doc) => {
           res.header('x-auth', token).send({
