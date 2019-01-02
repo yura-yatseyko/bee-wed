@@ -126,7 +126,7 @@ router.post('/hub/prolongate', authenticate, (req, res) => {
 router.get('/hub', authenticate, (req, res) => {
   HubAd.find({
   })
-  .populate('_creator', 'name supplierType avatarUrl phone status')
+  .populate('_creator', 'name supplierType avatarUrl phone status lastVisit')
   .then((hubAds) => {
     var userHubAds = [];
     var otherHubAds = [];
