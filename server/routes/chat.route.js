@@ -63,7 +63,7 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
                 var payloadAndroid = {
                     data: {
                         action: 'MESSAGE',
-                        message: req.body.message,
+                        message: req.body.message ? req.body.message : "",
                         messageFileURL: doc.messageFileURL.location ? doc.messageFileURL.location : "",
                         _id: req.user._id.toString(),
                         kind: req.user.kind,
@@ -80,7 +80,7 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
                     },
                     data: {
                         action: 'MESSAGE',
-                        message: req.body.message,
+                        message: req.body.message ? req.body.message : "",
                         messageFileURL: doc.messageFileURL.location ? doc.messageFileURL.location : "",
                         _id: req.user._id.toString(),
                         kind: req.user.kind,
