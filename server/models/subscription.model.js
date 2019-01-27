@@ -7,13 +7,16 @@ var SubscriptionSchema = new mongoose.Schema({
     title: {
       type: String
     },
+    days: {
+        type: Number
+    },
     price: {
       type: SchemaTypes.Double
     },
-    operationSystem: {
+    inAppPurchaseIdentifierIOS: {
         type: String
     },
-    inAppPurchaseIdentifier: {
+    inAppPurchaseIdentifierAndroid: {
         type: String
     }
 });

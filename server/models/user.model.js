@@ -180,6 +180,12 @@ var SupplierSchema = new mongoose.Schema({
       type: Boolean,
       default: true
     }
+  },
+  subscription: {
+    expireAt: {
+      type: Number,
+      default: 0
+    }
   }
 }, options);
 

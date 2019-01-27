@@ -49,6 +49,7 @@ app.use(chatRouter);
 app.use(privacypolicyRouter);
 app.use(termsAndConditionsRouter);
 app.use(paymentsRouter);
+app.use(subscriptionsRouter);
 app.use(cmsLogoutRouter);
 
 //CMS

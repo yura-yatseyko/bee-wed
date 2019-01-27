@@ -206,10 +206,14 @@ router.post('/hub/adpurchases', (req, res) => {
 
 router.get('/hub/adpurchases', authenticate, (req, res) => {
   AdPurchase.find().then((adPurchases) => {
-      res.send({
-          success: true,
-          data: adPurchases
-      });
+    adPurchases.forEach(element => {
+      element.price = element.price.value.toFixed(2);
+    });
+
+    res.send({
+      success: true,
+      data: adPurchases
+    });
   }, (err) => {
       res.status(400).send(err);
   });
