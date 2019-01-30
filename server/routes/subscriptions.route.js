@@ -103,34 +103,40 @@ router.post('/subscribe', authenticate, async (req, res) => {
         subscription = await Subscription.findOne({
           _id : body.subscriptionId
         });
-    } catch(err) {
-        
+    } catch(err) {        
     }
 
-    const now = (new Date()).getTime() / 1000;
+    if (subscription) {
+        const now = (new Date()).getTime() / 1000;
     
-    let subscribtionExpireAtFromNow = now + subscription.days * 86400;
+        let subscribtionExpireAtFromNow = now + subscription.days * 86400;
 
-    if (req.user.subscription != undefined) {
-        if (req.user.subscription.expireAt == 0) {
-            req.user.subscription.expireAt = subscribtionExpireAtFromNow;
-        } else {
-            req.user.subscription.expireAt += subscription.days * 86400;
-        }
-    } else {
-        req.user.subscription.expireAt = subscribtionExpireAtFromNow;
-    }
-
-    req.user.save().then((doc) => {
-        res.send({
-            success: true,
-            data: {
-                subscription: doc.subscription
+        if (req.user.subscription != undefined) {
+            if (req.user.subscription.expireAt == 0) {
+                req.user.subscription.expireAt = subscribtionExpireAtFromNow;
+            } else {
+                req.user.subscription.expireAt += subscription.days * 86400;
             }
+        } else {
+            req.user.subscription.expireAt = subscribtionExpireAtFromNow;
+        }
+
+        req.user.save().then((doc) => {
+            res.send({
+                success: true,
+                data: {
+                    subscription: doc.subscription
+                }
+            });
+        }, (err) => {
+            res.status(400).send(err);
         });
-    }, (err) => {
-        res.status(400).send(err);
-    });
+    } else {
+        res.status(400).send({
+            success: false,
+            data: {}
+        });
+    }
 });
 
 module.exports = router;
