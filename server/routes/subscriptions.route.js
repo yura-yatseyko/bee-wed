@@ -52,14 +52,14 @@ router.get('/subscriptions', authenticate, (req, res) => {
 });
 
 router.get('/isUserSubscribed', authenticate, (req, res) => {
-    const monthInSeconds = 2592000; // 30 * 24 * 60 * 60
+    const trialInSeconds = 1209600;
 
     const userCreatedAt = req.user._id.getTimestamp().getTime() / 1000;
     const now = (new Date()).getTime() / 1000;
 
     const diff = now - userCreatedAt;
 
-    if (diff < monthInSeconds) {
+    if (diff < trialInSeconds) {
         res.send({
             success: true,
             data: {

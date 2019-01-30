@@ -185,6 +185,10 @@ var SupplierSchema = new mongoose.Schema({
     expireAt: {
       type: Number,
       default: 0
+    },
+    access: {
+      type: Boolean,
+      default: false
     }
   }
 }, options);
