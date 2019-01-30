@@ -12,6 +12,12 @@ var AdPurchaseSchema = new mongoose.Schema({
     },
     price: {
       type: SchemaTypes.Double
+    },
+    inAppPurchaseIdentifierIOS: {
+      type: String
+    },
+    inAppPurchaseIdentifierAndroid: {
+      type: String
     }
 });
 

@@ -190,7 +190,7 @@ router.get('/hub/my', authenticate, (req, res) => {
 });
 
 router.post('/hub/adpurchases', (req, res) => {
-  var body = lodash.pick(req.body, ['title', 'days', 'price']);
+  var body = lodash.pick(req.body, ['title', 'days', 'price', 'inAppPurchaseIdentifierIOS', 'inAppPurchaseIdentifierAndroid']);
 
   var adPurchase = new AdPurchase(body);
 
