@@ -137,8 +137,14 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
 
 });
 
-router.get('/chat/messages/:receiverId', authenticate, (req, res) => {   
+router.get('/chat/messages/:receiverId', authenticate, async (req, res) => {   
     var receiverId = req.params.receiverId; 
+
+    try {
+        await Message.updateMany({receiver: req.user._id}, {isRead: true}).exec();
+    } catch (err) {
+
+    }
     
     Message.find({
         $or: [
@@ -167,7 +173,7 @@ router.get('/chat/messages/:receiverId', authenticate, (req, res) => {
     });
 });
 
-router.get('/chat', authenticate, (req, res) => {   
+router.get('/chat', authenticate, async (req, res) => {   
 
     Message.find({ $or: [
         { 'sender': req.user._id },
@@ -178,12 +184,13 @@ router.get('/chat', authenticate, (req, res) => {
     })
     .populate('sender', 'name avatarUrl status phone lastVisit')
     .populate('receiver', 'name avatarUrl status phone lastVisit')
-    .then((messages) => {
+    .then( async (messages) => {
         var chats = [];
 
         var found = false;
 
-        messages.forEach(function(msg) {
+        for (let index = 0; index < messages.length; index++) {
+            const msg = messages[index];
             if (chats.length > 0) {
                 found = chats.find(function(element) {
 
@@ -216,16 +223,47 @@ router.get('/chat', authenticate, (req, res) => {
                 } else {
                     newMessage.chatWithUser.status = false;
                 }
+                let notReadCount = 0;
+                try {
+                    await Message.find({
+                        receiver: req.user._id,
+                        sender: new Object(newMessage.chatWithUser._id),
+                        isRead: false
+                    }).then((messages) => {
+                        notReadCount = messages.length;
+                    });
+                } catch (err) {
+                }
+
+                newMessage.notReadCount = notReadCount;
 
                 chats.push(newMessage);
             }
-        });
+        };
         res.send({
             success: true,
             data: chats
         });
     }, (err) => {
         res.status(400).send(err);
+    });
+});
+
+router.get('/chat/badges', authenticate, async (req, res) => {
+    Message.find({
+        receiver: req.user._id,
+        isRead: false
+    }).distinct('sender', function(error, ids) {
+        if (error) {
+            res.status(400).send(error);
+        } else {
+            res.send({
+                success: true,
+                data: {
+                    badgeCount: ids.length
+                }
+            });
+        }
     });
 });
 

@@ -25,6 +25,10 @@ var MessageSchema = new mongoose.Schema({
           type: String,
           default: null
         }
+    },
+    isRead: {
+        type: Boolean,
+        default: false
     }
 });
 
