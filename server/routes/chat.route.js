@@ -141,7 +141,7 @@ router.get('/chat/messages/:receiverId', authenticate, async (req, res) => {
     var receiverId = req.params.receiverId; 
 
     try {
-        await Message.updateMany({receiver: req.user._id}, {isRead: true}).exec();
+        await Message.updateMany({receiver: req.user._id, sender: new Object(receiverId)}, {isRead: true}).exec();
     } catch (err) {
 
     }
