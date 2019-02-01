@@ -125,7 +125,11 @@ router.post('/subscribe', authenticate, async (req, res) => {
             res.send({
                 success: true,
                 data: {
-                    subscription: doc.subscription
+                    subscription: {
+                        expireAt: doc.subscription.expireAt,
+                        access: doc.subscription.access,
+                        title: subscription.title
+                    }
                 }
             });
         }, (err) => {
