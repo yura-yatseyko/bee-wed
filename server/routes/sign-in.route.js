@@ -32,6 +32,7 @@ router.post('/signin', (req, res) => {
           access = true;
         }
 
+        user.subscription.expireAt = parseInt(user.subscription.expireAt, 10);;
         user.subscription.access = access;
 
         user.save().then((doc) => {
