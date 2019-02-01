@@ -126,7 +126,7 @@ router.post('/subscribe', authenticate, async (req, res) => {
                 success: true,
                 data: {
                     subscription: {
-                        expireAt: doc.subscription.expireAt,
+                        expireAt: parseInt(doc.subscription.expireAt, 10),
                         access: true,
                         title: subscription.title
                     }
