@@ -19,21 +19,23 @@ router.post('/signin', (req, res) => {
         let platform = req.body.platform;
         user.registrationTokens = user.registrationTokens.concat([{platform, registrationToken, token}]);
 
-        let access = false;
+        if (user.kind === "SupplierUser") {
+          let access = false;
 
-        const trialInSeconds = 1209600;
-        const userCreatedAt = user._id.getTimestamp().getTime() / 1000;
-        const now = (new Date()).getTime() / 1000;
-        const diff = now - userCreatedAt;
+          const trialInSeconds = 1209600;
+          const userCreatedAt = user._id.getTimestamp().getTime() / 1000;
+          const now = (new Date()).getTime() / 1000;
+          const diff = now - userCreatedAt;
 
-        if (diff < trialInSeconds && user.subscription.expireAt == 0) {
-          access = true;
-        } else if (user.subscription.expireAt > now) {
-          access = true;
+          if (diff < trialInSeconds && user.subscription.expireAt == 0) {
+            access = true;
+          } else if (user.subscription.expireAt > now) {
+            access = true;
+          }
+
+          user.subscription.expireAt = parseInt(user.subscription.expireAt, 10);;
+          user.subscription.access = access;
         }
-
-        user.subscription.expireAt = parseInt(user.subscription.expireAt, 10);;
-        user.subscription.access = access;
 
         user.save().then((doc) => {
           res.header('x-auth', token).send({
