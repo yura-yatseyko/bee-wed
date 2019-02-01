@@ -35,7 +35,7 @@ router.get('/subscriptions', authenticate, (req, res) => {
 
       if (req.user.subscription.expireAt != 0) {
         trialPeriod = false;
-        expireAt = req.user.subscription.expireAt;
+        expireAt = parseInt(req.user.subscription.expireAt, 10);
       }
 
       res.send({
