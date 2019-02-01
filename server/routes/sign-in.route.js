@@ -22,9 +22,9 @@ router.post('/signin', (req, res) => {
         if (user.kind === "SupplierUser") {
           let access = false;
 
-          const trialInSeconds = 1209600;
-          const userCreatedAt = user._id.getTimestamp().getTime() / 1000;
-          const now = (new Date()).getTime() / 1000;
+          const trialInSeconds = 1209600000;
+          const userCreatedAt = user._id.getTimestamp().getTime();
+          const now = (new Date()).getTime();
           const diff = now - userCreatedAt;
 
           if (diff < trialInSeconds && user.subscription.expireAt == 0) {
@@ -33,7 +33,7 @@ router.post('/signin', (req, res) => {
             access = true;
           }
 
-          user.subscription.expireAt = parseInt(user.subscription.expireAt, 10);;
+          user.subscription.expireAt = user.subscription.expireAt;
           user.subscription.access = access;
         }
 

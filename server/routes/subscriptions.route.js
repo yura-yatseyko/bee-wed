@@ -35,7 +35,7 @@ router.get('/subscriptions', authenticate, (req, res) => {
 
       if (req.user.subscription.expireAt != 0) {
         trialPeriod = false;
-        expireAt = parseInt(req.user.subscription.expireAt, 10);
+        expireAt = req.user.subscription.expireAt;
       }
 
       res.send({
@@ -52,10 +52,10 @@ router.get('/subscriptions', authenticate, (req, res) => {
 });
 
 router.get('/isUserSubscribed', authenticate, (req, res) => {
-    const trialInSeconds = 1209600;
+    const trialInSeconds = 1209600000;
 
-    const userCreatedAt = req.user._id.getTimestamp().getTime() / 1000;
-    const now = (new Date()).getTime() / 1000;
+    const userCreatedAt = req.user._id.getTimestamp().getTime();
+    const now = (new Date()).getTime();
 
     const diff = now - userCreatedAt;
 
@@ -107,15 +107,14 @@ router.post('/subscribe', authenticate, async (req, res) => {
     }
 
     if (subscription) {
-        const now = (new Date()).getTime() / 1000;
-    
-        let subscribtionExpireAtFromNow = now + subscription.days * 86400;
+        const now = new Date();
+        let subscribtionExpireAtFromNow = Number(now) + Number(subscription.days) * Number(86400000);
 
         if (req.user.subscription != undefined) {
             if (req.user.subscription.expireAt == 0) {
                 req.user.subscription.expireAt = subscribtionExpireAtFromNow;
             } else {
-                req.user.subscription.expireAt += subscription.days * 86400;
+                req.user.subscription.expireAt += Number(subscription.days) * Number(86400000);
             }
         } else {
             req.user.subscription.expireAt = subscribtionExpireAtFromNow;
@@ -126,7 +125,7 @@ router.post('/subscribe', authenticate, async (req, res) => {
                 success: true,
                 data: {
                     subscription: {
-                        expireAt: parseInt(doc.subscription.expireAt, 10),
+                        expireAt: doc.subscription.expireAt,
                         access: true,
                         trialPeriod: false,
                         title: subscription.title
