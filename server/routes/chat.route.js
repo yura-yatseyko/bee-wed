@@ -88,13 +88,13 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
                         phone: req.user.phone ? req.user.phone : "",
                         avatarUrl: req.user.avatarUrl.location ? req.user.avatarUrl.location : ""
                     },
-                    apns: {
-                        payload:{
-                            aps:{
-                                sound: 'default',
-                            }
-                        }
-                    },
+                    // apns: {
+                    //     payload:{
+                    //         aps:{
+                    //             sound: 'default',
+                    //         }
+                    //     }
+                    // },
                 };
 
                 var options = {
