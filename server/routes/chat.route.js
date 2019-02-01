@@ -75,7 +75,7 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
 
                 var payloadIOS = {
                     notification: {
-                      title: "Beewed",
+                      title: "BeeWed",
                       body: "New message from " + req.user.name
                     },
                     data: {
@@ -87,7 +87,14 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
                         name: req.user.name,
                         phone: req.user.phone ? req.user.phone : "",
                         avatarUrl: req.user.avatarUrl.location ? req.user.avatarUrl.location : ""
-                    }
+                    },
+                    apns: {
+                        payload:{
+                            aps:{
+                                sound: 'default',
+                            }
+                        }
+                    },
                 };
 
                 var options = {
