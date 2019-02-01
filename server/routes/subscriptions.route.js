@@ -59,7 +59,7 @@ router.get('/isUserSubscribed', authenticate, (req, res) => {
 
     const diff = now - userCreatedAt;
 
-    if (diff < trialInSeconds) {
+    if (diff < trialInSeconds && req.user.subscription.expireAt == 0) {
         res.send({
             success: true,
             data: {

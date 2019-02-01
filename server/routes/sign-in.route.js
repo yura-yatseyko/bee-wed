@@ -26,7 +26,7 @@ router.post('/signin', (req, res) => {
         const now = (new Date()).getTime() / 1000;
         const diff = now - userCreatedAt;
 
-        if (diff < trialInSeconds) {
+        if (diff < trialInSeconds && user.subscription.expireAt == 0) {
           access = true;
         } else if (user.subscription.expireAt > now) {
           access = true;
