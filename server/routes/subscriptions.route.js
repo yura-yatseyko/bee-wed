@@ -27,8 +27,8 @@ router.post('/subscriptions', (req, res) => {
 router.get('/subscriptions', authenticate, (req, res) => {    
     Subscription.find().then((subscriptions) => {
         subscriptions.forEach(element => {
-        element.price = element.price.value.toFixed(2);
-      });
+            element.price = element.price.value.toFixed(2);
+        });
 
       let trialPeriod = true;
       let expireAt = 0;
@@ -71,6 +71,9 @@ router.get('/isUserSubscribed', authenticate, (req, res) => {
     } else {
         if (req.user.subscription.expireAt < now) {
             Subscription.find().then((subscriptions) => {
+                subscriptions.forEach(element => {
+                    element.price = element.price.value.toFixed(2);
+                });
                 res.send({
                     success: true,
                     data: {
