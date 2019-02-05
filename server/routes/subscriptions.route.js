@@ -5,6 +5,7 @@ var bodyParser = require('body-parser');
 var {authenticate} = require('../middleware/authenticate');
 
 const {Subscription} = require('../models/subscription.model');
+const {Payment} = require('../models/payment.model');
 
 const router = express.Router();
 router.use(bodyParser.json());
