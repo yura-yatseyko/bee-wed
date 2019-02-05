@@ -124,6 +124,14 @@ router.post('/subscribe', authenticate, async (req, res) => {
         }
 
         req.user.save().then((doc) => {
+            var payment = new Payment();
+            payment.createdAt = new Date();
+            payment.price = subscription.price;
+            payment.description = subscription.title + " subscription";
+            payment._creator = req.user._id;
+          
+            payment.save();
+
             res.send({
                 success: true,
                 data: {
