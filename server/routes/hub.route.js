@@ -123,6 +123,23 @@ router.post('/hub/prolongate', authenticate, (req, res) => {
   }); 
 });
 
+router.get('/hub/one/:hubId', authenticate, async (req, res) => {   
+  var hubId = req.params.hubId; 
+
+  HubAd.findOne({
+    '_id': new ObjectID(hubId)
+  }, function (err, hubAd) {
+    if (hubAd) {
+      res.send({
+        success: true,
+        data: hubAd
+      });
+    } else {
+      es.status(400).send(err);
+    }
+  });
+});
+
 router.get('/hub', authenticate, (req, res) => {
   HubAd.find({
   })
