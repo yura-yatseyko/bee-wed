@@ -4,7 +4,7 @@ var multer  = require('multer');
 var multerS3 = require('multer-s3')
 
 var {s3} = require('../services/aws');
-var {FirebaseAdmin} = require('../services/firebase-admin');
+let firebaseAdmin = require('../services/firebase-admin');
 
 var errorHandling = require('../middleware/errorHandling');
 
@@ -108,7 +108,7 @@ router.post('/signup/supplier', supplierUpload, (req, res) => {
         var payloadAndroid = {
           data: {
             type: "new_supplier",
-            id: req.user._id.toString(),
+            id: user._id.toString(),
           }
         };
       
@@ -120,15 +120,17 @@ router.post('/signup/supplier', supplierUpload, (req, res) => {
           },
           data: {
             type: "new_supplier",
-            id: req.user._id.toString(),
+            id: user._id.toString(),
           }
         };
 
         User.find(params).then((bridegrroms) => {
           bridegrroms.forEach(function(bridegrrom) {
-            bridegrrom.registrationTokens.forEach(function(rt) {
-              FirebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
-            });
+            if (bridegrrom.notifications.newSupplier) {
+              bridegrrom.registrationTokens.forEach(function(rt) {
+                firebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
+              });
+            }
           });
         });
 

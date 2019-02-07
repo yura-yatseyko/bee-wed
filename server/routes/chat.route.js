@@ -4,7 +4,7 @@ var multer  = require('multer');
 var multerS3 = require('multer-s3')
 
 var {s3} = require('../services/aws');
-var {FirebaseAdmin} = require('../services/firebase-admin');
+let firebaseAdmin = require('../services/firebase-admin');
 
 var {authenticate} = require('../middleware/authenticate');
 
@@ -85,7 +85,7 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
                     }
                 };
                 result.registrationTokens.forEach(function(rt) {
-                    FirebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
+                    firebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
                 });
             }
         });
