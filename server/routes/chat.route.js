@@ -2,16 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 var multer  = require('multer');
 var multerS3 = require('multer-s3')
-var admin = require('firebase-admin');
-
-var serviceAccount = require("../../beewed-17604-firebase-adminsdk-s0zgk-c0ee9ff835.json");
-
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  databaseURL: "https://beewed-17604.firebaseio.com"
-});
 
 var {s3} = require('../services/aws');
+var {FirebaseAdmin} = require('../services/firebase-admin');
 
 var {authenticate} = require('../middleware/authenticate');
 
@@ -58,10 +51,10 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
             "_id" : new ObjectID(req.body.receiver)
         }, function (err, result) {
             if (result) {
-                // var registrationToken = 'fK7GQxp64ps:APA91bGaU0C1XpJbwSHpS9CALMOSX7zNzofOEtnhtuCiC905HujHOw4KnRZzIPeXrN0_zT7kSmPz010fq06kVi10WVYU3JVGKiN1hXHTMCoHCm50DS_b4v4rZAmg9a8CCDF46VddPMrt';
         
                 var payloadAndroid = {
                     data: {
+                        type: "new_message",
                         action: 'MESSAGE',
                         message: req.body.message ? req.body.message : "",
                         messageFileURL: doc.messageFileURL.location ? doc.messageFileURL.location : "",
@@ -80,6 +73,7 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
                       sound: 'default',
                     },
                     data: {
+                        type: "new_message",
                         action: 'MESSAGE',
                         message: req.body.message ? req.body.message : "",
                         messageFileURL: doc.messageFileURL.location ? doc.messageFileURL.location : "",
@@ -88,40 +82,10 @@ router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {
                         name: req.user.name,
                         phone: req.user.phone ? req.user.phone : "",
                         avatarUrl: req.user.avatarUrl.location ? req.user.avatarUrl.location : ""
-                    },
-                    // apns: {
-                    //     payload:{
-                    //         aps:{
-                    //             sound: 'default',
-                    //         }
-                    //     }
-                    // },
-                };
-
-                var options = {
-                    priority: "high",
-                };
-
-                result.registrationTokens.forEach(function(rt) {
-                    console.log(rt.registrationToken);
-
-                    if (rt.platform === 'ios') {
-                        admin.messaging().sendToDevice(rt.registrationToken, payloadIOS, options)
-                        .then(function(response) {
-                         console.log("Successfully sent message:", response);
-                        })
-                        .catch(function(error) {
-                            console.log("Error sending message:", error);
-                        });
-                    } else {
-                        admin.messaging().sendToDevice(rt.registrationToken, payloadAndroid, options)
-                        .then(function(response) {
-                         console.log("Successfully sent message:", response);
-                        })
-                        .catch(function(error) {
-                            console.log("Error sending message:", error);
-                        });
                     }
+                };
+                result.registrationTokens.forEach(function(rt) {
+                    FirebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
                 });
             }
         });

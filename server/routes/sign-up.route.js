@@ -4,6 +4,7 @@ var multer  = require('multer');
 var multerS3 = require('multer-s3')
 
 var {s3} = require('../services/aws');
+var {FirebaseAdmin} = require('../services/firebase-admin');
 
 var errorHandling = require('../middleware/errorHandling');
 
@@ -100,6 +101,37 @@ router.post('/signup/supplier', supplierUpload, (req, res) => {
       supplierUser.registrationTokens = supplierUser.registrationTokens.concat([{platform, registrationToken, token}]);
 
       supplierUser.save().then((user) => {
+        var params = {
+          kind: "BrideGroomUser"
+        };
+
+        var payloadAndroid = {
+          data: {
+            type: "new_supplier",
+            id: req.user._id.toString(),
+          }
+        };
+      
+        var payloadIOS = {
+          notification: {
+            title: "BeeWed",
+            body: "New supplier joined BeeWed",
+            sound: 'default',
+          },
+          data: {
+            type: "new_supplier",
+            id: req.user._id.toString(),
+          }
+        };
+
+        User.find(params).then((bridegrroms) => {
+          bridegrroms.forEach(function(bridegrrom) {
+            bridegrrom.registrationTokens.forEach(function(rt) {
+              FirebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
+            });
+          });
+        });
+
         res.header('x-auth', token).send({
           success: true,
           data: user

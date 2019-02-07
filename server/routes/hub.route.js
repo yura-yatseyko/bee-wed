@@ -128,14 +128,16 @@ router.get('/hub/one/:hubId', authenticate, async (req, res) => {
 
   HubAd.findOne({
     '_id': new ObjectID(hubId)
-  }, function (err, hubAd) {
+  })
+  .populate('_creator', 'name supplierType avatarUrl phone status lastVisit')
+  .then((hubAd) => {
     if (hubAd) {
       res.send({
         success: true,
         data: hubAd
       });
     } else {
-      es.status(400).send(err);
+      es.status(400).send();
     }
   });
 });
