@@ -3,6 +3,8 @@ const lodash = require('lodash');
 var multer  = require('multer');
 var multerS3 = require('multer-s3')
 
+let firebaseAdmin = require('../services/firebase-admin');
+
 var {authenticate} = require('../middleware/authenticate');
 var {s3} = require('../services/aws');
 
@@ -140,6 +142,35 @@ router.get('/hub/one/:hubId', authenticate, async (req, res) => {
       es.status(400).send();
     }
   });
+});
+
+router.get('/hubExpiryPush/:hubId', authenticate, (req, res) => {
+  var hubId = req.params.hubId;
+
+  var payloadAndroid = {
+    data: {
+      type: "advert_expiry_alert",
+      id: hubId,
+    }
+  };
+
+  var payloadIOS = {
+    notification: {
+      title: "BeeWed",
+      body: "Advert Expiry Alert",
+      sound: 'default',
+    },
+    data: {
+      type: "advert_expiry_alert",
+      id: hubId,
+    }
+  };
+
+  req.user.registrationTokens.forEach(function(rt) {
+    firebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
+  });
+
+
 });
 
 router.get('/hub', authenticate, (req, res) => {
