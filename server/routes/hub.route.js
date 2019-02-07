@@ -2,6 +2,7 @@ const express = require('express');
 const lodash = require('lodash');
 var multer  = require('multer');
 var multerS3 = require('multer-s3')
+var schedule = require('node-schedule');
 
 let firebaseAdmin = require('../services/firebase-admin');
 
@@ -71,6 +72,45 @@ router.post('/hub', authenticate, mediaFile, (req, res) => {
           payment._creator = req.user._id;
 
           payment.save();
+
+          // var date = new Date(expireAt);
+          // date.setDate(date.getDate()-1);
+
+          var date = new Date(Date.now() + 15000);
+ 
+          var j = schedule.scheduleJob(date, function() {
+            User.findOne({
+              '_id': req.user._id
+            }).then((user) => {
+              if (user) {
+                if (user.notifications.advertExpiryAlert) {
+                  var payloadAndroid = {
+                    data: {
+                      type: "advert_expiry_alert",
+                      id: hubAd._id.toString(),
+                    }
+                  };
+                
+                  var payloadIOS = {
+                    notification: {
+                      title: "BeeWed",
+                      body: "Advert Expiry Alert",
+                      sound: 'default',
+                    },
+                    data: {
+                      type: "advert_expiry_alert",
+                      id: hubAd._id.toString(),
+                    }
+                  };
+                
+                  user.registrationTokens.forEach(function(rt) {
+                    firebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
+                  });
+                }
+              }
+            });
+            console.log('The world is going to end today.');
+          });
 
           res.send({
             success: true,
