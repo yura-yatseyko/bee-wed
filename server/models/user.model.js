@@ -78,6 +78,10 @@ var BrideGroomSchema = new mongoose.Schema({
       default: null
     }
   },
+  isSubscribedToNewsletter: {
+    type: Boolean,
+    default: false
+  },
   status: {
     type: Boolean,
     default: false
