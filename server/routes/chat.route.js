@@ -11,6 +11,7 @@ var {authenticate} = require('../middleware/authenticate');
 const {ObjectID} = require('mongodb');
 
 const {Message} = require('../models/message.model');
+const {RemovedMessage} = require('../models/removed-message.model');
 const {User} = require('../models/user.model');
 
 const router = express.Router();
@@ -209,7 +210,22 @@ router.get('/chat', authenticate, async (req, res) => {
 
                 newMessage.notReadCount = notReadCount;
 
-                chats.push(newMessage);
+                let deleted = false;
+                try {
+                    await RemovedMessage.find({
+                        removedBy: req.user._id,
+                        removedWith: new Object(newMessage.chatWithUser._id)
+                    }).then((removedMessages) => {
+                        if (removedMessages.length > 0) {
+                            deleted = true;
+                        }
+                    });
+                } catch (err) {
+                }
+                
+                if (!deleted) {
+                    chats.push(newMessage);
+                }
             }
         };
         res.send({
@@ -236,6 +252,23 @@ router.get('/chat/badges', authenticate, async (req, res) => {
                 }
             });
         }
+    });
+});
+
+router.delete('/chat/:chatWithId', authenticate, async (req, res) => {
+    var chatWithId = req.params.chatWithId;
+
+    var removedMessage = new RemovedMessage();
+    removedMessage.removedBy = req.user._id;
+    removedMessage.removedWith = new ObjectID(chatWithId);
+
+    removedMessage.save().then((doc) => {
+        res.send({
+            success: true,
+            data: doc
+        });
+    }, (err) => {
+        res.status(400).send(err);
     });
 });
 
