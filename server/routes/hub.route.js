@@ -88,6 +88,8 @@ router.post('/hub', authenticate, mediaFile, (req, res) => {
                     data: {
                       type: "advert_expiry_alert",
                       id: hubAd._id.toString(),
+                      message: "Advert Expiry Alert",
+                      name: "BeeWed",
                     }
                   };
                 
@@ -191,6 +193,8 @@ router.get('/hubExpiryPush/:hubId', authenticate, (req, res) => {
     data: {
       type: "advert_expiry_alert",
       id: hubId,
+      message: "Advert Expiry Alert",
+      name: "BeeWed",
     }
   };
 

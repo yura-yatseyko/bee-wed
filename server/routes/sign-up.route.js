@@ -111,6 +111,8 @@ router.post('/signup/supplier', supplierUpload, (req, res) => {
           data: {
             type: "new_supplier",
             id: user._id.toString(),
+            message: "New supplier joined BeeWed",
+            name: "BeeWed",
           }
         };
       
