@@ -93,7 +93,7 @@ router.get('/cms/users/toexel', (req, res) => {
         
 
         var conf ={};
-            conf.stylesXmlFile = "styles.xml";
+            // conf.stylesXmlFile = "styles.xml";
         conf.name = "my";
         conf.cols = [{
             caption:'ID',
