@@ -79,6 +79,73 @@ router.get('/cms/users/bridegroom', authenticate, async (req, res) => {
     });
 });
 
+router.get('/cms/users/subscribed', authenticate, async (req, res) => {
+    var body = lodash.pick(req.query, ['searchText',  'page']);
+
+    let page = Number(body.page) - Number(1);
+
+    var count = 0;
+    var queryResultCount = 0;
+
+    var query = {
+        kind: "BrideGroomUser",
+        isSubscribedToNewsletter: true,
+    }
+
+    try {
+        let users = await User.find(query).exec();
+        count = users.length;
+    } catch (err) {
+        console.log(err);
+    }
+
+    try {
+        if (body.searchText != undefined) {
+            if (body.searchText.length > 0) {
+                query.name = { $regex: body.searchText }
+            }
+        }
+
+
+        try {
+            let users = await User.find(query).exec();
+            queryResultCount = users.length;
+        } catch (err) {
+            console.log(err);
+        }
+
+        User.find(query).skip(page * LIMIT).limit(LIMIT).then((users) => {
+            var modifiedUsers = [];
+            users.forEach(function(user) {
+                let newUser = {
+                    _id: user._id,
+                    email: user.email,
+                    name: user.name,
+                    registerDate: user._id.getTimestamp().getTime(),
+                    supplierType: user.supplierType,
+                    phone: user.phone,
+                    websiteURL: user.websiteURL,
+                }
+    
+                modifiedUsers.push(newUser);
+            });
+            res.status(200).send({
+                success: true,
+                data: {
+                    amount: count,
+                    queryResultCount: queryResultCount,
+                    users: modifiedUsers
+                }
+            });
+        }).catch((e) => {
+            res.status(400).send();
+        });
+
+    } catch (er) {
+        res.status(400).send();
+    }
+});
+
 router.get('/cms/users/supplier', authenticate, async (req, res) => {
     var body = lodash.pick(req.query, ['searchText', 'supplierType', 'page']);
 

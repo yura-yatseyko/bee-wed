@@ -36,7 +36,7 @@ router.post('/signup/bridegroom', brideGroomUpload, (req, res) => {
   var body = _.pick(req.body, ['email', 'password', 'name', 'weddingDate', 'weddingVenue', 'isSubscribedToNewsletter']);
   var brideGroomUser = new BrideGroomUser(body);
 
-  brideGroomUser.isSubscribedToNewsletter = Boolean(body.isSubscribedToNewsletter);
+  brideGroomUser.isSubscribedToNewsletter = body.isSubscribedToNewsletter;
 
   if (req.file) {
     brideGroomUser.avatarUrl.location = req.file.location;
