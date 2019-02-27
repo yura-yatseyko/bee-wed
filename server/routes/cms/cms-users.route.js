@@ -2,6 +2,7 @@ const express = require('express');
 var bodyParser = require('body-parser');
 const lodash = require('lodash');
 var async = require("async");
+var mongoXlsx = require('mongo-xlsx');
 
 const LIMIT = Number(10);
 
@@ -73,6 +74,47 @@ router.get('/cms/users/bridegroom', authenticate, async (req, res) => {
                 queryResultCount: queryResultCount,
                 users: modifiedUsers
             }
+        });
+    }).catch((e) => {
+        res.status(400).send();
+    });
+});
+
+router.get('/cms/users/toexel', authenticate, (req, res) => {
+    var query = {
+        kind: "BrideGroomUser",
+        isSubscribedToNewsletter: true,
+    }
+
+    User.find(query).then((users) => {
+        var modifiedUsers = [];
+        users.forEach(function(user) {
+            let newUser = {
+                _id: user._id,
+                email: user.email,
+                name: user.name,
+                registerDate: user._id.getTimestamp().getTime(),
+                supplierType: user.supplierType,
+                phone: user.phone,
+                websiteURL: user.websiteURL,
+            }
+
+            modifiedUsers.push(newUser);
+        });
+
+        var model = mongoXlsx.buildDynamicModel(modifiedUsers);
+
+        /* Generate Excel */
+        mongoXlsx.mongoData2Xlsx(modifiedUsers, model, function(err, data) {
+            console.log(err);
+            console.log(data);
+            
+            res.status(200).send({
+                success: true,
+                data: {
+                    url: data.fullPath
+                }
+            });
         });
     }).catch((e) => {
         res.status(400).send();
