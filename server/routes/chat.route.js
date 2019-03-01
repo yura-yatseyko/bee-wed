@@ -227,18 +227,18 @@ router.get('/chat', authenticate, async (req, res) => {
 
                 newMessage.notReadCount = notReadCount;
 
-                let deleted = false;
-                try {
-                    await RemovedMessage.find({
-                        removedBy: req.user._id,
-                        removedWith: new Object(newMessage.chatWithUser._id)
-                    }).then((removedMessages) => {
-                        if (removedMessages.length > 0) {
-                            deleted = true;
-                        }
-                    });
-                } catch (err) {
-                }
+                // let deleted = false;
+                // try {
+                //     await RemovedMessage.find({
+                //         removedBy: req.user._id,
+                //         removedWith: new Object(newMessage.chatWithUser._id)
+                //     }).then((removedMessages) => {
+                //         if (removedMessages.length > 0) {
+                //             deleted = true;
+                //         }
+                //     });
+                // } catch (err) {
+                // }
                 
                 if (!deleted) {
                     chats.push(newMessage);
