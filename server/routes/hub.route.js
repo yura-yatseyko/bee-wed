@@ -73,10 +73,10 @@ router.post('/hub', authenticate, mediaFile, (req, res) => {
 
           payment.save();
 
-          // var date = new Date(expireAt);
-          // date.setDate(date.getDate()-1);
+          var date = new Date(expireAt);
+          date.setDate(date.getDate()-1);
 
-          var date = new Date(Date.now() + 15000);
+          // var date = new Date(Date.now() + 15000);
  
           var j = schedule.scheduleJob(date, function() {
             User.findOne({
@@ -104,10 +104,12 @@ router.post('/hub', authenticate, mediaFile, (req, res) => {
                       id: hubAd._id.toString(),
                     }
                   };
-                
-                  user.registrationTokens.forEach(function(rt) {
-                    firebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
-                  });
+
+                  if (user.notifications.advertExpiryAlert) {
+                    user.registrationTokens.forEach(function(rt) {
+                      firebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
+                    });
+                  }
                 }
               }
             });
@@ -210,11 +212,11 @@ router.get('/hubExpiryPush/:hubId', authenticate, (req, res) => {
     }
   };
 
-  req.user.registrationTokens.forEach(function(rt) {
-    firebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
-  });
-
-
+  if (req.user.notifications.advertExpiryAlert) {
+    req.user.registrationTokens.forEach(function(rt) {
+      firebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
+    });
+  }
 });
 
 router.get('/hub', authenticate, (req, res) => {
