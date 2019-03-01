@@ -68,7 +68,7 @@ router.post('/hub', authenticate, mediaFile, (req, res) => {
           var payment = new Payment();
           payment.createdAt = new Date();
           payment.price = result.price;
-          payment.description = result.title + " advert";
+          payment.description = result.title + " Advert";
           payment._creator = req.user._id;
 
           payment.save();
@@ -148,7 +148,7 @@ router.post('/hub/prolongate', authenticate, (req, res) => {
               var payment = new Payment();
               payment.createdAt = new Date();
               payment.price = result.price;
-              payment.description = result.title + " advert prolongation";
+              payment.description = result.title + " Advert prolongation";
               payment._creator = req.user._id;
 
               payment.save();
