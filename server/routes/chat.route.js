@@ -102,9 +102,12 @@ router.post('/chat/messages', authenticate, messageFileUpload, async (req, res) 
                         avatarUrl: req.user.avatarUrl.location ? req.user.avatarUrl.location : ""
                     }
                 };
-                result.registrationTokens.forEach(function(rt) {
-                    firebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
-                });
+
+                if (result.newMessage) {
+                    result.registrationTokens.forEach(function(rt) {
+                        firebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
+                    });
+                } 
             }
         });
 
