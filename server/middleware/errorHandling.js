@@ -33,13 +33,13 @@ module.exports =  {
         }
     },
     signInErrorHandling: function (errorBody) {
-        var title = "Wrong credentials";
+        var title = "Error";
         var message = "";
 
         if (errorBody.code == 11) {
-            message = "User with this email does not exist";
+            message = "Wrong credentials";
         } else if (errorBody.code == 2) {
-            message = "User with this password does not exist";
+            message = "Wrong credentials";
         }
 
         return {
@@ -77,7 +77,7 @@ module.exports =  {
         var message = "";
 
         if (errorBody.code == 1) {
-            message = "User with this password does not exist";
+            message = "Wrong credentials";
         } else {
             title = "Error!";
             message = "Password was not updated";
