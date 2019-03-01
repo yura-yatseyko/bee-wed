@@ -34,13 +34,30 @@ var upload = multer({
   
 var messageFileUpload = upload.single('messageFile');
 
-router.post('/chat/messages', authenticate, messageFileUpload, (req, res) => {    
+router.post('/chat/messages', authenticate, messageFileUpload, async (req, res) => {    
     
     var message = new Message();
     message.message = req.body.message;
     message.createdAt = new Date();
     message.sender = req.user._id;
     message.receiver = new ObjectID(req.body.receiver);
+
+    try {
+        RemovedMessage.deleteOne({
+            $or: [
+                {
+                    removedBy: req.user._id,
+                    removedWith: new ObjectID(req.body.receiver)
+                },
+                {
+                    removedBy: new ObjectID(req.body.receiver),
+                    removedWith: req.user._id
+                }
+            ]
+        }).then(() => {}, (err) => {});
+    } catch (err) {
+
+    }
 
     if (req.file) {
         message.messageFileURL.location = req.file.location;
