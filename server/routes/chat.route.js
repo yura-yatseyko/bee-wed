@@ -177,25 +177,26 @@ router.get('/chat', authenticate, async (req, res) => {
     .then( async (messages) => {
         var chats = [];
 
-        var found = false;
+        
 
         for (let index = 0; index < messages.length; index++) {
+            var found = false;
             const msg = messages[index];
             if (chats.length > 0) {
-                found = chats.find(function(element) {
-
-                    // if (!msg.sender || !req.user._id || !msg.receiver) {
-                    //     return true
-                    // }
-
+                chats.forEach(function(element) {
+                    
                     if (req.user._id.equals(msg.sender._id)) {
-                        return element.chatWithUser._id.equals(msg.receiver._id);
+                        if (element.chatWithUser._id.equals(msg.receiver._id)) {
+                            found = true;
+                        }
                     } else {
-                        return element.chatWithUser._id.equals(msg.sender._id);
+                        if (element.chatWithUser._id.equals(msg.sender._id)) {
+                            found = true;
+                        }
                     }
                 });  
             }
-            if (!found || found == undefined) {
+            if (!found) {
                 var newMessage = Object.create({});
                 newMessage.messageFileURL = msg.messageFileURL;
                 newMessage.message = msg.message;
