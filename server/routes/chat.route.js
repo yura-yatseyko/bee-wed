@@ -195,7 +195,7 @@ router.get('/chat', authenticate, async (req, res) => {
                     }
                 });  
             }
-            if (!found) {
+            if (!found || found == undefined) {
                 var newMessage = Object.create({});
                 newMessage.messageFileURL = msg.messageFileURL;
                 newMessage.message = msg.message;
