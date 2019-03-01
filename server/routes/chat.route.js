@@ -43,7 +43,7 @@ router.post('/chat/messages', authenticate, messageFileUpload, async (req, res) 
     message.receiver = new ObjectID(req.body.receiver);
 
     try {
-        RemovedMessage.deleteOne({
+        await RemovedMessage.deleteOne({
             $or: [
                 {
                     removedBy: req.user._id,
