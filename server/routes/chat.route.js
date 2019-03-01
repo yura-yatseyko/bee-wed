@@ -103,7 +103,7 @@ router.post('/chat/messages', authenticate, messageFileUpload, async (req, res) 
                     }
                 };
 
-                if (result.newMessage) {
+                if (result.notifications.newMessage) {
                     result.registrationTokens.forEach(function(rt) {
                         firebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
                     });
