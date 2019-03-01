@@ -181,20 +181,20 @@ router.get('/chat', authenticate, async (req, res) => {
 
         for (let index = 0; index < messages.length; index++) {
             const msg = messages[index];
-            // if (chats.length > 0) {
-            //     found = chats.find(function(element) {
+            if (chats.length > 0) {
+                found = chats.find(function(element) {
 
-            //         if (!msg.sender || !req.user._id || !msg.receiver) {
-            //             return true
-            //         }
+                    // if (!msg.sender || !req.user._id || !msg.receiver) {
+                    //     return true
+                    // }
 
-            //         if (req.user._id.equals(msg.sender._id)) {
-            //             return element.chatWithUser._id.equals(msg.receiver._id);
-            //         } else {
-            //             return element.chatWithUser._id.equals(msg.sender._id);
-            //         }
-            //     });  
-            // }
+                    if (req.user._id.equals(msg.sender._id)) {
+                        return element.chatWithUser._id.equals(msg.receiver._id);
+                    } else {
+                        return element.chatWithUser._id.equals(msg.sender._id);
+                    }
+                });  
+            }
             if (!found) {
                 var newMessage = Object.create({});
                 newMessage.messageFileURL = msg.messageFileURL;
