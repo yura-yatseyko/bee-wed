@@ -227,7 +227,7 @@ router.get('/chat', authenticate, async (req, res) => {
 
                 newMessage.notReadCount = notReadCount;
 
-                // let deleted = false;
+                let deleted = false;
                 // try {
                 //     await RemovedMessage.find({
                 //         removedBy: req.user._id,
