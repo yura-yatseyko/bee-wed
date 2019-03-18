@@ -33,8 +33,8 @@ const cmsSupplierLocationsRouter = require('./routes/cms/cms-supplier-locations.
 const cmsAuthenticationRouter = require('./routes/cms/cms-authentication.route.js');
 const cmsNotificationsRouter = require('./routes/cms/cms-notifications.route.js');
 
-app.use(express.static(path.join( __dirname + '/../src/build/static' )));
-app.use(express.static(path.join( __dirname + '/../src/build' )));
+app.use(express.static(path.join( __dirname + '/../src/static' )));
+app.use(express.static(path.join( __dirname + '/../src/' )));
 
 app.use(supplierTypesRouter);
 app.use(supplierLocationsRouter);
@@ -65,7 +65,7 @@ app.use(cors());
 
 
 app.get('/',function (req,res) {
-    res.sendFile('index.html', { root: path.join(__dirname, '/../src/build') })
+    res.sendFile('index.html', { root: path.join(__dirname, '/../src') })
 });
 
 const port = process.env.PORT;
