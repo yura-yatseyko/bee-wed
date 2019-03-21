@@ -32,18 +32,7 @@ router.post('/cms/notifications/send', authenticate, (req, res) => {
         }
     };
 
-    console.log(payloadAndroid);
-    console.log(payloadIOS);
-
-    if (body.sendTo === '0') {
-        User.find().then((users) => {
-            users.forEach(function(user) {
-                user.registrationTokens.forEach(function(rt) {
-                    firebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
-                });
-            });
-        });
-    } else if (body.sendTo === '1') {
+    if (body.sendTo === '1') {
         SupplierUser.find().then((users) => {
             users.forEach(function(user) {
                 user.registrationTokens.forEach(function(rt) {
@@ -53,6 +42,14 @@ router.post('/cms/notifications/send', authenticate, (req, res) => {
         });
     } else if (body.sendTo === '2') {
         BrideGroomUser.find().then((users) => {
+            users.forEach(function(user) {
+                user.registrationTokens.forEach(function(rt) {
+                    firebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
+                });
+            });
+        });
+    } else {
+        User.find().then((users) => {
             users.forEach(function(user) {
                 user.registrationTokens.forEach(function(rt) {
                     firebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
