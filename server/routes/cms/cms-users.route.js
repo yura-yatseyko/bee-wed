@@ -1,8 +1,12 @@
 const express = require('express');
 var bodyParser = require('body-parser');
 const lodash = require('lodash');
-var fs = require('fs');
+var async = require("async");
+var mongoXlsx = require('mongo-xlsx');
 var nodeExcel = require('excel-export');
+
+var Iconv     = require("iconv").Iconv;
+var iconv     = new Iconv('utf8', 'utf16le');
 
 const LIMIT = Number(10);
 
@@ -86,10 +90,8 @@ router.get('/cms/users/toexel', (req, res) => {
         kind: "BrideGroomUser",
         isSubscribedToNewsletter: true,
     }
-
+ 
     User.find(query).then((users) => {
-        
-
         var data='';
 
         users.forEach(function(user) {
@@ -102,24 +104,77 @@ router.get('/cms/users/toexel', (req, res) => {
                 phone: user.phone,
                 websiteURL: user.websiteURL,
             }
-            data=data + user._id + '\t' + user.email + '\t' + user.name +'\n';
+            data=data + user._id + '\t' + user.email + '\t' + user.name + '\t' + new Date(user._id.getTimestamp().getTime()) +'\n';
+        });
+ 
+        res.setHeader('Content-Type',        'application/vnd.openxmlformats');
+        res.setHeader("Content-Disposition", 'attachment; filename=report.xls');
+        res.write(new Buffer([0xff, 0xfe]));
+        res.write(iconv.convert(data));
+        res.end();
+        
+        
+        }).catch((e) => {
+            res.status(400).send();
         });
 
-        fs.appendFile('Report.xls', data, (err) => {
-            if (err) throw err;
-            console.log('File created');
-        });
+    // var query = {
+    //     kind: "BrideGroomUser",
+    //     isSubscribedToNewsletter: true,
+    // }
 
-        var file = __dirname + '/Report.xls';
-        console.log(file);
+    // User.find(query).then((users) => {
+    //     var modifiedUsers = [];
         
-        res.download(file);
 
-    }).catch((e) => {
-        console.log(e);
+    //     var conf ={};
+    //         // conf.stylesXmlFile = "styles.xml";
+    //     conf.name = "my";
+    //     conf.cols = [{
+    //         caption:'ID',
+    //         type:'string',
+    //         width: 500
+    //     }, {
+    //             caption:'EMAIL',
+    //             type:'string',
+    //             width:200
+    //         }, {
+    //             caption:'NAME',
+    //             type:'string',
+    //             width:200
+    //         }, {
+    //             caption:'DATE',
+    //             type:'string'    ,
+    //             width:200           
+    //         }];
+
+    //         conf.rows = [];
+
+    //         users.forEach(function(user) {
+    //             let newUser = {
+    //                 _id: user._id,
+    //                 email: user.email,
+    //                 name: user.name,
+    //                 registerDate: user._id.getTimestamp().getTime(),
+    //                 supplierType: user.supplierType,
+    //                 phone: user.phone,
+    //                 websiteURL: user.websiteURL,
+    //             }
+    
+    //             modifiedUsers.push(newUser);
+    //             conf.rows.push([user._id, user.email, user.name, user._id.getTimestamp().getTime()]);
+    //         });
+
+    //         var result = nodeExcel.execute(conf);
+    //         res.setHeader('Content-Type', 'application/vnd.openxmlformats');
+    //         res.setHeader("Content-Disposition", "attachment; filename=" + "Report.xlsx");
+    //         res.end(result, 'binary');
+
+    // }).catch((e) => {
+    //     console.log(e);
         
-        res.status(400).send();
-    });
+    //     res.status(400).send();
+    // });
 });
 
 router.get('/cms/users/subscribed', authenticate, async (req, res) => {
