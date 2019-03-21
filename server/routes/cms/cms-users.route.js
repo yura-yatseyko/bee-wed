@@ -1,8 +1,7 @@
 const express = require('express');
 var bodyParser = require('body-parser');
 const lodash = require('lodash');
-var async = require("async");
-var mongoXlsx = require('mongo-xlsx');
+var fs = require('fs');
 var nodeExcel = require('excel-export');
 
 const LIMIT = Number(10);
@@ -89,51 +88,32 @@ router.get('/cms/users/toexel', (req, res) => {
     }
 
     User.find(query).then((users) => {
-        var modifiedUsers = [];
         
 
-        var conf ={};
-            // conf.stylesXmlFile = "styles.xml";
-        conf.name = "my";
-        conf.cols = [{
-            caption:'ID',
-            type:'string',
-            width: 500
-        }, {
-                caption:'EMAIL',
-                type:'string',
-                width:200
-            }, {
-                caption:'NAME',
-                type:'string',
-                width:200
-            }, {
-                caption:'DATE',
-                type:'string'    ,
-                width:200           
-            }];
+        var data='';
 
-            conf.rows = [];
+        users.forEach(function(user) {
+            let newUser = {
+                _id: user._id,
+                email: user.email,
+                name: user.name,
+                registerDate: user._id.getTimestamp().getTime(),
+                supplierType: user.supplierType,
+                phone: user.phone,
+                websiteURL: user.websiteURL,
+            }
+            data=data + user._id + '\t' + user.email + '\t' + user.name +'\n';
+        });
 
-            users.forEach(function(user) {
-                let newUser = {
-                    _id: user._id,
-                    email: user.email,
-                    name: user.name,
-                    registerDate: user._id.getTimestamp().getTime(),
-                    supplierType: user.supplierType,
-                    phone: user.phone,
-                    websiteURL: user.websiteURL,
-                }
-    
-                modifiedUsers.push(newUser);
-                conf.rows.push([user._id, user.email, user.name, user._id.getTimestamp().getTime()]);
-            });
+        fs.appendFile('Report.xls', data, (err) => {
+            if (err) throw err;
+            console.log('File created');
+        });
 
-            var result = nodeExcel.execute(conf);
-            res.setHeader('Content-Type', 'application/vnd.openxmlformats');
-            res.setHeader("Content-Disposition", "attachment; filename=" + "Report.xlsx");
-            res.end(result, 'binary');
+        var file = __dirname + '/Report.xls';
+        console.log(file);
+        
+        res.download(file);
 
     }).catch((e) => {
         console.log(e);
