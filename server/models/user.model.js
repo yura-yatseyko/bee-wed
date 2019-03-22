@@ -8,6 +8,7 @@ var async = require("async");
 
 const {ObjectID} = require('mongodb');
 const {SupplierType, SupplierTypeSchema} = require('./supplier-type.model');
+const {SupplierLocation, SupplierLocationSchema} = require('./supplier-location.model');
 
 var SchemaTypes = mongoose.Schema.Types;
 
@@ -113,6 +114,10 @@ var SupplierSchema = new mongoose.Schema({
     type: SupplierTypeSchema,
     default: null
   },
+  supplierLocation: {
+    type: SupplierLocationSchema,
+    default: null
+  },
   websiteURL: {
     type: String
   },
@@ -150,6 +155,10 @@ var SupplierSchema = new mongoose.Schema({
     }
   }],
   status: {
+    type: Boolean,
+    default: false
+  },
+  liveGPSEnabled: {
     type: Boolean,
     default: false
   },
@@ -234,6 +243,20 @@ UserSchema.methods.updatesSupplierStatus = function (status) {
   });
 };
 
+UserSchema.methods.updatesSupplierGPSFlagEnabled = function (liveGPSEnabled) {
+  var user = this;
+
+  user.liveGPSEnabled = liveGPSEnabled;
+
+  return new Promise((resolve, reject) => {
+      user.save().then((doc) => {
+          resolve(doc) ;
+      }, () => {
+          reject();
+      });
+  });
+};
+
 UserSchema.methods.updateBrideGroomStatus = function (status) {
   var user = this;
 
@@ -305,6 +328,20 @@ UserSchema.methods.updateSupplierData = async function (data, file) {
       
       if (supplierType) {
         user.supplierType = supplierType;
+      }
+    } catch(err) {
+    }
+  }
+
+  if (data.supplierLocation) {
+    
+    try {
+      var supplierLocation= await SupplierLocation.findOne({
+        _id : new ObjectID(data.supplierLocation)
+      });
+      
+      if (supplierLocation) {
+        user.supplierLocation = supplierLocation;
       }
     } catch(err) {
     }

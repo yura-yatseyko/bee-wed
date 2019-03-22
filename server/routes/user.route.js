@@ -122,6 +122,19 @@ router.post('/user/supplier/updateStatus', authenticate, (req, res) => {
       });
 });
 
+router.post('/user/supplier/updateLiveGPSFlag', authenticate, (req, res) => {
+    var liveGPSEnabled = req.body.liveGPSEnabled;
+    
+    req.user.updatesSupplierGPSFlagEnabled(liveGPSEnabled).then((user) => {
+        res.status(200).send({
+            success: true,
+            data: user
+        });
+      }, () => {
+        res.status(400).send();
+      });
+});
+
 router.post('/user/supplier/updateLocation', authenticate, (req, res) => {
     var lat = parseFloat(req.body.lat);
     var lng = parseFloat(req.body.lng);
@@ -241,7 +254,7 @@ router.post('/user/bridegroom/update', authenticate, brideGroomUpload, (req, res
 });
 
 router.post('/user/supplier/update', authenticate, supplierUpload, (req, res) => {  
-    var body = lodash.pick(req.body, ['name', 'phone', 'websiteURL', 'description', 'registrationToken', 'supplierType']);
+    var body = lodash.pick(req.body, ['name', 'phone', 'websiteURL', 'description', 'registrationToken', 'supplierType', 'supplierLocation']);
 
     var objects = [];
 
