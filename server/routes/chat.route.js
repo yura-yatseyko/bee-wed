@@ -292,7 +292,8 @@ router.get('/chat/badges', authenticate, async (req, res) => {
             res.send({
                 success: true,
                 data: {
-                    badgeCount: chats.length
+                    badgeCount: chats.length,
+                    ids: ids,
                 }
             });
         }
