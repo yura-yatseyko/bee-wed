@@ -262,7 +262,30 @@ router.get('/chat/badges', authenticate, async (req, res) => {
     Message.find({
         receiver: req.user._id,
         isRead: false
-    }).distinct('sender', function(error, ids) {
+    }).distinct('sender', async function(error, ids) {
+
+        var chats = [];
+
+        for (let index = 0; index < ids.length; index++) {
+            const element = ids[index];
+            let deleted = false;
+                try {
+                    await RemovedMessage.find({
+                        removedBy: req.user._id,
+                        removedWith: new Object(element.chatWithUser._id)
+                    }).then((removedMessages) => {
+                        if (removedMessages.length > 0) {
+                            deleted = true;
+                        }
+                    });
+                } catch (err) {
+                }
+                
+                if (!deleted) {
+                    chats.push(element);
+                }
+        }
+
         if (error) {
             res.status(400).send(error);
         } else {
