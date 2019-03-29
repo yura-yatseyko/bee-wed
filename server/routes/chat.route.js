@@ -272,7 +272,7 @@ router.get('/chat/badges', authenticate, async (req, res) => {
                 try {
                     await RemovedMessage.find({
                         removedBy: req.user._id,
-                        removedWith: element.sender
+                        removedWith: element.sender._id
                     }).then((removedMessages) => {
                         if (removedMessages.length > 0) {
                             deleted = true;
