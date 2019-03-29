@@ -74,6 +74,13 @@ router.get('/users/suppliers', authenticate, (req, res) => {
                             lat: supplier.currentLocation.lat,
                             lon: supplier.currentLocation.lng
                         };
+
+                        if (supplier.supplierLocation && !supplier.liveGPSEnabled) {
+                            supplierLocation = {
+                                lat: supplier.supplierLocation.location.lat,
+                                lon: supplier.supplierLocation.location.lng
+                            };
+                        }
         
                         var isInBounds = false;
         
@@ -119,6 +126,13 @@ router.get('/users/suppliers', authenticate, (req, res) => {
                             lat: supplier.currentLocation.lat,
                             lon: supplier.currentLocation.lng
                         };
+
+                        if (supplier.supplierLocation && !supplier.liveGPSEnabled) {
+                            supplierLocation = {
+                                lat: supplier.supplierLocation.location.lat,
+                                lon: supplier.supplierLocation.location.lng
+                            };
+                        }
         
                         var dist = geodist(location, supplierLocation, {exact: true, unit: 'km'}) 
                         supplier.dist = dist;
@@ -227,6 +241,13 @@ router.get('/users/:id', authenticate, (req, res) => {
                     lat: user.currentLocation.lat,
                     lon: user.currentLocation.lng
                 };
+
+                if (user.supplierLocation && !user.liveGPSEnabled) {
+                    userLocation = {
+                        lat: user.supplierLocation.location.lat,
+                        lon: user.supplierLocation.location.lng
+                    };
+                }
 
                 var dist = geodist(location, userLocation, {exact: true, unit: 'km'}) 
                 user.dist = dist;
