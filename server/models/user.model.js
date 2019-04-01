@@ -160,7 +160,7 @@ var SupplierSchema = new mongoose.Schema({
   },
   liveGPSEnabled: {
     type: Boolean,
-    default: false
+    default: true
   },
   currentLocation: {
     lat: {
