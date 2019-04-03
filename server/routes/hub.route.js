@@ -140,8 +140,16 @@ router.post('/hub/prolongate', authenticate, (req, res) => {
       }, function (err, hubAd) {
         if (hubAd) {
           if (hubAd._creator.equals(req.user._id)) {
-            var expireAt = Number(hubAd.expireAt) + Number(result.days) * Number(86400000);
-            hubAd.expireAt = expireAt;
+            
+            var now = new Date();
+
+            if (Number(hubAd.expireAt) < Number(now)) {
+              var expireAt = Number(now) + Number(result.days) * Number(86400000);
+              hubAd.expireAt = expireAt;
+            } else {
+              var expireAt = Number(hubAd.expireAt) + Number(result.days) * Number(86400000);
+              hubAd.expireAt = expireAt;
+            }
 
             hubAd.save().then((doc) => {
 
