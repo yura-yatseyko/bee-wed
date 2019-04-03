@@ -18,7 +18,7 @@ const router = express.Router();
 var upload = multer({
     storage: multerS3({
       s3: s3,
-      bucket: 'beewedbucket',
+      bucket: 'beewedbucketapp',
       acl: 'public-read',
       contentType: multerS3.AUTO_CONTENT_TYPE,
       contentDisposition: 'inline',
@@ -76,7 +76,7 @@ router.delete('/user/supplier/updateGallery', authenticate, (req, res) => {
         });
 
         var params = {
-            Bucket: 'beewedbucket', 
+            Bucket: 'beewedbucketapp', 
             Delete: {
               Objects: objects,
             },
