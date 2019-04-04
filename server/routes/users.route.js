@@ -160,7 +160,9 @@ router.get('/users/suppliers', authenticate, (req, res) => {
 
                 var newRes = [];
 
-                sortedSuppliers.forEach(function(el) {
+                for (let index = 0; index < sortedSuppliers.length; index++) {
+                    const el = sortedSuppliers[index];
+
                     const trialInSeconds = 1209600000;
 
                     const userCreatedAt = el._id.getTimestamp().getTime();
@@ -182,7 +184,8 @@ router.get('/users/suppliers', authenticate, (req, res) => {
                     if (isSubscribed) {
                         newRes.push(el);
                     }
-                });
+                    
+                }
 
                 callback(null, newRes);
             }, (err) => {
