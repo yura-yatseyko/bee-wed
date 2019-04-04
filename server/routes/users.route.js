@@ -172,22 +172,22 @@ router.get('/users/suppliers', authenticate, (req, res) => {
 
                     const isSubscribed = false;
 
-                    if (diff < trialInSeconds && el.subscription.expireAt == 0) {
-                            isSubscribed = true;
-                    } else {
-                        if (el.subscription.expireAt < now) {
-                        } else {
-                            isSubscribed = true;
-                        }
-                    }
+                    // if (diff < trialInSeconds && el.subscription.expireAt == 0) {
+                    //         isSubscribed = true;
+                    // } else {
+                    //     if (el.subscription.expireAt < now) {
+                    //     } else {
+                    //         isSubscribed = true;
+                    //     }
+                    // }
 
-                    if (isSubscribed) {
-                        newRes.push(el);
-                    }
+                    // if (isSubscribed) {
+                    //     newRes.push(el);
+                    // }
                     
                 }
 
-                callback(null, newRes);
+                callback(null, sortedSuppliers);
             }, (err) => {
                 callback(err, null);
                 res.status(400).send(err);
