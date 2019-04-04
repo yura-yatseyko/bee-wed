@@ -170,7 +170,7 @@ router.get('/users/suppliers', authenticate, (req, res) => {
 
                     const diff = now - userCreatedAt;
 
-                    const isSubscribed = false;
+                    var isSubscribed = false;
 
                     if (el.subscription) {
                         if (diff < trialInSeconds && el.subscription.expireAt == 0) {
