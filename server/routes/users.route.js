@@ -183,15 +183,13 @@ router.get('/users/suppliers', authenticate, (req, res) => {
                         }
                     }
 
-                    
-
-                    // if (isSubscribed) {
-                    //     newRes.push(el);
-                    // }
+                    if (isSubscribed) {
+                        newRes.push(el);
+                    }
                     
                 }
 
-                callback(null, sortedSuppliers);
+                callback(null, newRes);
             }, (err) => {
                 callback(err, null);
                 res.status(400).send(err);
