@@ -118,7 +118,7 @@ router.post('/signup/supplier', supplierUpload, (req, res) => {
       
         var payloadIOS = {
           notification: {
-            title: "BeeWed",
+            title: "New Supplier",
             body: "New supplier joined BeeWed",
             sound: 'default',
           },
