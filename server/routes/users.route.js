@@ -184,7 +184,7 @@ router.get('/users/suppliers', authenticate, (req, res) => {
                     }
                 });
 
-                callback(null, newRes);
+                callback(null, sortedSuppliers);
             }, (err) => {
                 callback(err, null);
                 res.status(400).send(err);
