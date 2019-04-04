@@ -86,8 +86,8 @@ router.post('/chat/messages', authenticate, messageFileUpload, async (req, res) 
 
                 var payloadIOS = {
                     notification: {
-                      title: "BeeWed",
-                      body: "New message from " + req.user.name,
+                      title: req.user.name,
+                      body: req.body.message ? req.body.message : "",
                       sound: 'default',
                     },
                     data: {
