@@ -160,29 +160,29 @@ router.get('/users/suppliers', authenticate, (req, res) => {
 
                 let newRes = [];
 
-                sortedSuppliers.forEach(function(el) {
-                    const trialInSeconds = 1209600000;
+                // sortedSuppliers.forEach(function(el) {
+                //     const trialInSeconds = 1209600000;
 
-                    const userCreatedAt = el._id.getTimestamp().getTime();
-                    const now = (new Date()).getTime();
+                //     const userCreatedAt = el._id.getTimestamp().getTime();
+                //     const now = (new Date()).getTime();
 
-                    const diff = now - userCreatedAt;
+                //     const diff = now - userCreatedAt;
 
-                    const isSubscribed = false;
+                //     const isSubscribed = false;
 
-                    if (diff < trialInSeconds && el.subscription.expireAt == 0) {
-                            isSubscribed = true;
-                    } else {
-                        if (el.subscription.expireAt < now) {
-                        } else {
-                            isSubscribed = true;
-                        }
-                    }
+                //     if (diff < trialInSeconds && el.subscription.expireAt == 0) {
+                //             isSubscribed = true;
+                //     } else {
+                //         if (el.subscription.expireAt < now) {
+                //         } else {
+                //             isSubscribed = true;
+                //         }
+                //     }
 
-                    if (isSubscribed) {
-                        newRes.push(el);
-                    }
-                });
+                //     if (isSubscribed) {
+                //         newRes.push(el);
+                //     }
+                // });
 
                 callback(null, sortedSuppliers);
             }, (err) => {
