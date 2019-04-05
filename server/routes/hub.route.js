@@ -236,40 +236,47 @@ router.get('/hub', authenticate, (req, res) => {
     var otherHubAds = [];
     var i = 0;
 
-    hubAds.forEach(function(hubAd) {
-      if (Number(new Date()) < hubAd.expireAt) {
-
-        let diffInSeconds = (Number(new Date()) - Number(hubAd._creator.lastVisit)) / 1000;
-        if (diffInSeconds < 300) {
-          hubAd._creator.status = true;
-        } else {
-          hubAd._creator.status = false;
+    if (hubAds.length > 0) {
+      hubAds.forEach(function(hubAd) {
+        if (Number(new Date()) < hubAd.expireAt) {
+  
+          let diffInSeconds = (Number(new Date()) - Number(hubAd._creator.lastVisit)) / 1000;
+          if (diffInSeconds < 300) {
+            hubAd._creator.status = true;
+          } else {
+            hubAd._creator.status = false;
+          }
+  
+          if (req.user._id == hubAd._creator._id) {
+            userHubAds.push(hubAd);
+          } else {
+            otherHubAds.push(hubAd);
+          }
         }
-
-        if (req.user._id == hubAd._creator._id) {
-          userHubAds.push(hubAd);
-        } else {
-          otherHubAds.push(hubAd);
-        }
-      }
-
-      i++;
-
-      userHubAds.sort(function (a, b) {
-        return a.createdAt < b.createdAt;
-      });
-
-      otherHubAds.sort(function (a, b) {
-        return a.createdAt < b.createdAt;
-      });
-
-      if (hubAds.length == i) {
-        res.send({
-          success: true,
-          data: userHubAds.concat(otherHubAds)
+  
+        i++;
+  
+        userHubAds.sort(function (a, b) {
+          return a.createdAt < b.createdAt;
         });
-      }
-    });
+  
+        otherHubAds.sort(function (a, b) {
+          return a.createdAt < b.createdAt;
+        });
+  
+        if (hubAds.length == i) {
+          res.send({
+            success: true,
+            data: userHubAds.concat(otherHubAds)
+          });
+        }
+      });
+    } else {
+      res.send({
+        success: true,
+        data: userHubAds.concat(otherHubAds)
+      });
+    }
   }, (err) => {
     res.status(400).send(err);
   });
