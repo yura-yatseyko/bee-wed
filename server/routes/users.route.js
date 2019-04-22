@@ -14,6 +14,28 @@ const router = express.Router();
 
 router.use(bodyParser.json());
 
+router.get('/users/suppliers/export', (req, res) => {    
+    var params = {
+        kind: "SupplierUser"
+    };
+
+    User.find(params).then((suppliers) => {
+        var emails = "";
+
+        for (let index = 0; index < suppliers.length; index++) {
+            const element = suppliers[index];
+            emails = emails + element.email + ", ";
+        }
+
+        res.send({
+            success: true,
+            data: emails
+        });
+    }, (err) => {
+        res.status(400).send(err);
+    });
+});
+
 router.get('/users/suppliers', authenticate, (req, res) => {
     var params = {
         kind: "SupplierUser"
