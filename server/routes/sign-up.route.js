@@ -111,7 +111,7 @@ router.post('/signup/supplier', supplierUpload, (req, res) => {
           data: {
             type: "new_supplier",
             id: user._id.toString(),
-            message: "New supplier joined BeeWed",
+            message: "New supplier " + user.name + " joined BeeWed",
             name: "BeeWed",
           }
         };
@@ -119,7 +119,7 @@ router.post('/signup/supplier', supplierUpload, (req, res) => {
         var payloadIOS = {
           notification: {
             title: "New Supplier",
-            body: "New supplier joined BeeWed",
+            body: "New supplier " + user.name + " joined BeeWed",
             sound: 'default',
           },
           data: {
