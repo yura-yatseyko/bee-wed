@@ -157,7 +157,7 @@ router.post('/subscribe', authenticate, async (req, res) => {
     }
 });
 
-router.post('/updateSubscriptions', authenticate, async (req, res) => {    
+router.post('/updateSubscriptions', async (req, res) => {    
     var params = {
         kind: "SupplierUser"
     };
