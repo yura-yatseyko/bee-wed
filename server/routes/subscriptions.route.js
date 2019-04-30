@@ -177,12 +177,14 @@ router.post('/updateSubscriptions', async (req, res) => {
             if (payment) {
                 arr.push({
                     id: element._id,
-                    subscription: '6 Months Subscription'
+                    subscription: '6 Months Subscription',
+                    expireAt: element.subscription.expireAt
                 });
             } else {
                 arr.push({
                     id: element._id,
-                    subscription: ''
+                    subscription: '',
+                    expireAt: 0
                 });
             }
         }
