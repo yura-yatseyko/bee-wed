@@ -193,7 +193,7 @@ router.post('/updateSubscriptions', async (req, res) => {
                 element.subscription.expireAt = subscribtionExpireAtFromNow;
             }
 
-            await element.save().exec();
+            await element.save();
         }
         
         res.send({
