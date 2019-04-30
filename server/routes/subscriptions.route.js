@@ -6,6 +6,8 @@ var {authenticate} = require('../middleware/authenticate');
 
 const {Subscription} = require('../models/subscription.model');
 const {Payment} = require('../models/payment.model');
+const {User} = require('../models/user.model');
+var {ObjectID} = require('mongodb');
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -152,6 +154,45 @@ router.post('/subscribe', authenticate, async (req, res) => {
             success: false,
             data: {}
         });
+    }
+});
+
+router.post('/updateSubscriptions', authenticate, async (req, res) => {    
+    var params = {
+        kind: "SupplierUser"
+    };
+
+    try {
+        let suppliers = await User.find(params).exec();
+        
+        var arr = [];
+        
+        for (let index = 0; index < suppliers.length; index++) {
+            const element = suppliers[index];
+            let payment = await Payment.findOne({
+                _creator: new ObjectID(element._id),
+                description: '6 Months Subscription'
+            }).exec();
+
+            if (payment) {
+                arr.push({
+                    id: element._id,
+                    subscription: '6 Months Subscription'
+                });
+            } else {
+                arr.push({
+                    id: element._id,
+                    subscription: ''
+                });
+            }
+        }
+        
+        res.send({
+            success: true,
+            data: arr
+        });
+
+    } catch(err) {        
     }
 });
 
