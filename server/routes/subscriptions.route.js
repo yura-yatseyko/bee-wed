@@ -166,6 +166,9 @@ router.post('/updateSubscriptions', async (req, res) => {
         let suppliers = await User.find(params).exec();
         
         var arr = [];
+
+        const now = new Date();
+        let subscribtionExpireAtFromNow = Number(now) + Number(92) * Number(86400000);
         
         for (let index = 0; index < suppliers.length; index++) {
             const element = suppliers[index];
@@ -180,13 +183,17 @@ router.post('/updateSubscriptions', async (req, res) => {
                     subscription: '6 Months Subscription',
                     expireAt: element.subscription.expireAt
                 });
+                element.subscription.expireAt += Number(182) * Number(86400000);
             } else {
                 arr.push({
                     id: element._id,
                     subscription: '',
                     expireAt: 0
                 });
+                element.subscription.expireAt = subscribtionExpireAtFromNow;
             }
+
+            await element.save().exec();
         }
         
         res.send({
