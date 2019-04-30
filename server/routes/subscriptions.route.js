@@ -157,52 +157,52 @@ router.post('/subscribe', authenticate, async (req, res) => {
     }
 });
 
-router.post('/updateSubscriptions', async (req, res) => {    
-    var params = {
-        kind: "SupplierUser"
-    };
+// router.post('/updateSubscriptions', async (req, res) => {    
+//     var params = {
+//         kind: "SupplierUser"
+//     };
 
-    try {
-        let suppliers = await User.find(params).exec();
+//     try {
+//         let suppliers = await User.find(params).exec();
         
-        var arr = [];
+//         var arr = [];
 
-        const now = new Date();
-        let subscribtionExpireAtFromNow = Number(now) + Number(92) * Number(86400000);
+//         const now = new Date();
+//         let subscribtionExpireAtFromNow = Number(now) + Number(92) * Number(86400000);
         
-        for (let index = 0; index < suppliers.length; index++) {
-            const element = suppliers[index];
-            let payment = await Payment.findOne({
-                _creator: new ObjectID(element._id),
-                description: '6 Months Subscription'
-            }).exec();
+//         for (let index = 0; index < suppliers.length; index++) {
+//             const element = suppliers[index];
+//             let payment = await Payment.findOne({
+//                 _creator: new ObjectID(element._id),
+//                 description: '6 Months Subscription'
+//             }).exec();
 
-            if (payment) {
-                arr.push({
-                    id: element._id,
-                    subscription: '6 Months Subscription',
-                    expireAt: element.subscription.expireAt
-                });
-                element.subscription.expireAt += Number(182) * Number(86400000);
-            } else {
-                arr.push({
-                    id: element._id,
-                    subscription: '',
-                    expireAt: 0
-                });
-                element.subscription.expireAt = subscribtionExpireAtFromNow;
-            }
+//             if (payment) {
+//                 arr.push({
+//                     id: element._id,
+//                     subscription: '6 Months Subscription',
+//                     expireAt: element.subscription.expireAt
+//                 });
+//                 element.subscription.expireAt += Number(182) * Number(86400000);
+//             } else {
+//                 arr.push({
+//                     id: element._id,
+//                     subscription: '',
+//                     expireAt: 0
+//                 });
+//                 element.subscription.expireAt = subscribtionExpireAtFromNow;
+//             }
 
-            await element.save();
-        }
+//             await element.save();
+//         }
         
-        res.send({
-            success: true,
-            data: arr
-        });
+//         res.send({
+//             success: true,
+//             data: arr
+//         });
 
-    } catch(err) {        
-    }
-});
+//     } catch(err) {        
+//     }
+// });
 
 module.exports = router;
