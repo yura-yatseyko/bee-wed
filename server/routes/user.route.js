@@ -219,6 +219,7 @@ router.post('/user/updateRegistrationToken', authenticate, (req, res) => {
     });
 });
 
+
 router.post('/user/bridegroom/update', authenticate, brideGroomUpload, (req, res) => {  
     var body = lodash.pick(req.body, ['name', 'weddingDate', 'weddingVenue']);
 
