@@ -18,6 +18,7 @@ const router = express.Router();
 var upload = multer({
     storage: multerS3({
       s3: s3,
+      size: multerS3.length,
       bucket: process.env.S3_BUCKET,
       acl: 'public-read',
       contentType: multerS3.AUTO_CONTENT_TYPE,
