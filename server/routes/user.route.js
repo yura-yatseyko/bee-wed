@@ -45,7 +45,7 @@ var supplierGalleryUpload = upload.fields([{name: 'galleryImage'}])
 
 router.use(bodyParser.json());
 
-http.get('/image/1561496114693VIDEO_20190625_215458.mp4', function(res){
+router.get('/image/1561496114693VIDEO_20190625_215458.mp4', function(res) {
   var headers = {
       'Content-Length': res.headers['content-length']
     , 'Content-Type': res.headers['content-type']
