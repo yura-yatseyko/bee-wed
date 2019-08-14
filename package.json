@@ -46,6 +46,7 @@
     "nodemailer": "^4.6.8",
     "nodemailer-smtp-transport": "^2.7.4",
     "query-string": "^6.2.0",
+    "s3-proxy": "^1.2.1",
     "stream-to-blob": "^1.0.1",
     "validator": "^10.8.0"
   }
