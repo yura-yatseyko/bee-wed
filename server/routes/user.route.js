@@ -47,8 +47,8 @@ router.use(bodyParser.json());
 
 router.get('/image/1561496114693VIDEO_20190625_215458.mp4', function(req, res) {
   var headers = {
-      'Content-Length': res.headers['content-length']
-    , 'Content-Type': res.headers['content-type']
+      'Content-Length': res.headers['content-length'],
+      'Content-Type': res.headers['content-type']
   };
   client.putStream(res, '/1561496114693VIDEO_20190625_215458.mp4', headers, function(err, res){
     // check `err`, then do `res.pipe(..)` or `res.resume()` or whatever.
