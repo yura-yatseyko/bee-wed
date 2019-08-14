@@ -86,7 +86,7 @@ router.get('/image/:id', function (req, res, next) {
       }
   
       resp.pipe(res)
-    }).end();
+    });
 });
 
 // router.get('/image/:id', function(req, res) {
