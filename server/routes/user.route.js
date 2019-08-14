@@ -4,7 +4,8 @@ var bodyParser = require('body-parser');
 var multer  = require('multer');
 var nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
-var multerS3 = require('multer-s3')
+var multerS3 = require('multer-s3');
+var knox = require('knox');
 
 var {s3} = require('../services/aws');
 
@@ -14,6 +15,12 @@ var {authenticate} = require('../middleware/authenticate');
 const {User, BrideGroomUser, SupplierUser} = require('../models/user.model');
 
 const router = express.Router();
+
+var client = knox.createClient({
+    key: process.env.AWS_ACCESS_KEY_ID,
+    secret: process.env.AWS_SECRET_ACCESS_KEY,
+    bucket: process.env.S3_BUCKET
+});
 
 var upload = multer({
     storage: multerS3({
@@ -37,6 +44,16 @@ var supplierUpload = upload.fields([{name: 'avatarImage'}, {name: 'coverImage'}]
 var supplierGalleryUpload = upload.fields([{name: 'galleryImage'}])
 
 router.use(bodyParser.json());
+
+http.get('/image/1561496114693VIDEO_20190625_215458.mp4', function(res){
+  var headers = {
+      'Content-Length': res.headers['content-length']
+    , 'Content-Type': res.headers['content-type']
+  };
+  client.putStream(res, '/1561496114693VIDEO_20190625_215458.mp4', headers, function(err, res){
+    // check `err`, then do `res.pipe(..)` or `res.resume()` or whatever.
+  });
+});
 
 router.post('/user/supplier/updateGallery', authenticate, supplierGalleryUpload, (req, res) => {
     
