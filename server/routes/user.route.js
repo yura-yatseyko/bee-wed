@@ -52,7 +52,6 @@ router.get('/image/:id', s3Proxy({
     accessKeyId: 'AKIAYPSQVX7JARIHULYT',
     secretAccessKey: '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',
     overrideCacheControl: 'max-age=100000',
-    defaultKey: 'index.html'
   }));
 
 // router.get('/image/:id', function (req, res, next) {
