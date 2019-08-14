@@ -17,9 +17,9 @@ const {User, BrideGroomUser, SupplierUser} = require('../models/user.model');
 const router = express.Router();
 
 var aws = require('knox').createClient({
-    key: process.env.AWS_ACCESS_KEY_ID,
-    secret: process.env.AWS_SECRET_ACCESS_KEY,
-    bucket: process.env.S3_BUCKET
+    key: 'AKIAYPSQVX7JARIHULYT',
+    secret: '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',
+    bucket: 'beewedbucketapp'
   })
 
 var upload = multer({
