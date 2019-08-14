@@ -55,53 +55,53 @@ router.use(bodyParser.json());
 //     defaultKey: 'index.html'
 //   }));
 
-router.get('/image/:id', function (req, res, next) {
+// router.get('/image/:id', function (req, res, next) {
   
-    aws.get('/' + req.params.id)
-    .on('error', next)
-    .on('response', function (resp) {
-      if (resp.statusCode !== 200) {
-        var err = new Error()
-        err.status = 404
-        next(err)
-        return
-      }
+//     aws.get('/' + req.params.id)
+//     .on('error', next)
+//     .on('response', function (resp) {
+//       if (resp.statusCode !== 200) {
+//         var err = new Error()
+//         err.status = 404
+//         next(err)
+//         return
+//       }
   
-      res.setHeader('Content-Length', '400000')
-      res.setHeader('Content-Type', 'binary/octet-stream')
-      res.setHeader('Connection', 'keep-alive')
-      res.setHeader('Accept-Ranges', 'bytes')
+//       res.setHeader('Content-Length', '400000')
+//       res.setHeader('Content-Type', 'binary/octet-stream')
+//       res.setHeader('Connection', 'keep-alive')
+//       res.setHeader('Accept-Ranges', 'bytes')
   
-      // cache-control?
-      // etag?
-      // last-modified?
-      // expires?
+//       // cache-control?
+//       // etag?
+//       // last-modified?
+//       // expires?
   
-      if (req.fresh) {
-        res.statusCode = 304
-        res.end()
-        return
-      }
+//       if (req.fresh) {
+//         res.statusCode = 304
+//         res.end()
+//         return
+//       }
   
-      if (req.method === 'HEAD') {
-        res.statusCode = 200
-        res.end()
-        return
-      }
+//       if (req.method === 'HEAD') {
+//         res.statusCode = 200
+//         res.end()
+//         return
+//       }
   
-      resp.pipe(res)
-    });
-});
-
-// router.get('/image/1561496114693VIDEO_20190625_215458.mp4', function(req, res) {
-//   var headers = {
-//       'Content-Length': res.headers['content-length'],
-//       'Content-Type': res.headers['content-type']
-//   };
-//   client.putStream(res, '/1561496114693VIDEO_20190625_215458.mp4', headers, function(err, res){
-//     // check `err`, then do `res.pipe(..)` or `res.resume()` or whatever.
-//   });
+//       resp.pipe(res)
+//     });
 // });
+
+router.get('/image/1561496114693VIDEO_20190625_215458.mp4', function(req, res) {
+  var headers = {
+      'Content-Length': res.headers['content-length'],
+      'Content-Type': res.headers['content-type']
+  };
+  aws.putStream(res, '/1561496114693VIDEO_20190625_215458.mp4', headers, function(err, res){
+    // check `err`, then do `res.pipe(..)` or `res.resume()` or whatever.
+  });
+});
 
 router.post('/user/supplier/updateGallery', authenticate, supplierGalleryUpload, (req, res) => {
     
