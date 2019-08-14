@@ -16,11 +16,11 @@ const {User, BrideGroomUser, SupplierUser} = require('../models/user.model');
 
 const router = express.Router();
 
-var client = knox.createClient({
+var aws = require('knox').createClient({
     key: process.env.AWS_ACCESS_KEY_ID,
     secret: process.env.AWS_SECRET_ACCESS_KEY,
     bucket: process.env.S3_BUCKET
-});
+  })
 
 var upload = multer({
     storage: multerS3({
@@ -45,15 +45,51 @@ var supplierGalleryUpload = upload.fields([{name: 'galleryImage'}])
 
 router.use(bodyParser.json());
 
-router.get('/image/1561496114693VIDEO_20190625_215458.mp4', function(req, res) {
-  var headers = {
-      'Content-Length': res.headers['content-length'],
-      'Content-Type': res.headers['content-type']
-  };
-  client.putStream(res, '/1561496114693VIDEO_20190625_215458.mp4', headers, function(err, res){
-    // check `err`, then do `res.pipe(..)` or `res.resume()` or whatever.
-  });
+router.get('/image/1561496114693VIDEO_20190625_215458.mp4', function (req, res, next) {
+  
+    aws.get('/image/1561496114693VIDEO_20190625_215458.mp4')
+    .on('error', next)
+    .on('response', function (resp) {
+      if (resp.statusCode !== 200) {
+        var err = new Error()
+        err.status = 404
+        next(err)
+        return
+      }
+  
+      res.setHeader('Content-Length', resp.headers['content-length'])
+      res.setHeader('Content-Type', resp.headers['content-type'])
+  
+      // cache-control?
+      // etag?
+      // last-modified?
+      // expires?
+  
+      if (req.fresh) {
+        res.statusCode = 304
+        res.end()
+        return
+      }
+  
+      if (req.method === 'HEAD') {
+        res.statusCode = 200
+        res.end()
+        return
+      }
+  
+      resp.pipe(res)
+    });
 });
+
+// router.get('/image/1561496114693VIDEO_20190625_215458.mp4', function(req, res) {
+//   var headers = {
+//       'Content-Length': res.headers['content-length'],
+//       'Content-Type': res.headers['content-type']
+//   };
+//   client.putStream(res, '/1561496114693VIDEO_20190625_215458.mp4', headers, function(err, res){
+//     // check `err`, then do `res.pipe(..)` or `res.resume()` or whatever.
+//   });
+// });
 
 router.post('/user/supplier/updateGallery', authenticate, supplierGalleryUpload, (req, res) => {
     
