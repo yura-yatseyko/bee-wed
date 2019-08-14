@@ -55,7 +55,7 @@ router.use(bodyParser.json());
 //   }));
 
 router.get('/image/:id', function (req, res, next) {
-    aws.get('/video/' + req.params.id)
+    aws.get('/' + req.params.id)
     .on('error', next)
     .on('response', function (resp) {
       if (resp.statusCode !== 200) {
@@ -86,7 +86,7 @@ router.get('/image/:id', function (req, res, next) {
       }
   
       resp.pipe(res)
-    });
+    }).end();
 });
 
 // router.get('/image/:id', function(req, res) {
