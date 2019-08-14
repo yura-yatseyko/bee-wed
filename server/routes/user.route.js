@@ -12,7 +12,7 @@ var {s3} = require('../services/aws');
 var errorHandling = require('../middleware/errorHandling');
 var {authenticate} = require('../middleware/authenticate');
 
-import s3Proxy from 's3-proxy';
+var s3Proxy  = require('s3-proxy');
 
 const {User, BrideGroomUser, SupplierUser} = require('../models/user.model');
 
