@@ -47,7 +47,7 @@ var supplierGalleryUpload = upload.fields([{name: 'galleryImage'}])
 
 router.use(bodyParser.json());
 
-router.get('/image/*', s3Proxy({
+router.get('/image/:id', s3Proxy({
     bucket: 'beewedbucketapp',
     accessKeyId: 'AKIAYPSQVX7JARIHULYT',
     secretAccessKey: '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',
