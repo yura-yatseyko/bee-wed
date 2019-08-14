@@ -65,10 +65,8 @@ router.get('/image/:id', function (req, res, next) {
         return
       }
   
-      res.setHeader('Content-Length', '400000')
-      res.setHeader('Content-Type', 'binary/octet-stream')
-      res.setHeader('Connection', 'keep-alive')
-      res.setHeader('Accept-Ranges', 'bytes')
+      res.setHeader('Content-Length', resp.headers['content-length'])
+      res.setHeader('Content-Type', resp.headers['content-type'])
   
       // cache-control?
       // etag?
