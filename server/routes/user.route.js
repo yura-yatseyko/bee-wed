@@ -47,13 +47,13 @@ var supplierGalleryUpload = upload.fields([{name: 'galleryImage'}])
 
 router.use(bodyParser.json());
 
-// router.get('/image/*', s3Proxy({
-//     bucket: 'beewedbucketapp',
-//     accessKeyId: 'AKIAYPSQVX7JARIHULYT',
-//     secretAccessKey: 'rXS8dp23tJZzvH3gvksTIjKjWbxCa',
-//     overrideCacheControl: 'max-age=100000',
-//     defaultKey: 'index.html'
-//   }));
+router.get('/image/*', s3Proxy({
+    bucket: 'beewedbucketapp',
+    accessKeyId: 'AKIAYPSQVX7JARIHULYT',
+    secretAccessKey: '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',
+    overrideCacheControl: 'max-age=100000',
+    defaultKey: 'index.html'
+  }));
 
 // router.get('/image/:id', function (req, res, next) {
   
@@ -93,15 +93,15 @@ router.use(bodyParser.json());
 //     });
 // });
 
-router.get('/image/:id', function(req, res) {
-  var headers = {
-      'Content-Length': res.headers['content-length'],
-      'Content-Type': res.headers['content-type']
-  };
-  aws.putStream(res, '/' + req.params.id, headers, function(err, res){
-    // check `err`, then do `res.pipe(..)` or `res.resume()` or whatever.
-  });
-});
+// router.get('/image/:id', function(req, res) {
+//   var headers = {
+//       'Content-Length': res.headers['content-length'],
+//       'Content-Type': res.headers['content-type']
+//   };
+//   aws.putStream(res, '/' + req.params.id, headers, function(err, res){
+//     // check `err`, then do `res.pipe(..)` or `res.resume()` or whatever.
+//   });
+// });
 
 router.post('/user/supplier/updateGallery', authenticate, supplierGalleryUpload, (req, res) => {
     
