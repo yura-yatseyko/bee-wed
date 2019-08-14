@@ -71,6 +71,7 @@ router.get('/image/:id', function (req, res, next) {
       res.setHeader('Content-Type', 'binary/octet-stream')
       res.setHeader('Connection', 'keep-alive')
       res.setHeader('Accept-Ranges', 'bytes')
+      res.setHeader('Etag', resp.headers['etag'])
   
       // cache-control?
       // etag?
