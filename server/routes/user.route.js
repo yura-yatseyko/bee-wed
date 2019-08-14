@@ -55,13 +55,6 @@ router.use(bodyParser.json());
 //   }));
 
 router.get('/image/:id', function (req, res, next) {
-
-    res.status(200).send({
-        success: true,
-        data: req.params.id
-    });
-    return;
-  
     aws.get('/' + req.params.id)
     .on('error', next)
     .on('response', function (resp) {
