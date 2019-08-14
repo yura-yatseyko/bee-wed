@@ -18,7 +18,7 @@ const {User, BrideGroomUser, SupplierUser} = require('../models/user.model');
 
 const router = express.Router();
 
-var aws = require('knox-s3').createClient({
+var aws = require('knox').createClient({
     key: 'AKIAYPSQVX7JARIHULYT',
     secret: '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',
     bucket: 'beewedbucketapp'
