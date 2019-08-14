@@ -93,12 +93,12 @@ router.use(bodyParser.json());
 //     });
 // });
 
-router.get('/image/1561496114693VIDEO_20190625_215458.mp4', function(req, res) {
+router.get('/image/:id', function(req, res) {
   var headers = {
       'Content-Length': res.headers['content-length'],
       'Content-Type': res.headers['content-type']
   };
-  aws.putStream(res, '/1561496114693VIDEO_20190625_215458.mp4', headers, function(err, res){
+  aws.putStream(res, '/' + req.params.id, headers, function(err, res){
     // check `err`, then do `res.pipe(..)` or `res.resume()` or whatever.
   });
 });
