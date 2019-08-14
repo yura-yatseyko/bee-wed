@@ -58,8 +58,9 @@ router.get('/image/1561496114693VIDEO_20190625_215458.mp4', function (req, res, 
       }
   
       res.setHeader('Content-Length', resp.headers['content-length'])
-      res.setHeader('Content-Type', resp.headers['content-type'])
-      res.setHeader('Cache-Control', 'no-cache')
+      res.setHeader('Content-Type', 'binary/octet-stream')
+      res.setHeader('Connection', 'keep-alive')
+      res.setHeader('Accept-Ranges', 'bytes')
   
       // cache-control?
       // etag?
