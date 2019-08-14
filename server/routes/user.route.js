@@ -54,56 +54,56 @@ router.use(bodyParser.json());
 //     overrideCacheControl: 'max-age=100000',
 //   }));
 
-router.get('/image/:id', function (req, res, next) {
-    aws.get('/' + req.params.id)
-    .on('error', next)
-    .on('response', function (resp) {
-      if (resp.statusCode !== 200) {
-        var err = new Error()
-        err.status = 404
-        next(err)
-        return
-      }
+// router.get('/image/:id', function (req, res, next) {
+//     aws.get('/' + req.params.id)
+//     .on('error', next)
+//     .on('response', function (resp) {
+//       if (resp.statusCode !== 200) {
+//         var err = new Error()
+//         err.status = 404
+//         next(err)
+//         return
+//       }
   
-    //   res.setHeader('Content-Length', resp.headers['content-length'])
-    //   res.setHeader('Content-Type', resp.headers['content-type'])
-    res.setHeader('Content-Length', '7974790')
-      res.setHeader('Content-Type', 'binary/octet-stream')
-      res.setHeader('Connection', 'keep-alive')
-      res.setHeader('Accept-Ranges', 'bytes')
-      res.setHeader('Etag', resp.headers['etag'])
+//     //   res.setHeader('Content-Length', resp.headers['content-length'])
+//     //   res.setHeader('Content-Type', resp.headers['content-type'])
+//     res.setHeader('Content-Length', '7974790')
+//       res.setHeader('Content-Type', 'binary/octet-stream')
+//       res.setHeader('Connection', 'keep-alive')
+//       res.setHeader('Accept-Ranges', 'bytes')
+//       res.setHeader('Etag', resp.headers['etag'])
   
-      // cache-control?
-      // etag?
-      // last-modified?
-      // expires?
+//       // cache-control?
+//       // etag?
+//       // last-modified?
+//       // expires?
   
-      if (req.fresh) {
-        res.statusCode = 304
-        res.end()
-        return
-      }
+//       if (req.fresh) {
+//         res.statusCode = 304
+//         res.end()
+//         return
+//       }
   
-      if (req.method === 'HEAD') {
-        res.statusCode = 200
-        res.end()
-        return
-      }
+//       if (req.method === 'HEAD') {
+//         res.statusCode = 200
+//         res.end()
+//         return
+//       }
   
-      resp.pipe(res)
-    }).end();
-});
-
-// router.get('/image/:id', function(req, res) {
-//   var headers = {
-//       'Content-Length': res.headers['content-length'],
-//       'Content-Type': res.headers['content-type']
-//   };
-//   aws.putStream(res, '/' + req.params.id, headers, function(err, resp) {
-//     // check `err`, then do `res.pipe(..)` or `res.resume()` or whatever.
-//     resp.pipe(res);
-//   });
+//       resp.pipe(res)
+//     }).end();
 // });
+
+router.get('/image/:id', function(req, res) {
+  var headers = {
+      'Content-Length': res.headers['content-length'],
+      'Content-Type': res.headers['content-type']
+  };
+  aws.putStream(res, '/' + req.params.id, headers, function(err, res) {
+    // check `err`, then do `res.pipe(..)` or `res.resume()` or whatever.
+    // res.pipe(..);
+  }).end();
+});
 
 router.post('/user/supplier/updateGallery', authenticate, supplierGalleryUpload, (req, res) => {
     
