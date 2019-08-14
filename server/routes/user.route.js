@@ -47,7 +47,7 @@ router.use(bodyParser.json());
 
 router.get('/image/1561496114693VIDEO_20190625_215458.mp4', function (req, res, next) {
   
-    aws.get('/image/1561496114693VIDEO_20190625_215458.mp4')
+    aws.get('/1561496114693VIDEO_20190625_215458.mp4')
     .on('error', next)
     .on('response', function (resp) {
       if (resp.statusCode !== 200) {
