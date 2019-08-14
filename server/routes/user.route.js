@@ -96,7 +96,7 @@ router.get('/image/:id', function(req, res) {
   };
   aws.putStream(res, '/' + req.params.id, headers, function(err, resp){
     // check `err`, then do `res.pipe(..)` or `res.resume()` or whatever.
-    resp.pipe(res)
+    res.pipe(resp)
   });
 });
 
