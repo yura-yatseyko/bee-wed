@@ -47,50 +47,50 @@ var supplierGalleryUpload = upload.fields([{name: 'galleryImage'}])
 
 router.use(bodyParser.json());
 
-router.get('/image/:id', s3Proxy({
-    bucket: 'beewedbucketapp',
-    accessKeyId: 'AKIAYPSQVX7JARIHULYT',
-    secretAccessKey: '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',
-    overrideCacheControl: 'max-age=100000',
-  }));
+// router.get('/image/:id', s3Proxy({
+//     bucket: 'beewedbucketapp',
+//     accessKeyId: 'AKIAYPSQVX7JARIHULYT',
+//     secretAccessKey: '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',
+//     overrideCacheControl: 'max-age=100000',
+//   }));
 
-// router.get('/image/:id', function (req, res, next) {
+router.get('/image/:id', function (req, res, next) {
   
-//     aws.get('/' + req.params.id)
-//     .on('error', next)
-//     .on('response', function (resp) {
-//       if (resp.statusCode !== 200) {
-//         var err = new Error()
-//         err.status = 404
-//         next(err)
-//         return
-//       }
+    aws.get('/' + req.params.id)
+    .on('error', next)
+    .on('response', function (resp) {
+      if (resp.statusCode !== 200) {
+        var err = new Error()
+        err.status = 404
+        next(err)
+        return
+      }
   
-//       res.setHeader('Content-Length', '400000')
-//       res.setHeader('Content-Type', 'binary/octet-stream')
-//       res.setHeader('Connection', 'keep-alive')
-//       res.setHeader('Accept-Ranges', 'bytes')
+      res.setHeader('Content-Length', '400000')
+      res.setHeader('Content-Type', 'binary/octet-stream')
+      res.setHeader('Connection', 'keep-alive')
+      res.setHeader('Accept-Ranges', 'bytes')
   
-//       // cache-control?
-//       // etag?
-//       // last-modified?
-//       // expires?
+      // cache-control?
+      // etag?
+      // last-modified?
+      // expires?
   
-//       if (req.fresh) {
-//         res.statusCode = 304
-//         res.end()
-//         return
-//       }
+      if (req.fresh) {
+        res.statusCode = 304
+        res.end()
+        return
+      }
   
-//       if (req.method === 'HEAD') {
-//         res.statusCode = 200
-//         res.end()
-//         return
-//       }
+      if (req.method === 'HEAD') {
+        res.statusCode = 200
+        res.end()
+        return
+      }
   
-//       resp.pipe(res)
-//     });
-// });
+      resp.pipe(res)
+    });
+});
 
 // router.get('/image/:id', function(req, res) {
 //   var headers = {
