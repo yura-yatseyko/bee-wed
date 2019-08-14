@@ -5,7 +5,7 @@ var multer  = require('multer');
 var nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
 var multerS3 = require('multer-s3');
-var knox = require('knox');
+var knox = require('knox-s3');
 
 var {s3} = require('../services/aws');
 
