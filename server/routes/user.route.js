@@ -49,7 +49,6 @@ router.use(bodyParser.json());
 
 router.get('/image/*', s3Proxy({
     bucket: 'beewedbucketapp',
-    prefix: 'optional_s3_path_prefix',
     accessKeyId: 'AKIAYPSQVX7JARIHULYT',
     secretAccessKey: 'rXS8dp23tJZzvH3gvksTIjKjWbxCa',
     overrideCacheControl: 'max-age=100000',
