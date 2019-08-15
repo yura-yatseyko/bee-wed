@@ -185,23 +185,14 @@ router.get('/users/suppliers', authenticate, (req, res) => {
                 for (let index = 0; index < sortedSuppliers.length; index++) {
                     const el = sortedSuppliers[index];
 
-                    const trialInSeconds = 1209600000;
-
-                    const userCreatedAt = el._id.getTimestamp().getTime();
                     const now = (new Date()).getTime();
-
-                    const diff = now - userCreatedAt;
 
                     var isSubscribed = false;
 
                     if (el.subscription) {
-                        if (diff < trialInSeconds && el.subscription.expireAt == 0) {
-                            isSubscribed = true;
+                        if (el.subscription.expireAt < now) {
                         } else {
-                            if (el.subscription.expireAt < now) {
-                            } else {
-                                isSubscribed = true;
-                            }
+                            isSubscribed = true;
                         }
                     }
 

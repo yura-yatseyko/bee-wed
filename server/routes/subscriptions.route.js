@@ -33,11 +33,10 @@ router.get('/subscriptions', authenticate, (req, res) => {
             element.price = element.price.value.toFixed(2);
         });
 
-      let trialPeriod = true;
+      let trialPeriod = false;
       let expireAt = 0;
 
       if (req.user.subscription.expireAt != 0) {
-        trialPeriod = false;
         expireAt = req.user.subscription.expireAt;
       }
 
@@ -55,49 +54,33 @@ router.get('/subscriptions', authenticate, (req, res) => {
 });
 
 router.get('/isUserSubscribed', authenticate, (req, res) => {
-    const trialInSeconds = 1209600000;
-
-    const userCreatedAt = req.user._id.getTimestamp().getTime();
     const now = (new Date()).getTime();
 
-    const diff = now - userCreatedAt;
-
-    if (diff < trialInSeconds && req.user.subscription.expireAt == 0) {
+    if (req.user.subscription.expireAt < now) {
+        Subscription.find().then((subscriptions) => {
+            subscriptions.forEach(element => {
+                element.price = element.price.value.toFixed(2);
+            });
+            res.send({
+                success: true,
+                data: {
+                    access: false,
+                    trialPeriod: false,
+                    subscriptions: subscriptions
+                }
+            });
+        }, (err) => {
+            res.status(400).send(err);
+        });
+    } else {
         res.send({
             success: true,
             data: {
                 access: true,
-                trialPeriod: true,
+                trialPeriod: false,
                 subscriptions: []
             }
         });
-    } else {
-        if (req.user.subscription.expireAt < now) {
-            Subscription.find().then((subscriptions) => {
-                subscriptions.forEach(element => {
-                    element.price = element.price.value.toFixed(2);
-                });
-                res.send({
-                    success: true,
-                    data: {
-                        access: false,
-                        trialPeriod: false,
-                        subscriptions: subscriptions
-                    }
-                });
-            }, (err) => {
-                res.status(400).send(err);
-            });
-        } else {
-            res.send({
-                success: true,
-                data: {
-                    access: true,
-                    trialPeriod: false,
-                    subscriptions: []
-                }
-            });
-        }
     }
 });
 
