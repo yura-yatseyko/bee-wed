@@ -19,8 +19,8 @@ const {User, BrideGroomUser, SupplierUser} = require('../models/user.model');
 const router = express.Router();
 
 var aws = require('knox-s3').createClient({
-    key: 'AKIAYPSQVX7JARIHULYT',
-    secret: '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',
+    key: 'key',
+    secret: 'secret',
     bucket: 'beewedbucketapp'
   })
 
@@ -49,8 +49,8 @@ router.use(bodyParser.json());
 
 // router.get('/image/:id', s3Proxy({
 //     bucket: 'beewedbucketapp',
-//     accessKeyId: 'AKIAYPSQVX7JARIHULYT',
-//     secretAccessKey: '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',
+//     accessKeyId: 'key',
+//     secretAccessKey: 'secret',
 //     overrideCacheControl: 'max-age=100000',
 //   }));
 
