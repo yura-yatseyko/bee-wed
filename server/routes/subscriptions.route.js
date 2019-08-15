@@ -99,15 +99,17 @@ router.post('/subscribe', authenticate, async (req, res) => {
         const now = new Date();
         let subscribtionExpireAtFromNow = Number(now) + Number(subscription.days) * Number(86400000);
 
-        if (req.user.subscription != undefined) {
-            if (req.user.subscription.expireAt == 0) {
-                req.user.subscription.expireAt = subscribtionExpireAtFromNow;
-            } else {
-                req.user.subscription.expireAt += Number(subscription.days) * Number(86400000);
-            }
-        } else {
-            req.user.subscription.expireAt = subscribtionExpireAtFromNow;
-        }
+        req.user.subscription.expireAt = subscribtionExpireAtFromNow;
+
+        // if (req.user.subscription != undefined) {
+        //     if (req.user.subscription.expireAt == 0) {
+        //         req.user.subscription.expireAt = subscribtionExpireAtFromNow;
+        //     } else {
+        //         req.user.subscription.expireAt += Number(subscription.days) * Number(86400000);
+        //     }
+        // } else {
+        //     req.user.subscription.expireAt = subscribtionExpireAtFromNow;
+        // }
 
         req.user.save().then((doc) => {
             var payment = new Payment();
