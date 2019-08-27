@@ -36,7 +36,7 @@
     "moment-timezone": "^0.5.23",
     "mongo-xlsx": "^1.0.12",
     "mongodb": "^3.1.6",
-    "mongoose": "^5.3.1",
+    "mongoose": "^5.6.11",
     "mongoose-double": "0.0.1",
     "multer": "^1.4.0",
     "multer-s3": "^2.9.0",
