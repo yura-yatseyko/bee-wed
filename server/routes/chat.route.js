@@ -165,6 +165,98 @@ router.get('/chat/messages/:receiverId', authenticate, async (req, res) => {
         res.status(400).send(err);
     });
 });
+router.get('/chat-edited', authenticate, async (req, res) => {   
+
+    Message.find({ $or: [
+        { 'sender': req.user._id },
+        { 'receiver': req.user._id }
+    ]})
+    .sort({
+        createdAt: -1
+    })
+    .populate('sender', 'name avatarUrl status phone lastVisit')
+    .populate('receiver', 'name avatarUrl status phone lastVisit')
+    .then( async (messages) => {
+        var chats = [];
+        for (let index = 0; index < messages.length; index++) {
+            var found = false;
+            const msg = messages[index];
+            if (chats.length > 0) {
+                for (let j = 0; j < chats.length; j++) {
+                    const element = chats[j];
+
+                    if (req.user._id.equals(msg.sender._id)) {
+                        if (element.chatWithUser._id.equals(msg.receiver._id)) {
+                            found = true;
+                            break;
+                        }
+                    } else {
+                        if (element.chatWithUser._id.equals(msg.sender._id)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    
+                } 
+            }
+            if (!found) {
+                var newMessage = Object.create({});
+                newMessage.messageFileURL = msg.messageFileURL;
+                newMessage.message = msg.message;
+                newMessage._id = msg._id;
+                newMessage.createdAt = msg.createdAt;
+                if (req.user._id.equals(msg.sender._id)) {
+                    newMessage.chatWithUser = msg.receiver;
+                } else {
+                    newMessage.chatWithUser = msg.sender;
+                }
+                let diffInSeconds = (Number(new Date()) - Number(newMessage.chatWithUser.lastVisit)) / 1000;
+
+                if (diffInSeconds < 300) {
+                    newMessage.chatWithUser.status = true;
+                } else {
+                    newMessage.chatWithUser.status = false;
+                }
+                let notReadCount = 0;
+                try {
+                    await Message.find({
+                        receiver: req.user._id,
+                        sender: new Object(newMessage.chatWithUser._id),
+                        isRead: false
+                    }).then((messages) => {
+                        notReadCount = messages.length;
+                    });
+                } catch (err) {
+                }
+
+                newMessage.notReadCount = notReadCount;
+
+                let deleted = false;
+                try {
+                    await RemovedMessage.find({
+                        removedBy: req.user._id,
+                        removedWith: new Object(newMessage.chatWithUser._id)
+                    }).then((removedMessages) => {
+                        if (removedMessages.length > 0) {
+                            deleted = true;
+                        }
+                    });
+                } catch (err) {
+                }
+                
+                if (!deleted) {
+                    chats.push(newMessage);
+                }
+            }
+        };
+        res.send({
+            success: true,
+            data: chats
+        });
+    }, (err) => {
+        res.status(400).send(err);
+    });
+});
 
 router.get('/chat', authenticate, async (req, res) => {   
 
@@ -179,9 +271,6 @@ router.get('/chat', authenticate, async (req, res) => {
     .populate('receiver', 'name avatarUrl status phone lastVisit')
     .then( async (messages) => {
         var chats = [];
-
-        
-
         for (let index = 0; index < messages.length; index++) {
             var found = false;
             const msg = messages[index];
