@@ -171,8 +171,8 @@ router.get('/chat-edited', authenticate, async (req, res) => {
             sender: 1,
             receiver: 1,
             message: 1,
-            messageFileURL,
-            createdAt,
+            messageFileURL: 1,
+            createdAt: 1,
         }
     }, {
         $group: {
@@ -187,17 +187,17 @@ router.get('/chat-edited', authenticate, async (req, res) => {
     }];
 
     Message.aggregate(pipeLine).exec().then((messages) => {
-        // var chats = [];
-        // for (let index = 0; index < messages.length; index++) {
-        //     var found = false;
-        //     const msg = messages[index];
-        //     if (chats.length > 0) {
-        //         for (let j = 0; j < chats.length; j++) {
-        //             const element = chats[j];
+        var chats = [];
+        for (let index = 0; index < messages.length; index++) {
+            var found = false;
+            const msg = messages[index];
+            if (chats.length > 0) {
+                for (let j = 0; j < chats.length; j++) {
+                    const element = chats[j];
                     
-        //         } 
-        //     }
-        // };
+                } 
+            }
+        };
         res.send({
             success: true,
             data: messages
