@@ -167,10 +167,7 @@ router.get('/chat/messages/:receiverId', authenticate, async (req, res) => {
 });
 router.get('/chat-edited', authenticate, async (req, res) => {   
 
-    Message.find({ $or: [
-        { 'sender': req.user._id },
-        { 'receiver': req.user._id }
-    ]})
+    Message.find()
     .sort({
         createdAt: -1
     })
