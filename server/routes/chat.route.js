@@ -195,16 +195,16 @@ router.get('/chat-edited', authenticate, async (req, res) => {
                 for (let j = 0; j < chats.length; j++) {
                     const element = chats[j];
 
-                    if (req.user._id.equals(msg.sender._id)) {
-                        if (element.chatWithUser._id.equals(msg._id.receiver)) {
-                            found = true;
-                            break;
-                        }
+                    if (req.user._id.equals(msg._id.sender)) {
+                        // if (element.chatWithUser._id.equals(msg._id.receiver)) {
+                        //     found = true;
+                        //     break;
+                        // }
                     } else {
-                        if (element.chatWithUser._id.equals(msg._id.sender)) {
-                            found = true;
-                            break;
-                        }
+                        // if (element.chatWithUser._id.equals(msg._id.sender)) {
+                        //     found = true;
+                        //     break;
+                        // }
                     }
                     
                 } 
