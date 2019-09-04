@@ -168,6 +168,11 @@ router.get('/chat/messages/:receiverId', authenticate, async (req, res) => {
 router.get('/chat-edited', authenticate, async (req, res) => {   
 
     Message.find()
+    .group(
+        {
+          key: { "sender": 1, "receiver": 1 }
+        }
+     )
     .sort({
         createdAt: -1
     })
@@ -177,7 +182,7 @@ router.get('/chat-edited', authenticate, async (req, res) => {
         var chats = [];
         res.send({
             success: true,
-            data: chats
+            data: messages
         });
     }, (err) => {
         res.status(400).send(err);
