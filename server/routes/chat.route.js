@@ -171,16 +171,16 @@ router.get('/chat-edited', authenticate, async (req, res) => {
         {
           $group: {
             _id: {
-              name: '$name',
-              age: '$age'
+                sender: '$sender',
+                receiver: '$receiver'
             }
           }
         }
-      ).then((data) => {
+      ).exec().then((data) => {
         res.send({
             success: true,
             data: data
-        }); 
+        });
     });
 
     // Message.find()
