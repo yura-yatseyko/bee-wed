@@ -186,18 +186,22 @@ router.get('/chat', authenticate, async (req, res) => {
             var found = false;
             const msg = messages[index];
             if (chats.length > 0) {
-                chats.forEach(function(element) {
-                    
+                for (let j = 0; j < chats.length; j++) {
+                    const element = chats[j];
+
                     if (req.user._id.equals(msg.sender._id)) {
                         if (element.chatWithUser._id.equals(msg.receiver._id)) {
                             found = true;
+                            break;
                         }
                     } else {
                         if (element.chatWithUser._id.equals(msg.sender._id)) {
                             found = true;
+                            break;
                         }
                     }
-                });  
+                    
+                } 
             }
             if (!found) {
                 var newMessage = Object.create({});
