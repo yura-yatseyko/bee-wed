@@ -168,7 +168,7 @@ router.get('/chat/messages/:receiverId', authenticate, async (req, res) => {
 router.get('/chat-edited', authenticate, async (req, res) => {   
     const pipeLine = [{
         $project: {
-            trsenderipId: 1,
+            sender: 1,
             receiver: 1,
         }
     }, {
