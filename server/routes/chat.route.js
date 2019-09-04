@@ -170,6 +170,9 @@ router.get('/chat-edited', authenticate, async (req, res) => {
         $project: {
             sender: 1,
             receiver: 1,
+            message: 1,
+            messageFileURL,
+            createdAt,
         }
     }, {
         $group: {
@@ -183,33 +186,50 @@ router.get('/chat-edited', authenticate, async (req, res) => {
         },
     }];
 
-    Message.aggregate(pipeLine).exec().then((data) => {
+    Message.aggregate(pipeLine).exec().then((messages) => {
+        var chats = [];
+        for (let index = 0; index < messages.length; index++) {
+            var found = false;
+            const msg = messages[index];
+            if (chats.length > 0) {
+                for (let j = 0; j < chats.length; j++) {
+                    const element = chats[j];
+
+                    if (req.user._id.equals(msg.sender._id)) {
+                        if (element.chatWithUser._id.equals(msg._id.receiver)) {
+                            found = true;
+                            break;
+                        }
+                    } else {
+                        if (element.chatWithUser._id.equals(msg._id.sender)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    
+                } 
+            }
+            // if (!found) {
+            //     var newMessage = Object.create({});
+            //     newMessage.messageFileURL = msg.messageFileURL;
+            //     newMessage.message = msg.message;
+            //     newMessage._id = msg._id;
+            //     let notReadCount = 0;
+
+            //     newMessage.notReadCount = notReadCount;
+
+            //     let deleted = false;
+                
+            //     if (!deleted) {
+            //         chats.push(newMessage);
+            //     }
+            // }
+        };
         res.send({
             success: true,
-            data: data
+            data: messages
         });
     });
-
-    // Message.find()
-    // .group(
-    //     {
-    //       key: { "sender": 1, "receiver": 1 }
-    //     }
-    //  )
-    // .sort({
-    //     createdAt: -1
-    // })
-    // .populate('sender', 'name avatarUrl status phone lastVisit')
-    // .populate('receiver', 'name avatarUrl status phone lastVisit')
-    // .then( async (messages) => {
-    //     var chats = [];
-    //     res.send({
-    //         success: true,
-    //         data: messages
-    //     });
-    // }, (err) => {
-    //     res.status(400).send(err);
-    // });
 });
 
 router.get('/chat', authenticate, async (req, res) => {   
