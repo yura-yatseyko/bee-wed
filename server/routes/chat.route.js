@@ -168,6 +168,13 @@ router.get('/chat/messages/:receiverId', authenticate, async (req, res) => {
 router.get('/chat-edited', authenticate, async (req, res) => {   
 
     Message.find()
+    .group(
+        {
+          key: { "createdAt": 1, "receiver": 1 },
+          reduce: function ( curr, result ) { },
+          initial: { }
+        }
+     )
     .sort({
         createdAt: -1
     })
