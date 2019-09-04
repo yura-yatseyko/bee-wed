@@ -166,17 +166,24 @@ router.get('/chat/messages/:receiverId', authenticate, async (req, res) => {
     });
 });
 router.get('/chat-edited', authenticate, async (req, res) => {   
-
-    Message.aggregate(
-        {
-          $group: {
+    const pipeLine = [{
+        $project: {
+            trsenderipId: 1,
+            receiver: 1,
+        }
+    }, {
+        $group: {
             _id: {
                 sender: '$sender',
                 receiver: '$receiver'
-            }
-          }
-        }
-      ).exec().then((data) => {
+            },
+            messages: {
+                $push: '$$ROOT',
+            },
+        },
+    }];
+
+    Message.aggregate(pipeLine).exec().then((data) => {
         res.send({
             success: true,
             data: data
