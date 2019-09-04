@@ -167,26 +167,40 @@ router.get('/chat/messages/:receiverId', authenticate, async (req, res) => {
 });
 router.get('/chat-edited', authenticate, async (req, res) => {   
 
-    Message.find()
-    .group(
+    Message.group(
         {
-          key: { "sender": 1, "receiver": 1 }
+          key: { "sender": 1, "receiver": 1 },
+          cond: {  },
+          reduce: function ( curr, result ) {
+            res.send({
+                success: true,
+                data: result
+            });
+          },
+          initial: { }
         }
-     )
-    .sort({
-        createdAt: -1
-    })
-    .populate('sender', 'name avatarUrl status phone lastVisit')
-    .populate('receiver', 'name avatarUrl status phone lastVisit')
-    .then( async (messages) => {
-        var chats = [];
-        res.send({
-            success: true,
-            data: messages
-        });
-    }, (err) => {
-        res.status(400).send(err);
-    });
+     );
+
+    // Message.find()
+    // .group(
+    //     {
+    //       key: { "sender": 1, "receiver": 1 }
+    //     }
+    //  )
+    // .sort({
+    //     createdAt: -1
+    // })
+    // .populate('sender', 'name avatarUrl status phone lastVisit')
+    // .populate('receiver', 'name avatarUrl status phone lastVisit')
+    // .then( async (messages) => {
+    //     var chats = [];
+    //     res.send({
+    //         success: true,
+    //         data: messages
+    //     });
+    // }, (err) => {
+    //     res.status(400).send(err);
+    // });
 });
 
 router.get('/chat', authenticate, async (req, res) => {   
