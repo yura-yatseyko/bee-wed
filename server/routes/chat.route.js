@@ -167,19 +167,21 @@ router.get('/chat/messages/:receiverId', authenticate, async (req, res) => {
 });
 router.get('/chat-edited', authenticate, async (req, res) => {   
 
-    Message.group(
+    Message.aggregate(
         {
-          key: { "sender": 1, "receiver": 1 },
-          cond: {  },
-          reduce: function ( curr, result ) {
-            res.send({
-                success: true,
-                data: result
-            });
-          },
-          initial: { }
+          $group: {
+            _id: {
+              name: '$name',
+              age: '$age'
+            }
+          }
         }
-     );
+      ).then((data) => {
+        res.send({
+            success: true,
+            data: data
+        }); 
+    });
 
     // Message.find()
     // .group(
