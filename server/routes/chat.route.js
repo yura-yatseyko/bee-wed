@@ -191,10 +191,12 @@ router.get('/chat', authenticate, async (req, res) => {
                     if (req.user._id.equals(msg.sender._id)) {
                         if (element.chatWithUser._id.equals(msg.receiver._id)) {
                             found = true;
+                            break;
                         }
                     } else {
                         if (element.chatWithUser._id.equals(msg.sender._id)) {
                             found = true;
+                            break;
                         }
                     }
                 });  
