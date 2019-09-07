@@ -192,7 +192,7 @@ router.get('/chat-edited', authenticate, async (req, res) => {
             } catch (error) {                
             }
 
-            if (!chat) {
+            if (chat.length == 0) {
                 let newChat = new Chat();
                 newChat.message = message;
                 newChat.sender = message.sender;
