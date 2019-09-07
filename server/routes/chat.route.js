@@ -265,6 +265,7 @@ router.get('/chat-edited', authenticate, async (req, res) => {
         createdAt: -1
     }).then(async (messages) => {
 
+        var total2 = 0;
         for (let i = 0; i < messages.length; i++) {
             const message = messages[i];
 
@@ -285,6 +286,7 @@ router.get('/chat-edited', authenticate, async (req, res) => {
 
             if (chat) {
                 if (chat.length == 0) {
+                    total2++;
                     let newChat = new Chat();
                     newChat.message = message;
                     newChat.sender = message.sender;
@@ -299,7 +301,9 @@ router.get('/chat-edited', authenticate, async (req, res) => {
         }
 
         res.send({
-            success: true
+            success: true,
+            total1: messages.length,
+            total2
         });
     }, (err) => {
         res.status(400).send(err);
