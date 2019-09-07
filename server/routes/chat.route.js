@@ -166,6 +166,22 @@ router.get('/chat/messages/:receiverId', authenticate, async (req, res) => {
         res.status(400).send(err);
     });
 });
+
+router.get('/chat-edited-v2', authenticate, async (req, res) => {
+    Chat.find()
+    .sort({
+        'message.createdAt': -1
+    }).then(async (chats) => {
+        res.send({
+            success: true,
+            total: chats.length,
+            data: chats
+        });
+    }, (err) => {
+        res.status(400).send(err);
+    });
+});
+
 router.get('/chat-edited', authenticate, async (req, res) => {
     Message.find()
     .sort({
