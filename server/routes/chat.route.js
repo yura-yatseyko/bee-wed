@@ -177,7 +177,7 @@ router.get('/chat-edited', authenticate, async (req, res) => {
         for (let i = 0; i < messages.length; i++) {
             const message = messages[i];
 
-            let chat;
+            let chat = null;
             try {
                 chat = await Chat.find({ $or: [
                     { $and: [
