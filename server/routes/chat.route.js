@@ -11,6 +11,7 @@ var {authenticate} = require('../middleware/authenticate');
 const {ObjectID} = require('mongodb');
 
 const {Message} = require('../models/message.model');
+const {Chat} = require('../models/chat.model');
 const {RemovedMessage} = require('../models/removed-message.model');
 const {User} = require('../models/user.model');
 
@@ -197,12 +198,20 @@ router.get('/chat-edited', authenticate, async (req, res) => {
             }
 
             if (!found) {
+                var chat = new Chat();
+                chat.message = message;
+                chat.sender = message.sender._id;
+                chat.receiver = message.receiver._id;
+
+                try {
+                    await chat.save().exec();
+                } catch (error) {
+                }
+
                 chats.push(message);
             }
             
         }
-
-
 
         res.send({
             success: true,
