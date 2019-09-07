@@ -66,6 +66,36 @@ router.post('/chat/messages', authenticate, messageFileUpload, async (req, res) 
     }
 
     message.save().then((doc) => {
+        let chat = null;
+            try {
+                chat = await Chat.find({ $or: [
+                    { $and: [
+                        { 'sender': message.sender },
+                        { 'receiver': message.receiver }
+                    ]},
+                    { $and: [
+                        { 'sender': message.receiver },
+                        { 'receiver': message.sender }
+                    ]}
+                ]}).exec();
+            } catch (error) {                
+            }
+
+            if (chat.length == 0) {
+                let newChat = new Chat();
+                newChat.message = message;
+                newChat.sender = message.sender;
+                newChat.receiver = message.receiver;
+                newChat.receiverNeedReedMessages = 1;
+
+                try {
+                    await newChat.save().exec();
+                } catch (error) {
+                }
+            } else {
+
+            }
+
         User.findOne({
             "_id" : new ObjectID(req.body.receiver)
         }, function (err, result) {
