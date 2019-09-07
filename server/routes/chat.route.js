@@ -259,30 +259,42 @@ router.get('/chat-edited-v2', authenticate, async (req, res) => {
     });
 });
 
+const getChats = (sender, receiver) => {
+    Chat.find({ $or: [
+        { $and: [
+            { 'sender': message.sender },
+            { 'receiver': message.receiver }
+        ]},
+        { $and: [
+            { 'sender': message.receiver },
+            { 'receiver': message.sender }
+        ]}
+    ]}).then((chats) => {
+        return chats
+    }, (err) => {
+        return null;
+    });
+}
+
+const saveChat = (chat) => {
+    chat.save().then((doc) => {
+        return doc;
+    }, (err) => {
+        return null;
+    });
+}
+
 router.get('/chat-edited', authenticate, async (req, res) => {
-    try {
-        let messages = await Message.find().limit(1000).skip(0).sort({
-            createdAt: -1
-        }).exec();
+    Message.find()
+    .sort({
+        createdAt: -1
+    }).then(async (messages) => {
 
-        if (messages) {
-            var total2 = 0;
-            var i = 0;
-        while (i < messages.length) {
+        var total2 = 0;
+        for (let i = 0; i < messages.length; i++) {
             const message = messages[i];
-
-            let chat = null;
             try {
-                chat = await Chat.find({ $or: [
-                    { $and: [
-                        { 'sender': message.sender },
-                        { 'receiver': message.receiver }
-                    ]},
-                    { $and: [
-                        { 'sender': message.receiver },
-                        { 'receiver': message.sender }
-                    ]}
-                ]}).exec();
+                let chats = await getChats(message.sender, message.receiver);
 
                 if (chat) {
                     if (chat.length == 0) {
@@ -292,16 +304,10 @@ router.get('/chat-edited', authenticate, async (req, res) => {
                         newChat.sender = message.sender;
                         newChat.receiver = message.receiver;
         
-                        await newChat.save().exec();
-                        i++;
-                    } else {
-                        i++;
+                        await saveChat(newChat);
                     }
-                } else {
-                    i++;
                 }
-            } catch (error) { 
-                i++;               
+            } catch (error) {                
             }
         }
 
@@ -310,11 +316,9 @@ router.get('/chat-edited', authenticate, async (req, res) => {
             total1: messages.length,
             total2
         });
-        }
-        
-    } catch (error) {
-        
-    }
+    }, (err) => {
+        res.status(400).send(err);
+    });
 });
 
 router.get('/chat', authenticate, async (req, res) => {   
