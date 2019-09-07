@@ -267,7 +267,8 @@ router.get('/chat-edited', authenticate, async (req, res) => {
 
         if (messages) {
             var total2 = 0;
-        for (let i = 0; i < messages.length; i++) {
+            var i = 0;
+        while (i < messages.length) {
             const message = messages[i];
 
             let chat = null;
@@ -292,12 +293,16 @@ router.get('/chat-edited', authenticate, async (req, res) => {
                         newChat.receiver = message.receiver;
         
                         await newChat.save().exec();
+                        i++;
+                    } else {
+                        i++;
                     }
+                } else {
+                    i++;
                 }
-            } catch (error) {                
+            } catch (error) { 
+                i++;               
             }
-
-            
         }
 
         res.send({
