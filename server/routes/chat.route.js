@@ -98,12 +98,14 @@ router.post('/chat/messages', authenticate, messageFileUpload, async (req, res) 
                     if (message.sender.equals(needUpdateChat.sender)) {
                         await needUpdateChat.update({
                             $set: {
+                                message,
                                 receiverNeedReedMessages: Number(needUpdateChat.receiverNeedReedMessages) + 1
                             }
                         }).exec();
                     } else if (message.sender.equals(needUpdateChat.receiver)) {
                         await needUpdateChat.update({
                             $set: {
+                                message,
                                 senderNeedReedMessages: Number(needUpdateChat.senderNeedReedMessages) + 1
                             }
                         }).exec();
@@ -386,6 +388,73 @@ router.get('/chat', authenticate, async (req, res) => {
                 }
             }
         };
+        res.send({
+            success: true,
+            data: chats
+        });
+    }, (err) => {
+        res.status(400).send(err);
+    });
+});
+
+router.get('/chat-v2', authenticate, async (req, res) => {   
+
+    Chat.find({ $or: [
+        { 'sender': req.user._id },
+        { 'receiver': req.user._id }
+    ]})
+    .sort({
+        'message.createdAt': -1
+    })
+    .populate('sender', 'name avatarUrl status phone lastVisit')
+    .populate('receiver', 'name avatarUrl status phone lastVisit')
+    .then( async (allChats) => {
+        var chats = [];
+        for (let i = 0; i < allChats.length; i++) {
+            const chat = allChats[i];
+
+            var newChat = Object.create({});
+            newChat.messageFileURL = chat.message.messageFileURL;
+            newChat.message = chat.message.message;
+            newChat._id = chat.message._id;
+            newChat.createdAt = chat.message.createdAt;
+
+            let notReadCount = 0;
+            if (req.user._id.equals(chat.message.sender)) {
+                newChat.chatWithUser = chat.receiver;
+                notReadCount = Number(chat.senderNeedReedMessages);
+            } else {
+                newChat.chatWithUser = chat.sender;
+                notReadCount = Number(chat.receiverNeedReedMessages);
+            }
+            let diffInSeconds = (Number(new Date()) - Number(newChat.chatWithUser.lastVisit)) / 1000;
+
+            if (diffInSeconds < 300) {
+                newChat.chatWithUser.status = true;
+            } else {
+                newChat.chatWithUser.status = false;
+            }
+
+            newChat.notReadCount = notReadCount;
+
+            let deleted = false;
+            try {
+                await RemovedMessage.find({
+                    removedBy: req.user._id,
+                    removedWith: new Object(newChat.chatWithUser._id)
+                }).then((removedMessages) => {
+                    if (removedMessages.length > 0) {
+                        deleted = true;
+                    }
+                });
+            } catch (err) {
+
+            }
+            
+            if (!deleted) {
+                chats.push(newChat);
+            }
+        }
         res.send({
             success: true,
             data: chats
