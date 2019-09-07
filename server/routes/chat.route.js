@@ -165,43 +165,15 @@ router.get('/chat/messages/:receiverId', authenticate, async (req, res) => {
         res.status(400).send(err);
     });
 });
-router.get('/chat-edited', authenticate, async (req, res) => {   
-    const pipeLine = [{
-        $project: {
-            sender: 1,
-            receiver: 1,
-            message: 1,
-            messageFileURL: 1,
-            createdAt: 1,
-        }
-    }, {
-        $group: {
-            _id: {
-                sender: '$sender',
-                receiver: '$receiver'
-            },
-            messages: {
-                $push: '$$ROOT',
-            },
-        },
-    }];
-
-    Message.aggregate(pipeLine).exec().then((messages) => {
-        var chats = [];
-        for (let index = 0; index < messages.length; index++) {
-            var found = false;
-            const msg = messages[index];
-            if (chats.length > 0) {
-                for (let j = 0; j < chats.length; j++) {
-                    const element = chats[j];
-                    
-                } 
-            }
-        };
+router.get('/chat-edited', authenticate, async (req, res) => {
+    Message.find().then((messages) => {
         res.send({
             success: true,
+            total: messages.length,
             data: messages
         });
+    }, (err) => {
+        res.status(400).send(err);
     });
 });
 
