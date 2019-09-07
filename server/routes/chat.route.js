@@ -465,7 +465,7 @@ router.get('/chat', authenticate, async (req, res) => {
             newChat.createdAt = chat.message.createdAt;
 
             let notReadCount = 0;
-            if (req.user._id.equals(chat.sender)) {
+            if (req.user._id.equals(chat.sender._id)) {
                 newChat.chatWithUser = chat.receiver;
                 notReadCount = Number(chat.senderNeedReedMessages);
             } else {
