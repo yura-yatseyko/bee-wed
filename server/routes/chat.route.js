@@ -179,7 +179,7 @@ router.get('/chat-edited', authenticate, async (req, res) => {
 
             let chat;
             try {
-                let chat = await Chat.find({ $or: [
+                chat = await Chat.find({ $or: [
                     { $and: [
                         { 'sender': message.sender },
                         { 'receiver': message.receiver }
