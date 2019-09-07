@@ -172,6 +172,36 @@ router.get('/chat-edited-v2', authenticate, async (req, res) => {
     .sort({
         'message.createdAt': -1
     }).then(async (chats) => {
+        for (let i = 0; i < chats.length; i++) {
+            const chat = chats[i];
+
+            let senderNeedReedMessages = 0;
+            let receiverNeedReedMessages = 0;
+            try {
+                senderNeedReedMessages = await Message.find({
+                    receiver: chat.sender,
+                    sender: chat.receiver,
+                    isRead: false
+                }).exec();
+
+                receiverNeedReedMessages = await Message.find({
+                    receiver: chat.receiver,
+                    sender: chat.sender,
+                    isRead: false
+                }).exec();
+
+                await chat.update({
+                    $set: {
+                        senderNeedReedMessages,
+                        receiverNeedReedMessages
+                    }
+                }).exec();
+                
+            } catch (error) {
+                
+            }
+        }
+
         res.send({
             success: true,
             total: chats.length,
