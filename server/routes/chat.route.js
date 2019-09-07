@@ -281,23 +281,22 @@ router.get('/chat-edited', authenticate, async (req, res) => {
                         { 'receiver': message.sender }
                     ]}
                 ]}).exec();
+
+                if (chat) {
+                    if (chat.length == 0) {
+                        total2++;
+                        let newChat = new Chat();
+                        newChat.message = message;
+                        newChat.sender = message.sender;
+                        newChat.receiver = message.receiver;
+        
+                        await newChat.save().exec();
+                    }
+                }
             } catch (error) {                
             }
 
-            if (chat) {
-                if (chat.length == 0) {
-                    total2++;
-                    let newChat = new Chat();
-                    newChat.message = message;
-                    newChat.sender = message.sender;
-                    newChat.receiver = message.receiver;
-    
-                    try {
-                        await newChat.save().exec();
-                    } catch (error) {
-                    }
-                }
-            }
+            
         }
 
         res.send({
