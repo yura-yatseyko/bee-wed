@@ -260,12 +260,13 @@ router.get('/chat-edited-v2', authenticate, async (req, res) => {
 });
 
 router.get('/chat-edited', authenticate, async (req, res) => {
-    Message.find()
-    .sort({
-        createdAt: -1
-    }).then(async (messages) => {
+    try {
+        let messages = await Message.find().sort({
+            createdAt: -1
+        }).exec();
 
-        var total2 = 0;
+        if (messages) {
+            var total2 = 0;
         for (let i = 0; i < messages.length; i++) {
             const message = messages[i];
 
@@ -304,9 +305,11 @@ router.get('/chat-edited', authenticate, async (req, res) => {
             total1: messages.length,
             total2
         });
-    }, (err) => {
-        res.status(400).send(err);
-    });
+        }
+        
+    } catch (error) {
+        
+    }
 });
 
 router.get('/chat', authenticate, async (req, res) => {   
