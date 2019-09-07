@@ -259,62 +259,53 @@ router.get('/chat-edited-v2', authenticate, async (req, res) => {
     });
 });
 
-const getChats = (sender, receiver) => {
-    Chat.find({ $or: [
-        { $and: [
-            { 'sender': message.sender },
-            { 'receiver': message.receiver }
-        ]},
-        { $and: [
-            { 'sender': message.receiver },
-            { 'receiver': message.sender }
-        ]}
-    ]}).then((chats) => {
-        return chats
-    }, (err) => {
-        return null;
-    });
-}
 
-const saveChat = (chat) => {
-    chat.save().then((doc) => {
-        return doc;
-    }, (err) => {
-        return null;
-    });
+function aa(i, messages) {
+    if (i < 0) {
+        const message = messages[i];
+
+        Chat.find({ $or: [
+            { $and: [
+                { 'sender': message.sender },
+                { 'receiver': message.receiver }
+            ]},
+            { $and: [
+                { 'sender': message.receiver },
+                { 'receiver': message.sender }
+            ]}
+        ]}).then((chat) => {
+            if (chat) {
+                if (chat.length == 0) {
+                    let newChat = new Chat();
+                    newChat.message = message;
+                    newChat.sender = message.sender;
+                    newChat.receiver = message.receiver;
+    
+                    newChat.save().then((doc) => {
+                        aa(i - 1, messages);
+                    }, (err) => {
+                        aa(i - 1, messages);
+                    });
+                }
+            }
+        }, (err) => {
+            aa(i - 1, messages);
+        });
+    } else {
+        return;
+    }
 }
 
 router.get('/chat-edited', authenticate, async (req, res) => {
     Message.find()
     .sort({
         createdAt: -1
-    }).then(async (messages) => {
+    }).then((messages) => {
 
-        var total2 = 0;
-        for (let i = 0; i < messages.length; i++) {
-            const message = messages[i];
-            try {
-                let chat = await getChats(message.sender, message.receiver);
-
-                if (chat) {
-                    if (chat.length == 0) {
-                        total2++;
-                        let newChat = new Chat();
-                        newChat.message = message;
-                        newChat.sender = message.sender;
-                        newChat.receiver = message.receiver;
-        
-                        await saveChat(newChat);
-                    }
-                }
-            } catch (error) {                
-            }
-        }
+        aa(messages.length - 1, messages);
 
         res.send({
             success: true,
-            total1: messages.length,
-            total2
         });
     }, (err) => {
         res.status(400).send(err);
