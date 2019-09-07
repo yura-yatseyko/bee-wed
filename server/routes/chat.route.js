@@ -192,8 +192,8 @@ router.get('/chat-edited-v2', authenticate, async (req, res) => {
 
                 await chat.update({
                     $set: {
-                        senderNeedReedMessages,
-                        receiverNeedReedMessages
+                        senderNeedReedMessages: senderNeedReedMessages.length,
+                        receiverNeedReedMessages: receiverNeedReedMessages.length
                     }
                 }).exec();
                 
