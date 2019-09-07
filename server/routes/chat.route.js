@@ -173,7 +173,7 @@ router.get('/chat-edited', authenticate, async (req, res) => {
     .populate('sender', 'name avatarUrl status phone lastVisit')
     .populate('receiver', 'name avatarUrl status phone lastVisit')
     .limit(1000)
-    .skip(1000).then(async (messages) => {
+    .skip(0).then(async (messages) => {
 
         var chats = [];
 
