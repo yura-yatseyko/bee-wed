@@ -261,7 +261,7 @@ router.get('/chat-edited-v2', authenticate, async (req, res) => {
 
 router.get('/chat-edited', authenticate, async (req, res) => {
     try {
-        let messages = await Message.find().limit(50).sort({
+        let messages = await Message.find().limit(1000).skip(0).sort({
             createdAt: -1
         }).exec();
 
