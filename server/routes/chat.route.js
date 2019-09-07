@@ -169,7 +169,8 @@ router.get('/chat-edited', authenticate, async (req, res) => {
     Message.find()
     .sort({
         createdAt: -1
-    }).then(async (messages) => {
+    })
+    .limit(1000).then(async (messages) => {
 
         var chats = [];
 
