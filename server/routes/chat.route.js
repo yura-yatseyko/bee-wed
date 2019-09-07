@@ -93,7 +93,22 @@ router.post('/chat/messages', authenticate, messageFileUpload, async (req, res) 
                 } catch (error) {
                 }
             } else {
-
+                if (chat.length > 0) {
+                    let needUpdateChat = chat[0];
+                    if (message.sender.equals(needUpdateChat.sender)) {
+                        await needUpdateChat.update({
+                            $set: {
+                                receiverNeedReedMessages: Number(needUpdateChat.receiverNeedReedMessages) + 1
+                            }
+                        }).exec();
+                    } else if (message.sender.equals(needUpdateChat.receiver)) {
+                        await needUpdateChat.update({
+                            $set: {
+                                senderNeedReedMessages: Number(needUpdateChat.senderNeedReedMessages) + 1
+                            }
+                        }).exec();
+                    }
+                }
             }
 
         User.findOne({
