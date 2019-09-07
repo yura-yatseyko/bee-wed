@@ -286,7 +286,11 @@ function aa(i, messages) {
                     }, (err) => {
                         aa(i - 1, messages);
                     });
+                } else {
+                    aa(i - 1, messages);
                 }
+            } else {
+                aa(i - 1, messages);
             }
         }, (err) => {
             aa(i - 1, messages);
