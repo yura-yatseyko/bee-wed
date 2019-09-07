@@ -171,52 +171,42 @@ router.get('/chat-edited', authenticate, async (req, res) => {
     .sort({
         createdAt: -1
     })
-    .populate('sender', 'name avatarUrl status phone lastVisit')
-    .populate('receiver', 'name avatarUrl status phone lastVisit')
     .limit(1000)
     .skip(0).then(async (messages) => {
-
-        var chats = [];
 
         for (let i = 0; i < messages.length; i++) {
             const message = messages[i];
 
-            var found = false;
-
-            if (chats.length > 0) {
-                for (let j = 0; j < chats.length; j++) {
-                    const chat = chats[j];
-
-                    if (chat.sender._id.equals(message.sender._id) && chat.receiver._id.equals(message.receiver._id)) {
-                        found = true;
-                        break;
-                    } else if (chat.receiver._id.equals(message.sender._id) && chat.sender._id.equals(message.receiver._id)) {
-                        found = true;
-                        break;
-                    }
-                } 
+            let chat;
+            try {
+                let chat = await Chat.find({ $or: [
+                    { $and: [
+                        { 'sender': message.sender },
+                        { 'receiver': message.receiver }
+                    ]},
+                    { $and: [
+                        { 'sender': message.receiver },
+                        { 'receiver': message.sender }
+                    ]}
+                ]}).exec();
+            } catch (error) {                
             }
 
-            if (!found) {
-                var chat = new Chat();
-                chat.message = message;
-                chat.sender = message.sender._id;
-                chat.receiver = message.receiver._id;
+            if (!chat) {
+                let newChat = new Chat();
+                newChat.message = message;
+                newChat.sender = message.sender;
+                newChat.receiver = message.receiver;
 
                 try {
-                    await chat.save().exec();
+                    await newChat.save().exec();
                 } catch (error) {
                 }
-
-                chats.push(message);
             }
-            
         }
 
         res.send({
-            success: true,
-            total: chats.length,
-            data: chats
+            success: true
         });
     }, (err) => {
         res.status(400).send(err);
