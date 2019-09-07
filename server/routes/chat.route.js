@@ -187,38 +187,38 @@ router.get('/chat/messages/:receiverId', authenticate, async (req, res) => {
 
     }
 
-    let chat = null;
-    try {
-        chat = await Chat.find({ $or: [
-            { $and: [
-                { 'sender': req.user._id },
-                { 'receiver': new Object(receiverId) }
-            ]},
-            { $and: [
-                { 'sender': new Object(receiverId) },
-                { 'receiver': req.user._id }
-            ]}
-        ]}).exec();
-    } catch (error) {
+    // let chat = null;
+    // try {
+    //     chat = await Chat.find({ $or: [
+    //         { $and: [
+    //             { 'sender': req.user._id },
+    //             { 'receiver': new Object(receiverId) }
+    //         ]},
+    //         { $and: [
+    //             { 'sender': new Object(receiverId) },
+    //             { 'receiver': req.user._id }
+    //         ]}
+    //     ]}).exec();
+    // } catch (error) {
         
-    }
+    // }
     
-    if (chat.length > 0) {
-        let needUpdateChat = chat[0];
-        if (req.user._id.equals(needUpdateChat.sender)) {
-            await needUpdateChat.update({
-                $set: {
-                    senderNeedReedMessages: 0
-                }
-            }).exec();
-        } else if (req.user._id.equals(needUpdateChat.receiver)) {
-            await needUpdateChat.update({
-                $set: {
-                    receiverNeedReedMessages: 0
-                }
-            }).exec();
-        }
-    }
+    // if (chat.length > 0) {
+    //     let needUpdateChat = chat[0];
+    //     if (req.user._id.equals(needUpdateChat.sender)) {
+    //         await needUpdateChat.update({
+    //             $set: {
+    //                 senderNeedReedMessages: 0
+    //             }
+    //         }).exec();
+    //     } else if (req.user._id.equals(needUpdateChat.receiver)) {
+    //         await needUpdateChat.update({
+    //             $set: {
+    //                 receiverNeedReedMessages: 0
+    //             }
+    //         }).exec();
+    //     }
+    // }
     
     Message.find({
         $or: [
