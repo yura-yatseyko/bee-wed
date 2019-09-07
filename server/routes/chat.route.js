@@ -303,7 +303,7 @@ function aa(i, messages) {
 router.get('/chat-edited', authenticate, async (req, res) => {
     Message.find()
     .sort({
-        createdAt: -1
+        createdAt: 1
     }).then((messages) => {
 
         aa(messages.length - 1, messages);
