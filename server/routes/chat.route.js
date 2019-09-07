@@ -316,7 +316,7 @@ router.get('/chat-edited', authenticate, async (req, res) => {
     });
 });
 
-router.get('/chat', authenticate, async (req, res) => {   
+router.get('/chatt', authenticate, async (req, res) => {   
 
     Message.find({ $or: [
         { 'sender': req.user._id },
@@ -409,7 +409,7 @@ router.get('/chat', authenticate, async (req, res) => {
     });
 });
 
-router.get('/chat-v2', authenticate, async (req, res) => {   
+router.get('/chat', authenticate, async (req, res) => {   
 
     Chat.find({ $or: [
         { 'sender': req.user._id },
