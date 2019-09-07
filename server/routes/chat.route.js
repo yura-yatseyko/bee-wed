@@ -170,7 +170,10 @@ router.get('/chat-edited', authenticate, async (req, res) => {
     .sort({
         createdAt: -1
     })
-    .limit(1000).then(async (messages) => {
+    .populate('sender', 'name avatarUrl status phone lastVisit')
+    .populate('receiver', 'name avatarUrl status phone lastVisit')
+    .limit(1000)
+    .skip(1000).then(async (messages) => {
 
         var chats = [];
 
@@ -183,10 +186,10 @@ router.get('/chat-edited', authenticate, async (req, res) => {
                 for (let j = 0; j < chats.length; j++) {
                     const chat = chats[j];
 
-                    if (chat.sender.equals(message.sender) && chat.receiver.equals(message.receiver)) {
+                    if (chat.sender._id.equals(message.sender._id) && chat.receiver._id.equals(message.receiver._id)) {
                         found = true;
                         break;
-                    } else if (chat.receiver.equals(message.sender) && chat.sender.equals(message.receiver)) {
+                    } else if (chat.receiver._id.equals(message.sender._id) && chat.sender._id.equals(message.receiver._id)) {
                         found = true;
                         break;
                     }
