@@ -65,7 +65,7 @@ router.post('/chat/messages', authenticate, messageFileUpload, async (req, res) 
         message.messageFileURL.key = req.file.key;
     }
 
-    message.save().then((doc) => {
+    message.save().then(async (doc) => {
         let chat = null;
             try {
                 chat = await Chat.find({ $or: [
