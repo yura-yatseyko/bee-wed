@@ -261,7 +261,7 @@ router.get('/chat-edited-v2', authenticate, async (req, res) => {
 
 
 function aa(i, messages) {
-    if (i < 0) {
+    if (i > 0) {
         const message = messages[i];
 
         Chat.find({ $or: [
