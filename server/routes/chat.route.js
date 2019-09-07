@@ -166,11 +166,44 @@ router.get('/chat/messages/:receiverId', authenticate, async (req, res) => {
     });
 });
 router.get('/chat-edited', authenticate, async (req, res) => {
-    Message.find().then((messages) => {
+    Message.find()
+    .sort({
+        createdAt: -1
+    }).then(async (messages) => {
+
+        var chats = [];
+
+        for (let i = 0; i < messages.length; i++) {
+            const message = messages[i];
+
+            var found = false;
+
+            if (chats.length > 0) {
+                for (let j = 0; j < chats.length; j++) {
+                    const chat = chats[j];
+
+                    if (chat.sender.equals(message.sender) && chat.receiver.equals(message.receiver)) {
+                        found = true;
+                        break;
+                    } else if (chat.receiver.equals(message.sender) && chat.sender.equals(message.receiver)) {
+                        found = true;
+                        break;
+                    }
+                } 
+            }
+
+            if (!found) {
+                chats.push(message);
+            }
+            
+        }
+
+
+
         res.send({
             success: true,
-            total: messages.length,
-            data: messages
+            total: chats.length,
+            data: chats
         });
     }, (err) => {
         res.status(400).send(err);
