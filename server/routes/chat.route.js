@@ -294,7 +294,7 @@ router.get('/chat-edited', authenticate, async (req, res) => {
         for (let i = 0; i < messages.length; i++) {
             const message = messages[i];
             try {
-                let chats = await getChats(message.sender, message.receiver);
+                let chat = await getChats(message.sender, message.receiver);
 
                 if (chat) {
                     if (chat.length == 0) {
