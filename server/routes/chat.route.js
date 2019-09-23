@@ -117,45 +117,74 @@ router.post('/chat/messages', authenticate, messageFileUpload, async (req, res) 
             "_id" : new ObjectID(req.body.receiver)
         }, function (err, result) {
             if (result) {
-        
-                var payloadAndroid = {
-                    data: {
-                        type: "new_message",
-                        action: 'MESSAGE',
-                        message: req.body.message ? req.body.message : "",
-                        messageFileURL: doc.messageFileURL.location ? doc.messageFileURL.location : "",
-                        _id: req.user._id.toString(),
-                        kind: req.user.kind,
-                        name: req.user.name,
-                        phone: req.user.phone ? req.user.phone : "",
-                        avatarUrl: req.user.avatarUrl.location ? req.user.avatarUrl.location : ""
-                    }
-                };
 
-                var payloadIOS = {
-                    notification: {
-                      title: req.user.name,
-                      body: req.body.message ? req.body.message : "",
-                      sound: 'default',
-                    },
-                    data: {
-                        type: "new_message",
-                        action: 'MESSAGE',
-                        message: req.body.message ? req.body.message : "",
-                        messageFileURL: doc.messageFileURL.location ? doc.messageFileURL.location : "",
-                        _id: req.user._id.toString(),
-                        kind: req.user.kind,
-                        name: req.user.name,
-                        phone: req.user.phone ? req.user.phone : "",
-                        avatarUrl: req.user.avatarUrl.location ? req.user.avatarUrl.location : ""
+                Message.find({
+                    receiver: new ObjectID(req.body.receiver),
+                    isRead: false
+                }).distinct('sender', async function(error, ids) {
+            
+                    var chats = [];
+            
+                    for (let index = 0; index < ids.length; index++) {
+                        const element = ids[index];
+                        let deleted = false;
+                            try {
+                                await RemovedMessage.find({
+                                    removedBy: req.user._id,
+                                    removedWith: element
+                                }).then((removedMessages) => {
+                                    if (removedMessages.length > 0) {
+                                        deleted = true;
+                                    }
+                                });
+                            } catch (err) {
+                            }
+                            
+                            if (!deleted) {
+                                chats.push(element);
+                            }
                     }
-                };
 
-                if (result.notifications.newMessage) {
-                    result.registrationTokens.forEach(function(rt) {
-                        firebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
-                    });
-                } 
+                    var payloadAndroid = {
+                        data: {
+                            type: "new_message",
+                            action: 'MESSAGE',
+                            message: req.body.message ? req.body.message : "",
+                            messageFileURL: doc.messageFileURL.location ? doc.messageFileURL.location : "",
+                            _id: req.user._id.toString(),
+                            kind: req.user.kind,
+                            name: req.user.name,
+                            phone: req.user.phone ? req.user.phone : "",
+                            avatarUrl: req.user.avatarUrl.location ? req.user.avatarUrl.location : ""
+                        }
+                    };
+    
+                    var payloadIOS = {
+                        notification: {
+                          title: req.user.name,
+                          body: req.body.message ? req.body.message : "",
+                          sound: 'default',
+                          badge: chats.length,
+                        },
+                        data: {
+                            type: "new_message",
+                            action: 'MESSAGE',
+                            message: req.body.message ? req.body.message : "",
+                            messageFileURL: doc.messageFileURL.location ? doc.messageFileURL.location : "",
+                            _id: req.user._id.toString(),
+                            kind: req.user.kind,
+                            name: req.user.name,
+                            phone: req.user.phone ? req.user.phone : "",
+                            avatarUrl: req.user.avatarUrl.location ? req.user.avatarUrl.location : ""
+                        }
+                    };
+    
+                    if (result.notifications.newMessage) {
+                        result.registrationTokens.forEach(function(rt) {
+                            firebaseAdmin.sendPushNotification(payloadAndroid, payloadIOS, rt.registrationToken, rt.platform);
+                        });
+                    } 
+                });
             }
         });
 
