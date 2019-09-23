@@ -164,7 +164,7 @@ router.post('/chat/messages', authenticate, messageFileUpload, async (req, res) 
                           title: req.user.name,
                           body: req.body.message ? req.body.message : "",
                           sound: 'default',
-                          badge: chats.length,
+                          badge: chats.length.toString(),
                         },
                         data: {
                             type: "new_message",
