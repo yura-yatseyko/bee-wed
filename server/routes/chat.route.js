@@ -480,8 +480,8 @@ router.get('/chat', authenticate, async (req, res) => {
     .sort({
         'message.createdAt': -1
     })
-    .populate('sender', 'name avatarUrl status phone lastVisit')
-    .populate('receiver', 'name avatarUrl status phone lastVisit')
+    .populate({ path: 'sender', select: 'name avatarUrl status phone lastVisit', options: { retainNullValues: false } })
+    .populate({ path: 'receiver', select: 'name avatarUrl status phone lastVisit', options: { retainNullValues: false } })
     .then( async (allChats) => {
         var chats = [];
         for (let i = 0; i < allChats.length; i++) {
