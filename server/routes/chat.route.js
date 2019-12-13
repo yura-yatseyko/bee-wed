@@ -480,8 +480,8 @@ router.get('/chat', authenticate, async (req, res) => {
     .sort({
         'message.createdAt': -1
     })
-    .populate('sender', 'name avatarUrl status phone')
-    .populate('receiver', 'name avatarUrl status phone')
+    .populate('sender', 'name avatarUrl status phone lastVisit')
+    .populate('receiver', 'name avatarUrl status phone lastVisit')
     .then( async (allChats) => {
         var chats = [];
         for (let i = 0; i < allChats.length; i++) {
@@ -502,17 +502,17 @@ router.get('/chat', authenticate, async (req, res) => {
                 notReadCount = Number(chat.receiverNeedReedMessages);
             }
 
-            //if (newChat.chatWithUser.lastVisit) {
-              //  let diffInSeconds = (Number(new Date()) - Number(newChat.chatWithUser.lastVisit)) / 1000;
+            if (newChat.chatWithUser) {
+                let diffInSeconds = (Number(new Date()) - Number(newChat.chatWithUser.lastVisit)) / 1000;
 
-                //if (diffInSeconds < 300) {
-                  //  newChat.chatWithUser.status = true;
-                //} else {
+                if (diffInSeconds < 300) {
+                    newChat.chatWithUser.status = true;
+                } else {
                     newChat.chatWithUser.status = false;
-                //}
-            //} else {
-              //  newChat.chatWithUser.status = false;
-            //}
+                }
+            } else {
+                newChat.chatWithUser.status = false;
+            }
 
             newChat.chatWithUser.status = false;
 
