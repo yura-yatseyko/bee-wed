@@ -502,17 +502,19 @@ router.get('/chat', authenticate, async (req, res) => {
                 notReadCount = Number(chat.receiverNeedReedMessages);
             }
 
-            if (newChat.chatWithUser.lastVisit) {
-                let diffInSeconds = (Number(new Date()) - Number(newChat.chatWithUser.lastVisit)) / 1000;
+            //if (newChat.chatWithUser.lastVisit) {
+              //  let diffInSeconds = (Number(new Date()) - Number(newChat.chatWithUser.lastVisit)) / 1000;
 
-                if (diffInSeconds < 300) {
-                    newChat.chatWithUser.status = true;
-                } else {
+                //if (diffInSeconds < 300) {
+                  //  newChat.chatWithUser.status = true;
+                //} else {
                     newChat.chatWithUser.status = false;
-                }
-            } else {
-                newChat.chatWithUser.status = false;
-            }
+                //}
+            //} else {
+              //  newChat.chatWithUser.status = false;
+            //}
+
+            newChat.chatWithUser.status = false;
 
             newChat.notReadCount = notReadCount;
 
