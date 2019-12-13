@@ -501,10 +501,15 @@ router.get('/chat', authenticate, async (req, res) => {
                 newChat.chatWithUser = chat.sender;
                 notReadCount = Number(chat.receiverNeedReedMessages);
             }
-            let diffInSeconds = (Number(new Date()) - Number(newChat.chatWithUser.lastVisit)) / 1000;
 
-            if (diffInSeconds < 300) {
-                newChat.chatWithUser.status = true;
+            if (newChat.chatWithUser.lastVisit) {
+                let diffInSeconds = (Number(new Date()) - Number(newChat.chatWithUser.lastVisit)) / 1000;
+
+                if (diffInSeconds < 300) {
+                    newChat.chatWithUser.status = true;
+                } else {
+                    newChat.chatWithUser.status = false;
+                }
             } else {
                 newChat.chatWithUser.status = false;
             }
