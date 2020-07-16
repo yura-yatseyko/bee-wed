@@ -35,7 +35,7 @@
     "geodist": "^0.2.1",
     "iconv": "^2.3.3",
     "jsonwebtoken": "^8.3.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "moment-timezone": "^0.5.23",
     "mongo-xlsx": "^1.0.12",
     "mongodb": "^3.1.6",
